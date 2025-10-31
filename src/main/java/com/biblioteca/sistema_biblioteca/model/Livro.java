@@ -11,6 +11,7 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String titulo;
     private String autor;
     private String editora;
     private String tema;
@@ -30,8 +31,27 @@ public class Livro {
     public enum Status {
         DISPONIVEL,
         EMPRESTADO,
-        RESERVADO
+        RESERVADO,
+        INATIVO
 
+    }
+
+    // comportamentos do domínio (regras de negócio)
+
+    public Status consultarStatus() {
+        return this.status;
+    }
+
+    public void alterarStatus(Status novoStatus) {
+        if (Boolean.TRUE.equals(this.flagAtivo)) {
+            this.status = novoStatus;
+        } else {
+            throw new IllegalStateException("Não é possível alterar o status, pois o livro está inativo");
+        }
+    }
+
+    public boolean isDisponivel() {
+        return this.status == Status.DISPONIVEL && Boolean.TRUE.equals(this.flagAtivo);
     }
 
 }

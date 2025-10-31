@@ -6,13 +6,20 @@ import java.time.LocalDate;
 @Entity
 public class Reserva {
 
+    public enum ReservaStatus {
+        ATIVA,
+        CONFIRMADA,
+        CANCELADA
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDate dtSolicitacao;
     private Integer posicaoFila;
-    private String status;
+
+    private ReservaStatus status;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
@@ -24,26 +31,30 @@ public class Reserva {
 
     public Reserva() {
         this.dtSolicitacao = LocalDate.now();
-        this.status = "ATIVA";
+        this.status = ReservaStatus.ATIVA;
     }
 
     // ======== Métodos de Negócio ========
 
-    public Emprestimo confirmar() {
-        if ("ATIVA".equals(this.status) && "DISPONIVEL".equals(livro.getStatus())) {
-            this.status = "CONFIRMADA";
-            livro.setStatus("ALUGADO");
+    public Reserva(Usuario usuario, Livro livro) {
+        this();
+        this.usuario = usuario;
+        this.livro = livro;
+    }
 
-            Emprestimo emprestimo = new Emprestimo();
-            emprestimo.setLivro(this.livro);
-            emprestimo.setUsuario(this.usuario);
+    public Emprestimo confirmar() {
+        if (this.status == ReservaStatus.ATIVA && livro != null && livro.isDisponivel()) {
+            this.status = ReservaStatus.CONFIRMADA;
+            livro.alterarStatus(Livro.Status.EMPRESTADO);
+
+            Emprestimo emprestimo = new Emprestimo(this.usuario, this.livro);
             return emprestimo;
         }
         return null;
     }
 
     public void cancelar() {
-        this.status = "CANCELADA";
+        this.status = ReservaStatus.CANCELADA;
     }
 
     public void atualizarPosicaoFila(Integer posicaoFila) {
@@ -76,11 +87,11 @@ public class Reserva {
         this.posicaoFila = posicaoFila;
     }
 
-    public String getStatus() {
+    public ReservaStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ReservaStatus status) {
         this.status = status;
     }
 
@@ -100,5 +111,3 @@ public class Reserva {
         this.livro = livro;
     }
 }
-
-

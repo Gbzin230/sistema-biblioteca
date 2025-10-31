@@ -1,6 +1,7 @@
 package com.biblioteca.sistema_biblioteca.service;
 
 import com.biblioteca.sistema_biblioteca.model.*;
+import com.biblioteca.sistema_biblioteca.model.Reserva.ReservaStatus;
 import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
 import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
@@ -18,9 +19,9 @@ public class ReservaService {
     private final EmprestimoService emprestimoService;
 
     public ReservaService(ReservaRepository reservaRepository,
-                          LivroRepository livroRepository,
-                          UsuarioRepository usuarioRepository,
-                          EmprestimoService emprestimoService) {
+            LivroRepository livroRepository,
+            UsuarioRepository usuarioRepository,
+            EmprestimoService emprestimoService) {
         this.reservaRepository = reservaRepository;
         this.livroRepository = livroRepository;
         this.usuarioRepository = usuarioRepository;
@@ -34,14 +35,14 @@ public class ReservaService {
         Livro livro = livroRepository.findById(livroId)
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
 
-        List<Reserva> fila = reservaRepository.findByLivroAndStatusOrderByPosicaoFila(livro, "ATIVA");
+        List<Reserva> fila = reservaRepository.findByLivroAndStatusOrderByPosicaoFila(livro, ReservaStatus.ATIVA);
         int posicao = fila.size() + 1;
 
         Reserva reserva = new Reserva();
         reserva.setUsuario(usuario);
         reserva.setLivro(livro);
         reserva.setPosicaoFila(posicao);
-        reserva.setStatus("ATIVA");
+        reserva.setStatus(Reserva.ReservaStatus.ATIVA);
 
         return reservaRepository.save(reserva);
     }
@@ -59,8 +60,7 @@ public class ReservaService {
         reservaRepository.save(reserva);
         return emprestimoService.criarEmprestimo(
                 reserva.getUsuario().getId(),
-                reserva.getLivro().getId()
-        );
+                reserva.getLivro().getId());
     }
 
     @Transactional
@@ -71,4 +71,3 @@ public class ReservaService {
         reservaRepository.save(reserva);
     }
 }
-

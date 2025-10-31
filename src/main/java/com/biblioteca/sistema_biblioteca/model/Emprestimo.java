@@ -32,6 +32,12 @@ public class Emprestimo {
 
     // ======== Métodos de Negócio ========
 
+    public Emprestimo(Usuario usuario, Livro livro) {
+        this();
+        this.usuario = usuario;
+        this.livro = livro;
+    }
+
     public boolean renovar() {
         if ("ATIVO".equals(this.status) && this.numRenovacoes < 2) {
             this.dtPrevistaDevolucao = this.dtPrevistaDevolucao.plusDays(14);

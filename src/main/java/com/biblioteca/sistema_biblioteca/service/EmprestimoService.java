@@ -19,8 +19,8 @@ public class EmprestimoService {
     private final LivroRepository livroRepository;
 
     public EmprestimoService(EmprestimoRepository emprestimoRepository,
-                             UsuarioRepository usuarioRepository,
-                             LivroRepository livroRepository) {
+            UsuarioRepository usuarioRepository,
+            LivroRepository livroRepository) {
         this.emprestimoRepository = emprestimoRepository;
         this.usuarioRepository = usuarioRepository;
         this.livroRepository = livroRepository;
@@ -43,7 +43,7 @@ public class EmprestimoService {
             throw new RuntimeException("Usuário atingiu o limite de empréstimos");
         }
 
-        livro.setStatus("ALUGADO");
+        livro.alterarStatus(Livro.Status.EMPRESTADO);
 
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setUsuario(usuario);
@@ -77,7 +77,7 @@ public class EmprestimoService {
         emprestimoRepository.save(emprestimo);
 
         Livro livro = emprestimo.getLivro();
-        livro.setStatus("DISPONIVEL");
+        livro.alterarStatus(Livro.Status.DISPONIVEL);
         livroRepository.save(livro);
     }
 }

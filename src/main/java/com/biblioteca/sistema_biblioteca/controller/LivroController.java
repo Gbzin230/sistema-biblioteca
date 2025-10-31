@@ -3,6 +3,7 @@ package com.biblioteca.sistema_biblioteca.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,7 @@ import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.service.LivroService;
 
 @RestController
-@RequestMapping("/Livros")
+@RequestMapping("/livros")
 public class LivroController {
 
     private final LivroService livroService;
@@ -61,6 +62,7 @@ public class LivroController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarLivro(Long id) {
         if (livroService.buscaPorId(id).isPresent()) {
             livroService.deletarLivro(id);
