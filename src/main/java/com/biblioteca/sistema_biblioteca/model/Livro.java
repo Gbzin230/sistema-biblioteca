@@ -2,9 +2,7 @@ package com.biblioteca.sistema_biblioteca.model;
 
 import java.util.List;
 import jakarta.persistence.*;
-import lombok.*;
 
-@Data
 @Entity
 public class Livro {
     @Id
@@ -52,6 +50,88 @@ public class Livro {
 
     public boolean isDisponivel() {
         return this.status == Status.DISPONIVEL && Boolean.TRUE.equals(this.flagAtivo);
+    }
+
+    // Getters e Setters
+    // Getters e Setters manuais
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
+    public String getEditora() {
+        return editora;
+    }
+
+    public void setEditora(String editora) {
+        this.editora = editora;
+    }
+
+    public String getTema() {
+        return tema;
+    }
+
+    public void setTema(String tema) {
+        this.tema = tema;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public Integer getAnoLancamento() {
+        return anoLancamento;
+    }
+
+    public void setAnoLancamento(Integer anoLancamento) {
+        this.anoLancamento = anoLancamento;
+    }
+
+    public Boolean getFlagAtivo() {
+        return flagAtivo;
+    }
+
+    public void setFlagAtivo(Boolean flagAtivo) {
+        this.flagAtivo = flagAtivo;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getSinopse() {
+        return sinopse;
+    }
+
+    public void setSinopse(String sinopse) {
+        this.sinopse = sinopse;
     }
 
 }

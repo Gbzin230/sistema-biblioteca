@@ -44,26 +44,14 @@ public class LivroController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Livro> atualizarLivro(@PathVariable Long id, @RequestBody Livro livroAtualizado) {
-        return livroService.buscaPorId(id)
-                .map(livro -> {
-                    livro.setTitulo(livroAtualizado.getTitulo());
-                    livro.setAutor(livroAtualizado.getAutor());
-                    livro.setEditora(livroAtualizado.getEditora());
-                    livro.setTema(livroAtualizado.getTema());
-                    livro.setTags(livroAtualizado.getTags());
-                    livro.setAnoLancamento(livroAtualizado.getAnoLancamento());
-                    livro.setFlagAtivo(livroAtualizado.getFlagAtivo());
-                    livro.setStatus(livroAtualizado.getStatus());
-                    livro.setSinopse(livroAtualizado.getSinopse());
-                    Livro atualizado = livroService.salvarLivro(livro);
-                    return ResponseEntity.ok(atualizado);
-
-                })
+        return livroService.atualizarLivro(id, livroAtualizado)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarLivro(Long id) {
+    public ResponseEntity<Void> deletarLivro(@PathVariable Long id) {
         if (livroService.buscaPorId(id).isPresent()) {
             livroService.deletarLivro(id);
             return ResponseEntity.noContent().build();
