@@ -1,15 +1,12 @@
 package com.biblioteca.sistema_biblioteca.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
-@Data
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public class Pessoa {
 
-    // Atributos
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,20 +17,45 @@ public class Pessoa {
     private String nome;
     private String dtNascimento;
     private String email;
-    private String senha;
+    private String senha;     // 🔐 importante
     private String telefone;
     private String endereco;
     private String cpf;
     private char sexo;
-
     private boolean flagAtivo = true;
 
-    // Métodos - EXCLUIR E USAR AUTH SERVICE
-    public boolean login(String senha) {
-        return this.senha != null && this.senha.equals(senha);
-    }
+    // ===== Getters e Setters =====
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void logout() {
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public String getDtNascimento() { return dtNascimento; }
+    public void setDtNascimento(String dtNascimento) { this.dtNascimento = dtNascimento; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getEndereco() { return endereco; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+
+    public char getSexo() { return sexo; }
+    public void setSexo(char sexo) { this.sexo = sexo; }
+
+    public boolean isFlagAtivo() { return flagAtivo; }
+    public void setFlagAtivo(boolean flagAtivo) { this.flagAtivo = flagAtivo; }
 }
+
