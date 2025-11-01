@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ public class PessoaController {
         this.modelMapper = modelMapper;
     }
 
+    // ➕ Criar pessoa
     @PostMapping
     public ResponseEntity<PessoaResponseDTO> cadastrar(@Valid @RequestBody PessoaRequestDTO dto) {
         Pessoa pessoa = modelMapper.map(dto, Pessoa.class);
@@ -36,6 +38,7 @@ public class PessoaController {
         return ResponseEntity.ok(response);
     }
 
+    // 📋 Listar pessoas
     @GetMapping
     public ResponseEntity<List<PessoaResponseDTO>> listar() {
         List<PessoaResponseDTO> pessoas = pessoaRepository.findAll()
@@ -45,5 +48,15 @@ public class PessoaController {
 
         return ResponseEntity.ok(pessoas);
     }
-}
 
+    // ❌ Deletar pessoa por ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        return pessoaRepository.findById(id)
+                .map(pessoa -> {
+                    pessoaRepository.delete(pessoa);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+}
