@@ -13,11 +13,11 @@ import java.util.List;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI bibliotecaOpenAPI() {
+    public OpenAPI bibliotecaApiDoc() {
         return new OpenAPI()
                 .info(new Info()
                         .title("📚 API - Sistema de Biblioteca Virtual")
-                        .version("2.0.0")
+                        .version("3.5.7")
                         .description("""
                                 API REST para gerenciamento de uma biblioteca virtual.
                                 Inclui módulos de autenticação, usuários, livros, reservas e empréstimos.
@@ -28,7 +28,7 @@ public class SwaggerConfig {
                                 .url("https://github.com/Guilherme-Valerio")))
                 .servers(List.of(
                         new Server().url("http://localhost:8080").description("Servidor Local"),
-                        new Server().url("https://biblioteca-api.onrender.com").description("Servidor de Produção (exemplo)")
+                        new Server().url("https://biblioteca-api.onrender.com").description("Servidor de Produção (Exemplo)")
                 ));
     }
 }
