@@ -2,7 +2,9 @@ package com.biblioteca.sistema_biblioteca.service;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
@@ -70,4 +72,10 @@ public class LivroService {
         return reservaRepository.findByLivroAndStatusOrderByPosicaoFila(livro, Reserva.ReservaStatus.ATIVA).size();
     }
 
+    public Page<Livro> listar(String q, Pageable pageable) {
+        if (q == null || q.isBlank()) {
+            return livroRepository.findAll(pageable);
+        }
+        return livroRepository.findByTituloContainingIgnoreCaseOrAutorContainingIgnoreCase(q, q, pageable);
+    }
 }

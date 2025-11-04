@@ -1,5 +1,6 @@
 package com.biblioteca.sistema_biblioteca.config;
 
+import com.biblioteca.sistema_biblioteca.dto.ApiError;
 import com.biblioteca.sistema_biblioteca.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,45 +16,62 @@ public class GlobalExceptionHandler {
 
     // 🔹 Erros de validação (campos @Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("erro", "Erro de validação");
-        body.put("mensagem", "Um ou mais campos estão inválidos.");
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleValidationErrors(MethodArgumentNotValidException ex) {
+        Map<String, String> detalhes = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(err -> detalhes.put(err.getField(), err.getDefaultMessage()));
+
+        ApiError apiError = new ApiError(
+                "Erro de validação",
+                "Um ou mais campos estão inválidos.",
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now(),
+                detalhes
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
-    // 🔹 Falha de autenticação (usuário ou senha inválidos)
+    // 🔹 Falha de autenticação
     @ExceptionHandler(UsuarioNaoEncontradoException.class)
-    public ResponseEntity<Map<String, Object>> handleCredenciaisInvalidas(UsuarioNaoEncontradoException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.UNAUTHORIZED.value());
-        body.put("erro", "Credenciais inválidas");
-        body.put("mensagem", "Usuário ou senha inválidos.");
-        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<ApiError> handleUsuarioNaoEncontrado(UsuarioNaoEncontradoException ex) {
+        ApiError apiError = new ApiError(
+                "Credenciais inválidas",
+                ex.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                LocalDateTime.now(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
-    // 🔹 Recurso genérico não encontrado
+    // 🔹 Recurso não encontrado
     @ExceptionHandler(RecursoNaoEncontradoException.class)
-    public ResponseEntity<Map<String, Object>> handleRecursoNaoEncontrado(RecursoNaoEncontradoException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NOT_FOUND.value());
-        body.put("erro", "Recurso não encontrado");
-        body.put("mensagem", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiError> handleRecursoNaoEncontrado(RecursoNaoEncontradoException ex) {
+        ApiError apiError = new ApiError(
+                "Recurso não encontrado",
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     // 🔹 Outros erros genéricos (fallback)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        body.put("erro", "Erro interno no servidor");
-        body.put("mensagem", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ApiError> handleGenericException(Exception ex) {
+        ApiError apiError = new ApiError(
+                "Erro interno no servidor",
+                ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDateTime.now(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
+    }
+
+    @ExceptionHandler(RegraNegocioException.class)
+    public ResponseEntity<ApiError> handleRegraNegocio(RegraNegocioException ex) {
+        ApiError err = new ApiError("RegraNegocio", ex.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 }

@@ -27,7 +27,7 @@ public class Emprestimo {
         this.status = "ATIVO";
         this.numRenovacoes = 0;
         this.dtInicio = LocalDate.now();
-        this.dtPrevistaDevolucao = dtInicio.plusDays(14); // Ex: prazo padrão 14 dias
+        this.dtPrevistaDevolucao = dtInicio.plusDays(7); // Ex: prazo padrão 7 dias
     }
 
     // ======== Métodos de Negócio ========

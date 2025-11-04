@@ -2,15 +2,15 @@ package com.biblioteca.sistema_biblioteca.controller;
 
 import java.util.List;
 
+import com.biblioteca.sistema_biblioteca.dto.ApiPageResponse;
+import com.biblioteca.sistema_biblioteca.dto.LivroResponseDTO;
+import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.service.LivroService;
@@ -20,9 +20,13 @@ import com.biblioteca.sistema_biblioteca.service.LivroService;
 public class LivroController {
 
     private final LivroService livroService;
+    private final ModelMapper modelMapper;
+    private final LivroRepository livroRepository;
 
-    public LivroController(LivroService livroService) {
+    public LivroController(LivroService livroService, ModelMapper modelMapper, LivroRepository livroRepository) {
         this.livroService = livroService;
+        this.modelMapper = modelMapper;
+        this.livroRepository = livroRepository;
     }
 
     @PostMapping
@@ -31,8 +35,24 @@ public class LivroController {
     }
 
     @GetMapping
-    public List<Livro> listarLivros() {
-        return livroService.listarLivros();
+    public ResponseEntity<Page<Livro>> listarLivros(
+            @PageableDefault(size = 5, sort = "titulo") Pageable pageable,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) String autor) {
+
+        Page<Livro> livros;
+
+        if (titulo != null && autor != null) {
+            livros = livroRepository.findByTituloContainingIgnoreCaseAndAutorContainingIgnoreCase(titulo, autor, pageable);
+        } else if (titulo != null) {
+            livros = livroRepository.findByTituloContainingIgnoreCase(titulo, pageable);
+        } else if (autor != null) {
+            livros = livroRepository.findByAutorContainingIgnoreCase(autor, pageable);
+        } else {
+            livros = livroRepository.findAll(pageable);
+        }
+
+        return ResponseEntity.ok(livros);
     }
 
     @GetMapping("/{id}")

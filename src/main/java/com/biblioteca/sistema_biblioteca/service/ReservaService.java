@@ -58,7 +58,7 @@ public class ReservaService {
         }
 
         reservaRepository.save(reserva);
-        return emprestimoService.criarEmprestimo(
+        return emprestimoService.realizarEmprestimo(
                 reserva.getUsuario().getId(),
                 reserva.getLivro().getId());
     }
