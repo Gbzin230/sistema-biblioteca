@@ -13,8 +13,6 @@ public class Usuario extends Pessoa {
 
     // Atributos Usuário
 
-    private boolean flagAtivo = false;
-
     private int limiteSlots = 3;
 
     @OneToMany
@@ -27,9 +25,10 @@ public class Usuario extends Pessoa {
 
     // Validar se o usuário foi aprovado
     private void validarAtivo() {
-        if (!Boolean.TRUE.equals(this.flagAtivo)) {
+        if (!isFlagAtivo()) {
             throw new IllegalArgumentException("Usuário não aprovado. Aguarde a aprovação para acessar o site.");
         }
+
     }
 
     // Quantos slots já foram usados (Livros + Reservas)

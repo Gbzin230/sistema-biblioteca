@@ -1,104 +1,148 @@
-    package com.biblioteca.sistema_biblioteca.service;
+package com.biblioteca.sistema_biblioteca.service;
 
-    import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
-    import com.biblioteca.sistema_biblioteca.model.Emprestimo;
-    import com.biblioteca.sistema_biblioteca.model.Livro;
-    import com.biblioteca.sistema_biblioteca.model.Pessoa;
-    import com.biblioteca.sistema_biblioteca.model.Usuario;
-    import com.biblioteca.sistema_biblioteca.repository.EmprestimoRepository;
-    import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
-    import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
-    import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
-    import org.springframework.stereotype.Service;
-    import org.springframework.transaction.annotation.Transactional;
-    import java.time.LocalDate;
-    import java.util.List;
+import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
+import com.biblioteca.sistema_biblioteca.model.Emprestimo;
+import com.biblioteca.sistema_biblioteca.model.Livro;
+import com.biblioteca.sistema_biblioteca.model.Usuario;
+import com.biblioteca.sistema_biblioteca.repository.EmprestimoRepository;
+import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-    @Service
-    public class EmprestimoService {
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-        private final EmprestimoRepository emprestimoRepository;
-        private final LivroRepository livroRepository;
-        private final UsuarioRepository usuarioRepository;
+@Service
+public class EmprestimoService {
 
-        public EmprestimoService(EmprestimoRepository emprestimoRepository,
-                                 LivroRepository livroRepository,
-                                 UsuarioRepository usuarioRepository) {
-            this.emprestimoRepository = emprestimoRepository;
-            this.livroRepository = livroRepository;
-            this.usuarioRepository = usuarioRepository;
+    private final EmprestimoRepository emprestimoRepository;
+    private final LivroRepository livroRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    private static final int PRAZO_PADRAO_DIAS = 7;
+    private static final int MAX_RENOVACOES = 2;
+
+    public EmprestimoService(EmprestimoRepository emprestimoRepository,
+                             LivroRepository livroRepository,
+                             UsuarioRepository usuarioRepository) {
+        this.emprestimoRepository = emprestimoRepository;
+        this.livroRepository = livroRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    @Transactional
+    public Emprestimo realizarEmprestimo(Long usuarioId, Long livroId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        Livro livro = livroRepository.findById(livroId)
+                .orElseThrow(() -> new RegraNegocioException("Livro não encontrado."));
+
+        // Bloqueio de usuário
+        if (Boolean.FALSE.equals(usuario.isFlagAtivo())) {
+            throw new RegraNegocioException("Usuário bloqueado não pode realizar empréstimos.");
         }
 
-        @Transactional
-        public Emprestimo realizarEmprestimo(Long pessoaId, Long livroId) {
-            Usuario usuario = usuarioRepository.findById(pessoaId)
-                    .orElseThrow(() -> new RegraNegocioException("Pessoa não encontrada."));
-
-            Livro livro = livroRepository.findById(livroId)
-                    .orElseThrow(() -> new RegraNegocioException("Livro não encontrado."));
-
-            // Bloqueio de usuário
-            if (!usuario.isFlagAtivo()) {
-                throw new RegraNegocioException("Usuário bloqueado não pode realizar empréstimos.");
-            }
-
-            // Disponibilidade do livro
-            if (!livro.isDisponivel()) {
-                throw new RegraNegocioException("Livro não disponível para empréstimo.");
-            }
-
-            Emprestimo emprestimo = new Emprestimo();
-            emprestimo.setUsuario(usuario);
-            emprestimo.setLivro(livro);
-            emprestimo.setDtInicio(LocalDate.now());
-            emprestimo.setDtPrevistaDevolucao(LocalDate.now().plusDays(7));
-
-            livro.setFlagAtivo(false);
-            livroRepository.save(livro);
-
-            return emprestimoRepository.save(emprestimo);
+        // Limite de empréstimos do usuário (exemplo: 5)
+        int limiteEmprestimos = 5;
+        long emprestimosAtivosDoUsuario = emprestimoRepository.findAll().stream()
+                .filter(e -> e.getUsuario() != null && Objects.equals(e.getUsuario().getId(), usuarioId))
+                .filter(e -> "ATIVO".equals(e.getStatus()))
+                .count();
+        if (emprestimosAtivosDoUsuario >= limiteEmprestimos) {
+            throw new RegraNegocioException("Usuário atingiu o limite de empréstimos ativos.");
         }
 
-        @Transactional
-        public Emprestimo renovarEmprestimo(Long emprestimoId) {
-            Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
-                    .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
+        // Disponibilidade do livro
+        if (!livro.isDisponivel()) {
+            throw new RegraNegocioException("Livro não disponível para empréstimo.");
+        }
 
-            // 🔹 Verifica se o empréstimo ainda está ativo
-            if (!"ATIVO".equals(emprestimo.getStatus())) {
-                throw new RegraNegocioException("Empréstimo já foi encerrado ou está atrasado.");
-            }
+        // Criar empréstimo
+        Emprestimo emprestimo = new Emprestimo(usuario, livro); // usa construtor do model (configura datas padrão)
+        // Garantir dtPrevistaDevolucao correto (caso modelo não tenha setado)
+        if (emprestimo.getDtPrevistaDevolucao() == null) {
+            emprestimo.setDtPrevistaDevolucao(LocalDate.now().plusDays(PRAZO_PADRAO_DIAS));
+        }
 
-            // 🔹 Verifica limite de renovações (máx. 2)
-            if (emprestimo.getNumRenovacoes() != null && emprestimo.getNumRenovacoes() >= 2) {
-                throw new RegraNegocioException("Limite máximo de renovações atingido.");
-            }
+        // Atualizar status do livro
+        livro.alterarStatus(Livro.Status.EMPRESTADO);
+        livroRepository.save(livro);
 
-            // 🔹 Realiza a renovação (14 dias extras por padrão)
-            emprestimo.setDtPrevistaDevolucao(emprestimo.getDtPrevistaDevolucao().plusDays(14));
+        // Persistir empréstimo
+        return emprestimoRepository.save(emprestimo);
+    }
+
+    @Transactional
+    public Emprestimo renovarEmprestimo(Long emprestimoId) {
+        Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
+                .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
+
+        // Só renova se estiver ativo
+        if (!"ATIVO".equals(emprestimo.getStatus())) {
+            throw new RegraNegocioException("Apenas empréstimos ATIVOS podem ser renovados.");
+        }
+
+        if (emprestimo.getNumRenovacoes() == null) {
+            emprestimo.setNumRenovacoes(0);
+        }
+
+        if (emprestimo.getNumRenovacoes() >= MAX_RENOVACOES) {
+            throw new RegraNegocioException("Máximo de renovações atingido.");
+        }
+
+        // Executa a renovação (se modelo tem método renovar, usa; senão ajusta diretamente)
+        boolean renovou = emprestimo.renovar();
+        if (!renovou) {
+            // fallback: aplicar manualmente
+            emprestimo.setDtPrevistaDevolucao(emprestimo.getDtPrevistaDevolucao().plusDays(PRAZO_PADRAO_DIAS * 2));
             emprestimo.setNumRenovacoes(emprestimo.getNumRenovacoes() + 1);
-
-            return emprestimoRepository.save(emprestimo);
         }
 
+        return emprestimoRepository.save(emprestimo);
+    }
 
-        @Transactional
-        public void devolverLivro(Long emprestimoId) {
-            Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
-                    .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
+    @Transactional
+    public void devolverLivro(Long emprestimoId) {
+        Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
+                .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
 
-            if (emprestimo.getDtInicio() != null) {
-                throw new RegraNegocioException("Este empréstimo já foi finalizado.");
-            }
-
-            emprestimo.setDtInicio(LocalDate.now());
-            emprestimo.getLivro().setFlagAtivo(true);
-            livroRepository.save(emprestimo.getLivro());
-            emprestimoRepository.save(emprestimo);
+        if (!"ATIVO".equals(emprestimo.getStatus())) {
+            throw new RegraNegocioException("Este empréstimo já foi finalizado ou não está ativo.");
         }
 
-        public List<Emprestimo> listarEmprestimos() {
-            return emprestimoRepository.findAll();
+        // Encerrar empréstimo
+        emprestimo.encerrar();
+        emprestimoRepository.save(emprestimo);
+
+        // Liberar livro
+        Livro livro = emprestimo.getLivro();
+        if (livro != null) {
+            livro.alterarStatus(Livro.Status.DISPONIVEL);
+            livroRepository.save(livro);
         }
     }
 
+    @Transactional(readOnly = true)
+    public Emprestimo buscarPorId(Long id) {
+        return emprestimoRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Emprestimo> listarEmprestimos() {
+        return emprestimoRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Emprestimo> buscarEmprestimosAtrasados() {
+        LocalDate hoje = LocalDate.now();
+        return emprestimoRepository.findAll().stream()
+                .filter(e -> "ATIVO".equals(e.getStatus()))
+                .filter(e -> e.getDtPrevistaDevolucao() != null && e.getDtPrevistaDevolucao().isBefore(hoje))
+                .collect(Collectors.toList());
+    }
+}

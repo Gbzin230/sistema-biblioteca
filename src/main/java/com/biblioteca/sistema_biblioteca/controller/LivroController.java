@@ -1,82 +1,73 @@
 package com.biblioteca.sistema_biblioteca.controller;
 
-import java.util.List;
-
-import com.biblioteca.sistema_biblioteca.dto.ApiPageResponse;
-import com.biblioteca.sistema_biblioteca.dto.LivroResponseDTO;
+import com.biblioteca.sistema_biblioteca.dto.*;
+import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import com.biblioteca.sistema_biblioteca.service.LivroService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.biblioteca.sistema_biblioteca.model.Livro;
-import com.biblioteca.sistema_biblioteca.service.LivroService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/livros")
 public class LivroController {
 
     private final LivroService livroService;
-    private final ModelMapper modelMapper;
     private final LivroRepository livroRepository;
+    private final ModelMapper modelMapper;
 
-    public LivroController(LivroService livroService, ModelMapper modelMapper, LivroRepository livroRepository) {
+    public LivroController(LivroService livroService, LivroRepository livroRepository, ModelMapper modelMapper) {
         this.livroService = livroService;
-        this.modelMapper = modelMapper;
         this.livroRepository = livroRepository;
+        this.modelMapper = modelMapper;
     }
 
-    @PostMapping
-    public Livro criarLivro(@RequestBody Livro livro) {
-        return livroService.salvarLivro(livro);
-    }
-
+    // ✅ LISTAR LIVROS (com paginação)
     @GetMapping
-    public ResponseEntity<Page<Livro>> listarLivros(
-            @PageableDefault(size = 5, sort = "titulo") Pageable pageable,
-            @RequestParam(required = false) String titulo,
-            @RequestParam(required = false) String autor) {
+    public ResponseEntity<ApiResponse<ApiPageResponse<LivroResponseDTO>>> listar(Pageable pageable) {
+        Page<Livro> livrosPage = livroRepository.findAll(pageable);
 
-        Page<Livro> livros;
-
-        if (titulo != null && autor != null) {
-            livros = livroRepository.findByTituloContainingIgnoreCaseAndAutorContainingIgnoreCase(titulo, autor, pageable);
-        } else if (titulo != null) {
-            livros = livroRepository.findByTituloContainingIgnoreCase(titulo, pageable);
-        } else if (autor != null) {
-            livros = livroRepository.findByAutorContainingIgnoreCase(autor, pageable);
-        } else {
-            livros = livroRepository.findAll(pageable);
-        }
-
-        return ResponseEntity.ok(livros);
+        var response = ApiPageResponse.of(livrosPage, livro -> modelMapper.map(livro, LivroResponseDTO.class));
+        return ResponseEntity.ok(new ApiResponse<>(response, "Livros listados com sucesso"));
     }
 
+    // ✅ BUSCAR POR ID
     @GetMapping("/{id}")
-    public ResponseEntity<Livro> buscarLivro(@PathVariable Long id) {
-        return livroService.buscaPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ApiResponse<LivroResponseDTO>> buscarPorId(@PathVariable Long id) {
+        Livro livro = livroService.buscarPorId(id);
+        LivroResponseDTO responseDTO = modelMapper.map(livro, LivroResponseDTO.class);
+        return ResponseEntity.ok(new ApiResponse<>(responseDTO, "Livro encontrado com sucesso"));
     }
 
+    // ✅ CRIAR LIVRO
+    @PostMapping
+    public ResponseEntity<ApiResponse<LivroResponseDTO>> criar(@Valid @RequestBody LivroRequestDTO dto) {
+        Livro livro = modelMapper.map(dto, Livro.class);
+        Livro salvo = livroService.salvar(livro);
+        LivroResponseDTO response = modelMapper.map(salvo, LivroResponseDTO.class);
+        return ResponseEntity.ok(new ApiResponse<>(response, "Livro criado com sucesso"));
+    }
+
+    // ✅ ATUALIZAR LIVRO
     @PutMapping("/{id}")
-    public ResponseEntity<Livro> atualizarLivro(@PathVariable Long id, @RequestBody Livro livroAtualizado) {
-        return livroService.atualizarLivro(id, livroAtualizado)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-
+    public ResponseEntity<ApiResponse<LivroResponseDTO>> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody LivroRequestDTO dto
+    ) {
+        Livro atualizado = livroService.atualizar(id, modelMapper.map(dto, Livro.class));
+        LivroResponseDTO response = modelMapper.map(atualizado, LivroResponseDTO.class);
+        return ResponseEntity.ok(new ApiResponse<>(response, "Livro atualizado com sucesso"));
     }
 
+    // ✅ DELETAR LIVRO
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarLivro(@PathVariable Long id) {
-        if (livroService.buscaPorId(id).isPresent()) {
-            livroService.deletarLivro(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-
+    public ResponseEntity<ApiResponse<String>> deletar(@PathVariable Long id) {
+        livroService.deletar(id);
+        return ResponseEntity.ok(new ApiResponse<>("OK", "Livro removido com sucesso"));
     }
 }
+
+

@@ -22,7 +22,7 @@ public class Pessoa {
     private String endereco;
     private String cpf;
     private char sexo;
-    private boolean flagAtivo = true;
+    private boolean flagAtivo;
 
     // ===== Getters e Setters =====
     public Long getId() { return id; }
