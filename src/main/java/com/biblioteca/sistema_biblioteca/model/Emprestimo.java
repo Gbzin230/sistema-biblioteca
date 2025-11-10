@@ -19,8 +19,8 @@ public class Emprestimo {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @OneToOne
-    @JoinColumn(name = "livro_id")
+    @ManyToOne
+    @JoinColumn(name = "livro_id", nullable = false)
     private Livro livro;
 
     public Emprestimo() {

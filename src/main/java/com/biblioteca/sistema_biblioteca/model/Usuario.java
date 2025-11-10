@@ -13,7 +13,8 @@ public class Usuario extends Pessoa {
 
     // Atributos Usuário
 
-    private int limiteSlots = 3;
+    @Column(nullable = false)
+    private Integer limiteSlots = 3;
 
     @OneToMany
     private List<Emprestimo> livrosAtivos = new ArrayList<>();
@@ -21,7 +22,21 @@ public class Usuario extends Pessoa {
     @OneToMany
     private List<Reserva> reservasAtivas = new ArrayList<>();
 
-    // Comportamentos de domínio
+    public Usuario() {
+        this.setFlagAtivo(true);
+        this.limiteSlots = 3;
+    }
+
+    public Usuario(String nome, String email) {
+        this.setNome(nome);
+        this.setEmail(email);
+        this.setFlagAtivo(true);
+        this.limiteSlots = 3; // ✅ valor padrão
+    }
+
+    public Integer getLimiteSlots() {
+        return limiteSlots != null ? limiteSlots : 3;
+    }
 
     // Validar se o usuário foi aprovado
     private void validarAtivo() {
@@ -40,7 +55,7 @@ public class Usuario extends Pessoa {
     // Disponibilidade de Slots
     public int slotsDisponiveis() {
         validarAtivo();
-        return limiteSlots - slotsUsados();
+        return getLimiteSlots() - slotsUsados();
     }
 
     // Verificação de Emprestar e Reservar

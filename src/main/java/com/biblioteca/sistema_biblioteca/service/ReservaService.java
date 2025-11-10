@@ -49,6 +49,23 @@ public class ReservaService {
         reservaRepository.save(reserva);
     }
 
+    @Transactional
+    public void cancelarReserva(Long id) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Reserva não encontrada"));
+
+        reserva.cancelar();
+        reservaRepository.save(reserva);
+
+        Livro livro = reserva.getLivro();
+        boolean aindaReservado = reservaRepository.existsByLivroAndStatus(livro, Reserva.ReservaStatus.ATIVA);
+
+        if (!aindaReservado && livro.getStatus() == Livro.Status.RESERVADO) {
+            livro.alterarStatus(Livro.Status.DISPONIVEL);
+            livroRepository.save(livro);
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<Reserva> listar() {
         return reservaRepository.findAll();

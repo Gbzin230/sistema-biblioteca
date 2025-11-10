@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/reservas")
@@ -54,11 +58,10 @@ public class ReservaController {
         return ResponseEntity.ok(new ApiResponse<>(resp, "Reserva criada com sucesso."));
     }
 
-    // 🔹 CONFIRMAR RESERVA
-    @PutMapping("/{id}/confirmar")
-    public ResponseEntity<ApiResponse<String>> confirmar(@PathVariable Long id) {
-        reservaService.confirmarReserva(id);
-        return ResponseEntity.ok(new ApiResponse<>("OK", "Reserva confirmada e empréstimo gerado."));
+    @PutMapping("/{id}/cancelar")
+    public ResponseEntity<ApiResponse<String>> cancelar(@PathVariable Long id) {
+        reservaService.cancelarReserva(id);
+        return ResponseEntity.ok(new ApiResponse<>("OK", "Reserva cancelada com sucesso"));
     }
 
     // 🔹 LISTAR TODAS

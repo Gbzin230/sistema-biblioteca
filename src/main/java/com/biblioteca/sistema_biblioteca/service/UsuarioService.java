@@ -10,6 +10,10 @@ import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
+import com.biblioteca.sistema_biblioteca.repository.EmprestimoRepository;
+import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
+import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 
 import jakarta.transaction.Transactional;
 
@@ -17,12 +21,17 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class UsuarioService {
 
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final EmprestimoRepository emprestimoRepository;
+    private final ReservaRepository reservaRepository;
 
-    public UsuarioService(UsuarioRepository repository) {
-        this.usuarioRepository = repository;
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                          EmprestimoRepository emprestimoRepository,
+                          ReservaRepository reservaRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.emprestimoRepository = emprestimoRepository;
+        this.reservaRepository = reservaRepository;
     }
-
     // CRUD
     public Usuario salvar(Usuario usuario) {
         return usuarioRepository.save(usuario);
@@ -36,9 +45,26 @@ public class UsuarioService {
         return usuarioRepository.findById(id);
     }
 
-    public void deletarUsuario(Long id) {
-        usuarioRepository.deleteById(id);
+    @Transactional
+    public void deletar(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        boolean temEmprestimo = emprestimoRepository.existsByUsuario(usuario);
+        boolean temReserva = reservaRepository.existsByUsuario(usuario);
+
+        if (temEmprestimo || temReserva) {
+            throw new RegraNegocioException(
+                    "Não é possível deletar o usuário. Ele possui histórico de empréstimos ou reservas no sistema."
+            );
+        }
+
+        // Garante que nada pendente é mandado pro banco antes do delete
+        usuarioRepository.flush();
+
+        usuarioRepository.delete(usuario);
     }
+
 
     // Métodos de Domínio
 

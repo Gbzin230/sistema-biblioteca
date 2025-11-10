@@ -1,5 +1,7 @@
 package com.biblioteca.sistema_biblioteca.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class PessoaResponseDTO {
 
     private Long id;
@@ -7,6 +9,9 @@ public class PessoaResponseDTO {
     private String nome;
     private String email;
     private String telefone;
+    private String cpf;
+    private String endereco;
+    private String sexo;
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -23,5 +28,14 @@ public class PessoaResponseDTO {
 
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+
+    public String getEndereco() { return endereco; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
+
+    public String getSexo() { return sexo; }
+    public void setSexo(String sexo) { this.sexo = sexo; }
 }
 

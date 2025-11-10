@@ -3,9 +3,11 @@ package com.biblioteca.sistema_biblioteca.service;
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.model.Livro;
+import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.repository.EmprestimoRepository;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
 import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,16 +24,19 @@ public class EmprestimoService {
     private final EmprestimoRepository emprestimoRepository;
     private final LivroRepository livroRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ReservaRepository reservaRepository;
 
     private static final int PRAZO_PADRAO_DIAS = 7;
     private static final int MAX_RENOVACOES = 2;
 
     public EmprestimoService(EmprestimoRepository emprestimoRepository,
                              LivroRepository livroRepository,
-                             UsuarioRepository usuarioRepository) {
+                             UsuarioRepository usuarioRepository,
+                             ReservaRepository reservaRepository) {
         this.emprestimoRepository = emprestimoRepository;
         this.livroRepository = livroRepository;
         this.usuarioRepository = usuarioRepository;
+        this.reservaRepository = reservaRepository;
     }
 
     @Transactional
@@ -114,17 +120,43 @@ public class EmprestimoService {
             throw new RegraNegocioException("Este empréstimo já foi finalizado ou não está ativo.");
         }
 
-        // Encerrar empréstimo
+        // Encerrar empréstimo atual
         emprestimo.encerrar();
         emprestimoRepository.save(emprestimo);
 
-        // Liberar livro
         Livro livro = emprestimo.getLivro();
+
         if (livro != null) {
-            livro.alterarStatus(Livro.Status.DISPONIVEL);
+            // 🔁 1️⃣ Tentar emprestar automaticamente ao próximo da fila
+            Optional<Reserva> proximaReserva = reservaRepository.findFirstByLivroAndStatusOrderByDtSolicitacaoAsc(livro, Reserva.ReservaStatus.ATIVA);
+
+
+            if (proximaReserva.isPresent()) {
+                Reserva reserva = proximaReserva.get();
+                Usuario usuario = reserva.getUsuario();
+
+                // ⚖️ 2️⃣ Verifica se o usuário ainda pode emprestar
+                if (usuario.podeEmprestar()) {
+                    Emprestimo novoEmprestimo = new Emprestimo(usuario, livro);
+                    livro.alterarStatus(Livro.Status.EMPRESTADO);
+
+                    emprestimoRepository.save(novoEmprestimo);
+                    reserva.setStatus(Reserva.ReservaStatus.CONFIRMADA);
+                    reservaRepository.save(reserva);
+                } else {
+                    // 🔸 Usuário não pode mais emprestar (sem slots)
+                    // reserva continua ativa, mas o livro fica disponível
+                    livro.alterarStatus(Livro.Status.DISPONIVEL);
+                }
+            } else {
+                // 🔚 Nenhuma reserva, liberar livro
+                livro.alterarStatus(Livro.Status.DISPONIVEL);
+            }
+
             livroRepository.save(livro);
         }
     }
+
 
     @Transactional(readOnly = true)
     public Emprestimo buscarPorId(Long id) {

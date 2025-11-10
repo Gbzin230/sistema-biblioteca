@@ -74,4 +74,16 @@ public class GlobalExceptionHandler {
         ApiError err = new ApiError("RegraNegocio", ex.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), null);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
+
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException ex) {
+        ApiError apiError = new ApiError(
+                "Violação de integridade referencial",
+                "Não é possível excluir este registro pois ele está associado a outros dados no sistema (ex: empréstimos, reservas, etc).",
+                HttpStatus.CONFLICT.value(),
+                LocalDateTime.now(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+    }
 }

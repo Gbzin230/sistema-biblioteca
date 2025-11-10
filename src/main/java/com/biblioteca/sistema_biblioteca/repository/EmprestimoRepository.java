@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
     List<Emprestimo> findByUsuarioAndStatus(Usuario usuario, String status);
+    boolean existsByUsuario(Usuario usuario);
 }

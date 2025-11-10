@@ -28,6 +28,8 @@ public class PessoaRequestDTO {
     @NotBlank(message = "O endereço é obrigatório.")
     private String endereco;
 
+    @NotBlank(message = "O sexo é obrigatório.")
+    private String sexo;
 
 
     // Getters e Setters
@@ -51,5 +53,8 @@ public class PessoaRequestDTO {
 
     public String getEndereco() { return endereco; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
+
+    public String getSexo() { return sexo; }
+    public void setSexo(String sexo) { this.sexo = sexo; }
 }
 

@@ -12,15 +12,21 @@ import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
 import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
+import com.biblioteca.sistema_biblioteca.repository.EmprestimoRepository;
+import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 
 @Service
 public class LivroService {
 
     private final LivroRepository livroRepository;
+    private final EmprestimoRepository emprestimoRepository;
     private final ReservaRepository reservaRepository;
 
-    public LivroService(LivroRepository livroRepository, ReservaRepository reservaRepository) {
+    public LivroService(LivroRepository livroRepository,
+                        EmprestimoRepository emprestimoRepository,
+                        ReservaRepository reservaRepository) {
         this.livroRepository = livroRepository;
+        this.emprestimoRepository = emprestimoRepository;
         this.reservaRepository = reservaRepository;
     }
 
@@ -69,17 +75,32 @@ public class LivroService {
     // ✅ DELETAR
     @Transactional
     public void deletar(Long id) {
-        if (!livroRepository.existsById(id)) {
-            throw new RuntimeException("Livro não encontrado para exclusão");
+        Livro livro = livroRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Livro não encontrado."));
+
+        // Verifica se há empréstimo ativo com esse livro
+        boolean emprestado = emprestimoRepository.findAll().stream()
+                .anyMatch(e -> e.getLivro().equals(livro) && "ATIVO".equals(e.getStatus()));
+
+        // Verifica se há reserva ativa com esse livro
+        boolean reservado = reservaRepository.findAll().stream()
+                .anyMatch(r -> r.getLivro().equals(livro) && "ATIVA".equals(r.getStatus()));
+
+        if (emprestado || reservado) {
+            throw new RegraNegocioException(
+                    "Não é possível deletar o livro. Ele está associado a um empréstimo ou reserva ativa."
+            );
         }
-        livroRepository.deleteById(id);
+
+        livroRepository.delete(livro);
     }
+
 
     // ✅ CONSULTAR FILA DE RESERVAS
     public int consultarListaReserva(Livro livro) {
-        return reservaRepository
-                .findByLivroAndStatusOrderByPosicaoFila(livro, Reserva.ReservaStatus.ATIVA)
-                .size();
+        List<Reserva> fila = reservaRepository.findByLivroAndStatusOrderByDtSolicitacaoAsc(
+                livro, Reserva.ReservaStatus.ATIVA);
+        return fila.size();
     }
 
     // ✅ LISTAR COM BUSCA PAGINADA

@@ -9,6 +9,7 @@ import com.biblioteca.sistema_biblioteca.repository.EmprestimoRepository;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
 import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
 import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
+import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,13 +23,15 @@ public class EmprestimoServiceTest {
     private EmprestimoRepository emprestimoRepository;
     private LivroRepository livroRepository;
     private UsuarioRepository usuarioRepository;
+    private ReservaRepository reservaRepository;
 
     @BeforeEach
     void setup() {
         emprestimoRepository = mock(EmprestimoRepository.class);
         livroRepository = mock(LivroRepository.class);
         usuarioRepository = mock(UsuarioRepository.class);
-        service = new EmprestimoService(emprestimoRepository, livroRepository, usuarioRepository);
+        reservaRepository = mock(ReservaRepository.class);
+        service = new EmprestimoService(emprestimoRepository, livroRepository, usuarioRepository, reservaRepository);
     }
 
     @Test
