@@ -1,7 +1,5 @@
 package com.biblioteca.sistema_biblioteca.dto;
 
-import jakarta.validation.constraints.NotBlank;
-
 public class PessoaResponseDTO {
 
     private Long id;
@@ -12,6 +10,7 @@ public class PessoaResponseDTO {
     private String cpf;
     private String endereco;
     private String sexo;
+    private Integer limiteSlots = 3;
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -37,5 +36,13 @@ public class PessoaResponseDTO {
 
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
+
+    public Integer getLimiteSlots() {
+        return limiteSlots;
+    }
+
+    public void setLimiteSlots(Integer limiteSlots) {
+        this.limiteSlots = limiteSlots;
+    }
 }
 

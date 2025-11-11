@@ -1,8 +1,10 @@
 package com.biblioteca.sistema_biblioteca.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,22 +15,23 @@ import java.util.List;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI bibliotecaApiDoc() {
+    public OpenAPI customOpenAPI() {
+        final String securitySchemeName = "bearerAuth";
+
         return new OpenAPI()
                 .info(new Info()
-                        .title("📚 API - Sistema de Biblioteca Virtual")
-                        .version("3.5.7")
-                        .description("""
-                                API REST para gerenciamento de uma biblioteca virtual.
-                                Inclui módulos de autenticação, usuários, livros, reservas e empréstimos.
-                                """)
-                        .contact(new Contact()
-                                .name("Equipe Biblioteca Virtual")
-                                .email("contato@biblioteca.com")
-                                .url("https://github.com/Guilherme-Valerio")))
-                .servers(List.of(
-                        new Server().url("http://localhost:8080").description("Servidor Local"),
-                        new Server().url("https://biblioteca-api.onrender.com").description("Servidor de Produção (Exemplo)")
-                ));
+                        .title("Biblioteca Virtual API")
+                        .description("API da Biblioteca Virtual - Autenticação JWT")
+                        .version("1.0")
+                        .contact(new Contact().name("Guilherme Valerio")))
+                .servers(List.of(new Server().url("http://localhost:8080")))
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                .components(new io.swagger.v3.oas.models.Components()
+                        .addSecuritySchemes(securitySchemeName,
+                                new SecurityScheme()
+                                        .name(securitySchemeName)
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")));
     }
 }

@@ -73,7 +73,7 @@ public class AdminService {
 
     public void forcarDesalocacao(Emprestimo emprestimo) {
         if (emprestimo != null) {
-            emprestimo.getUsuario().getLivrosAtivos().remove(emprestimo);
+            emprestimo.getUsuario().getEmprestimos().remove(emprestimo);
             emprestimo.getLivro().alterarStatus(Livro.Status.DISPONIVEL);
             pessoaRepository.save((emprestimo.getUsuario()));
         }

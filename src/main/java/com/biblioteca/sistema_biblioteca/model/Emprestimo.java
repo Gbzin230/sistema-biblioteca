@@ -13,7 +13,9 @@ public class Emprestimo {
     private LocalDate dtInicio;
     private LocalDate dtPrevistaDevolucao;
     private Integer numRenovacoes;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
@@ -23,14 +25,20 @@ public class Emprestimo {
     @JoinColumn(name = "livro_id", nullable = false)
     private Livro livro;
 
-    public Emprestimo() {
-        this.status = "ATIVO";
-        this.numRenovacoes = 0;
-        this.dtInicio = LocalDate.now();
-        this.dtPrevistaDevolucao = dtInicio.plusDays(7); // Ex: prazo padrão 7 dias
+    public enum Status {
+        ATIVO,
+        FINALIZADO,
+        ATRASADO
     }
 
-    // ======== Métodos de Negócio ========
+    // ======== Construtores ========
+
+    public Emprestimo() {
+        this.status = Status.ATIVO;
+        this.numRenovacoes = 0;
+        this.dtInicio = LocalDate.now();
+        this.dtPrevistaDevolucao = dtInicio.plusDays(7); // prazo padrão 7 dias
+    }
 
     public Emprestimo(Usuario usuario, Livro livro) {
         this();
@@ -38,8 +46,10 @@ public class Emprestimo {
         this.livro = livro;
     }
 
+    // ======== Métodos de Negócio ========
+
     public boolean renovar() {
-        if ("ATIVO".equals(this.status) && this.numRenovacoes < 2) {
+        if (this.status == Status.ATIVO && this.numRenovacoes < 2) {
             this.dtPrevistaDevolucao = this.dtPrevistaDevolucao.plusDays(14);
             this.numRenovacoes++;
             return true;
@@ -48,15 +58,15 @@ public class Emprestimo {
     }
 
     public void encerrar() {
-        this.status = "ENCERRADO";
+        this.status = Status.FINALIZADO;
     }
 
-    public String verificarStatus() {
-        if ("ENCERRADO".equals(this.status)) {
-            return "Encerrado";
+    public Status verificarStatus() {
+        if (this.status == Status.FINALIZADO) {
+            return Status.FINALIZADO;
         }
         if (LocalDate.now().isAfter(this.dtPrevistaDevolucao)) {
-            this.status = "ATRASADO";
+            this.status = Status.ATRASADO;
         }
         return this.status;
     }
@@ -95,11 +105,11 @@ public class Emprestimo {
         this.numRenovacoes = numRenovacoes;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -119,3 +129,4 @@ public class Emprestimo {
         this.livro = livro;
     }
 }
+

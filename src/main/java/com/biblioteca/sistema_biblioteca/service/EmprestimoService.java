@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,42 +42,33 @@ public class EmprestimoService {
     public Emprestimo realizarEmprestimo(Long usuarioId, Long livroId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
-
         Livro livro = livroRepository.findById(livroId)
                 .orElseThrow(() -> new RegraNegocioException("Livro não encontrado."));
 
-        // Bloqueio de usuário
+        int emprestimosAtivos = emprestimoRepository.countByUsuarioAndStatus(usuario, Emprestimo.Status.ATIVO);
+        int reservasAtivas = reservaRepository.countByUsuarioAndStatus(usuario, Reserva.ReservaStatus.ATIVA);
+        int totalSlots = emprestimosAtivos + reservasAtivas;
+
+        if (totalSlots >= 3) {
+            throw new RegraNegocioException("Usuário atingiu o limite máximo de 3 slots (empréstimos + reservas).");
+        }
+
         if (Boolean.FALSE.equals(usuario.isFlagAtivo())) {
             throw new RegraNegocioException("Usuário bloqueado não pode realizar empréstimos.");
         }
 
-        // Limite de empréstimos do usuário (exemplo: 5)
-        int limiteEmprestimos = 5;
-        long emprestimosAtivosDoUsuario = emprestimoRepository.findAll().stream()
-                .filter(e -> e.getUsuario() != null && Objects.equals(e.getUsuario().getId(), usuarioId))
-                .filter(e -> "ATIVO".equals(e.getStatus()))
-                .count();
-        if (emprestimosAtivosDoUsuario >= limiteEmprestimos) {
-            throw new RegraNegocioException("Usuário atingiu o limite de empréstimos ativos.");
-        }
-
-        // Disponibilidade do livro
         if (!livro.isDisponivel()) {
-            throw new RegraNegocioException("Livro não disponível para empréstimo.");
+            throw new RegraNegocioException("Livro não está disponível para empréstimo.");
         }
 
-        // Criar empréstimo
-        Emprestimo emprestimo = new Emprestimo(usuario, livro); // usa construtor do model (configura datas padrão)
-        // Garantir dtPrevistaDevolucao correto (caso modelo não tenha setado)
-        if (emprestimo.getDtPrevistaDevolucao() == null) {
-            emprestimo.setDtPrevistaDevolucao(LocalDate.now().plusDays(PRAZO_PADRAO_DIAS));
-        }
+        Emprestimo emprestimo = new Emprestimo(usuario, livro);
+        emprestimo.setStatus(Emprestimo.Status.ATIVO);
+        emprestimo.setDtInicio(LocalDate.now());
+        emprestimo.setDtPrevistaDevolucao(LocalDate.now().plusDays(PRAZO_PADRAO_DIAS));
 
-        // Atualizar status do livro
         livro.alterarStatus(Livro.Status.EMPRESTADO);
         livroRepository.save(livro);
 
-        // Persistir empréstimo
         return emprestimoRepository.save(emprestimo);
     }
 
@@ -87,8 +77,7 @@ public class EmprestimoService {
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
                 .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
 
-        // Só renova se estiver ativo
-        if (!"ATIVO".equals(emprestimo.getStatus())) {
+        if (emprestimo.getStatus() != Emprestimo.Status.ATIVO) {
             throw new RegraNegocioException("Apenas empréstimos ATIVOS podem ser renovados.");
         }
 
@@ -100,10 +89,8 @@ public class EmprestimoService {
             throw new RegraNegocioException("Máximo de renovações atingido.");
         }
 
-        // Executa a renovação (se modelo tem método renovar, usa; senão ajusta diretamente)
         boolean renovou = emprestimo.renovar();
         if (!renovou) {
-            // fallback: aplicar manualmente
             emprestimo.setDtPrevistaDevolucao(emprestimo.getDtPrevistaDevolucao().plusDays(PRAZO_PADRAO_DIAS * 2));
             emprestimo.setNumRenovacoes(emprestimo.getNumRenovacoes() + 1);
         }
@@ -116,47 +103,40 @@ public class EmprestimoService {
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
                 .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
 
-        if (!"ATIVO".equals(emprestimo.getStatus())) {
+        if (emprestimo.getStatus() != Emprestimo.Status.ATIVO) {
             throw new RegraNegocioException("Este empréstimo já foi finalizado ou não está ativo.");
         }
 
-        // Encerrar empréstimo atual
         emprestimo.encerrar();
         emprestimoRepository.save(emprestimo);
 
         Livro livro = emprestimo.getLivro();
 
         if (livro != null) {
-            // 🔁 1️⃣ Tentar emprestar automaticamente ao próximo da fila
-            Optional<Reserva> proximaReserva = reservaRepository.findFirstByLivroAndStatusOrderByDtSolicitacaoAsc(livro, Reserva.ReservaStatus.ATIVA);
-
+            Optional<Reserva> proximaReserva = reservaRepository.findFirstByLivroAndStatusOrderByDtSolicitacaoAsc(
+                    livro, Reserva.ReservaStatus.ATIVA
+            );
 
             if (proximaReserva.isPresent()) {
                 Reserva reserva = proximaReserva.get();
                 Usuario usuario = reserva.getUsuario();
 
-                // ⚖️ 2️⃣ Verifica se o usuário ainda pode emprestar
                 if (usuario.podeEmprestar()) {
                     Emprestimo novoEmprestimo = new Emprestimo(usuario, livro);
                     livro.alterarStatus(Livro.Status.EMPRESTADO);
-
                     emprestimoRepository.save(novoEmprestimo);
                     reserva.setStatus(Reserva.ReservaStatus.CONFIRMADA);
                     reservaRepository.save(reserva);
                 } else {
-                    // 🔸 Usuário não pode mais emprestar (sem slots)
-                    // reserva continua ativa, mas o livro fica disponível
                     livro.alterarStatus(Livro.Status.DISPONIVEL);
                 }
             } else {
-                // 🔚 Nenhuma reserva, liberar livro
                 livro.alterarStatus(Livro.Status.DISPONIVEL);
             }
 
             livroRepository.save(livro);
         }
     }
-
 
     @Transactional(readOnly = true)
     public Emprestimo buscarPorId(Long id) {
@@ -173,8 +153,12 @@ public class EmprestimoService {
     public List<Emprestimo> buscarEmprestimosAtrasados() {
         LocalDate hoje = LocalDate.now();
         return emprestimoRepository.findAll().stream()
-                .filter(e -> "ATIVO".equals(e.getStatus()))
+                .filter(e -> e.getStatus() == Emprestimo.Status.ATIVO)
                 .filter(e -> e.getDtPrevistaDevolucao() != null && e.getDtPrevistaDevolucao().isBefore(hoje))
                 .collect(Collectors.toList());
+    }
+
+    public int countEmprestimosAtivos(Usuario usuario) {
+        return emprestimoRepository.countByUsuarioAndStatus(usuario, Emprestimo.Status.ATIVO);
     }
 }

@@ -57,5 +57,9 @@ public class Pessoa {
 
     public boolean isFlagAtivo() { return flagAtivo; }
     public void setFlagAtivo(boolean flagAtivo) { this.flagAtivo = flagAtivo; }
+
+    public String getRoleString() {
+        return this.getClass().getSimpleName().toUpperCase(); // exemplo: USUARIO, ADMINISTRADOR, etc.
+    }
 }
 

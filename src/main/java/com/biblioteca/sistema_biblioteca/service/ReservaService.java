@@ -3,6 +3,7 @@ package com.biblioteca.sistema_biblioteca.service;
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.model.Livro;
+import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,21 @@ public class ReservaService {
             throw new RegraNegocioException("Reserva deve conter usuário e livro.");
         }
 
+        Usuario usuario = reserva.getUsuario();
+
+        // 🔹 Verifica o limite de slots (empréstimos + reservas)
+        int emprestimosAtivos = emprestimoService.countEmprestimosAtivos(usuario);
+        int reservasAtivas = reservaRepository.countByUsuarioAndStatus(usuario, Reserva.ReservaStatus.ATIVA);
+        int totalSlots = emprestimosAtivos + reservasAtivas;
+
+        if (totalSlots >= 3) {
+            throw new RegraNegocioException("Usuário atingiu o limite máximo de 3 slots (empréstimos + reservas).");
+        }
+
         reserva.setStatus(Reserva.ReservaStatus.ATIVA);
         return reservaRepository.save(reserva);
     }
+
 
     @Transactional
     public void confirmarReserva(Long reservaId) {

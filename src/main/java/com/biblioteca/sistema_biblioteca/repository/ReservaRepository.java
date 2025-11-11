@@ -18,4 +18,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     boolean existsByLivroAndStatus(Livro livro, Reserva.ReservaStatus status);
 
     boolean existsByUsuario(Usuario usuario);
+
+    int countByUsuarioAndStatus(Usuario usuario, Reserva.ReservaStatus status);
 }

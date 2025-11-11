@@ -80,7 +80,7 @@ public class EmprestimoController {
 
     @GetMapping("/{id}/status")
     public ResponseEntity<ApiResponse<String>> status(@PathVariable Long id) {
-        String status = emprestimoService.buscarPorId(id).verificarStatus();
+        String status = emprestimoService.buscarPorId(id).verificarStatus().name();
         return ResponseEntity.ok(new ApiResponse<>(status, "Status do empréstimo"));
     }
 

@@ -31,6 +31,7 @@ public class PessoaRequestDTO {
     @NotBlank(message = "O sexo é obrigatório.")
     private String sexo;
 
+    private Integer limiteSlots = 3;
 
     // Getters e Setters
     public String getUsername() { return username; }
@@ -56,5 +57,13 @@ public class PessoaRequestDTO {
 
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
+
+    public Integer getLimiteSlots() {
+        return limiteSlots;
+    }
+
+    public void setLimiteSlots(Integer limiteSlots) {
+        this.limiteSlots = limiteSlots;
+    }
 }
 

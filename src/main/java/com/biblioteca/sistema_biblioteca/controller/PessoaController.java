@@ -3,6 +3,7 @@ package com.biblioteca.sistema_biblioteca.controller;
 import com.biblioteca.sistema_biblioteca.dto.PessoaRequestDTO;
 import com.biblioteca.sistema_biblioteca.dto.PessoaResponseDTO;
 import com.biblioteca.sistema_biblioteca.model.Pessoa;
+import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class PessoaController {
     // ➕ Criar pessoa
     @PostMapping
     public ResponseEntity<PessoaResponseDTO> cadastrar(@Valid @RequestBody PessoaRequestDTO dto) {
-        Pessoa pessoa = modelMapper.map(dto, Pessoa.class);
+        Usuario pessoa = modelMapper.map(dto, Usuario.class);
         pessoa.setSenha(passwordEncoder.encode(dto.getSenha()));
 
         Pessoa salva = pessoaRepository.save(pessoa);

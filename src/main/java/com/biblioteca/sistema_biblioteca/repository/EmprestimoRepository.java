@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
-    List<Emprestimo> findByUsuarioAndStatus(Usuario usuario, String status);
+    List<Emprestimo> findByUsuarioAndStatus(Usuario usuario, Emprestimo.Status status);
     boolean existsByUsuario(Usuario usuario);
+    int countByUsuarioAndStatus(Usuario usuario, Emprestimo.Status status);
 }
+

@@ -2,6 +2,7 @@ package com.biblioteca.sistema_biblioteca.config;
 
 import com.biblioteca.sistema_biblioteca.dto.ApiError;
 import com.biblioteca.sistema_biblioteca.exception.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -75,11 +76,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
-    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
-    public ResponseEntity<ApiError> handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException ex) {
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String mensagem = ex.getMostSpecificCause().getMessage();
+
+        if (mensagem.contains("PRIMARY KEY")) {
+            mensagem = "Já existe um registro com esse ID.";
+        } else if (mensagem.contains("Unique index") || mensagem.contains("Duplicate")) {
+            mensagem = "Já existe um usuário com este username ou e-mail.";
+        }
+
         ApiError apiError = new ApiError(
-                "Violação de integridade referencial",
-                "Não é possível excluir este registro pois ele está associado a outros dados no sistema (ex: empréstimos, reservas, etc).",
+                "Erro de integridade de dados",
+                mensagem,
                 HttpStatus.CONFLICT.value(),
                 LocalDateTime.now(),
                 null

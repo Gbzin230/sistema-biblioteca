@@ -3,6 +3,7 @@ package com.biblioteca.sistema_biblioteca.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import org.springframework.stereotype.Service;
 
 import com.biblioteca.sistema_biblioteca.model.Funcionario;
@@ -75,7 +76,9 @@ public class FuncionarioService {
     }
 
     public List<Livro> consultarHistoricoUsuario(Usuario usuario) {
-        return usuario.getLivrosAtivos().stream().map(e -> e.getLivro()).toList();
+        return usuario.getEmprestimos().stream()
+                .map(Emprestimo::getLivro)
+                .toList();
     }
 
     public boolean aprovarUsuario(Usuario usuario) {

@@ -16,11 +16,14 @@ public class Usuario extends Pessoa {
     @Column(nullable = false)
     private Integer limiteSlots = 3;
 
-    @OneToMany
+    @ManyToMany
     private List<Emprestimo> livrosAtivos = new ArrayList<>();
 
-    @OneToMany
+    @ManyToMany
     private List<Reserva> reservasAtivas = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "usuario")
+    private List<Emprestimo> emprestimos;
 
     public Usuario() {
         this.setFlagAtivo(true);
@@ -135,4 +138,14 @@ public class Usuario extends Pessoa {
         return new ArrayList<>(livrosAtivos);
     }
 
+    public void setLimiteSlots(int i) {
+    }
+
+    public List<Emprestimo> getEmprestimos() {
+        return emprestimos;
+    }
+
+    public void setEmprestimos(List<Emprestimo> emprestimos) {
+        this.emprestimos = emprestimos;
+    }
 }
