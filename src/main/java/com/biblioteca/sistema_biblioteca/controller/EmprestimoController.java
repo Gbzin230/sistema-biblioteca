@@ -105,12 +105,12 @@ public class EmprestimoController {
         return ResponseEntity.ok(new ApiResponse<>(status, "Status do empréstimo"));
     }
 
-    // ⚙️ Rotina de devolução automática — ADMIN/FUNCIONARIO
+    // ⚙️ Rotina manual de verificação e devolução automática — ADMIN/FUNCIONARIO
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
-    @PostMapping("/devolver-vencidos")
-    public ResponseEntity<ApiResponse<String>> devolverVencidos() {
-        emprestimoScheduler.devolverEmprestimosVencidos();
-        return ResponseEntity.ok(new ApiResponse<>("Processo de devolução automática executado com sucesso!", "Rotina manual"));
+    @PostMapping("/verificar-emprestimos")
+    public ResponseEntity<ApiResponse<String>> verificarEmprestimos() {
+        emprestimoScheduler.verificarEmprestimos();
+        return ResponseEntity.ok(new ApiResponse<>("Processo de verificação e envio de e-mails executado com sucesso!", "Rotina manual"));
     }
 }
 

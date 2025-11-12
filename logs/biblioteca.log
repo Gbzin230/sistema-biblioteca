@@ -654,3 +654,910 @@
 2025-11-12T01:32:51.804-03:00 DEBUG 6824 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
 2025-11-12T01:32:51.810-03:00 DEBUG 6824 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 49, 46, 48, 34, 44, 34, 105, 110, 10 (truncated)...]
 2025-11-12T01:32:51.810-03:00 DEBUG 6824 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T02:08:48.278-03:00  INFO 6824 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T02:08:49.287-03:00  INFO 6824 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T02:08:49.570-03:00  INFO 6824 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T02:08:49.896-03:00  WARN 6824 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-11-12T02:08:49.900-03:00  INFO 6824 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T02:08:49.930-03:00  INFO 6824 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:02:34.822-03:00  INFO 8448 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Starting EmprestimoServiceIntegrationTest using Java 17.0.11 with PID 8448 (started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:02:34.825-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:02:34.826-03:00  INFO 8448 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : The following 1 profile is active: "test"
+2025-11-12T17:02:34.848-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@155d1021
+2025-11-12T17:02:36.752-03:00  INFO 8448 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:02:36.868-03:00  INFO 8448 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 97 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:02:38.975-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:02:39.213-03:00  INFO 8448 --- [sistema-biblioteca] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:02:39.322-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:02:39.629-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:02:39.705-03:00  INFO 8448 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:02:40.170-03:00  INFO 8448 --- [sistema-biblioteca] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca-test user=SA
+2025-11-12T17:02:40.173-03:00  INFO 8448 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:02:40.331-03:00  INFO 8448 --- [sistema-biblioteca] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:02:41.967-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:02:42.080-03:00  INFO 8448 --- [sistema-biblioteca] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:02:42.826-03:00  INFO 8448 --- [sistema-biblioteca] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:02:43.349-03:00  WARN 8448 --- [sistema-biblioteca] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:02:43.544-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 27 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:02:43.805-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-11-12T17:02:44.122-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:02:44.873-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:02:45.015-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:02:45.419-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-11-12T17:02:45.420-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-11-12T17:02:45.423-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2025-11-12T17:02:45.579-03:00  INFO 8448 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Started EmprestimoServiceIntegrationTest in 11.202 seconds (process running for 12.675)
+2025-11-12T17:02:46.202-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmprestimoController#criar(EmprestimoRequestDTO, Authentication)
+2025-11-12T17:02:46.305-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json" to [com.biblioteca.sistema_biblioteca.dto.EmprestimoRequestDTO@271fdeaf]
+2025-11-12T17:02:46.404-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler com.biblioteca.sistema_biblioteca.config.GlobalExceptionHandler#handleGenericException(Exception)
+2025-11-12T17:02:46.423-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2025-11-12T17:02:46.430-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ApiError[erro=Erro interno no servidor, mensagem=An Authentication object was not found in the Secur (truncated)...]
+2025-11-12T17:02:46.439-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.security.authentication.AuthenticationCredentialsNotFoundException: An Authentication object was not found in the SecurityContext]
+2025-11-12T17:02:47.334-03:00  INFO 8448 --- [sistema-biblioteca] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplicationTests]: SistemaBibliotecaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-12T17:02:47.365-03:00  INFO 8448 --- [sistema-biblioteca] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplication for test class com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplicationTests
+2025-11-12T17:02:47.375-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-11-12T17:02:47.424-03:00  INFO 8448 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Starting SistemaBibliotecaApplicationTests using Java 17.0.11 with PID 8448 (started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:02:47.424-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:02:47.425-03:00  INFO 8448 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:02:48.259-03:00  INFO 8448 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:02:48.295-03:00  INFO 8448 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 33 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:02:48.983-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2025-11-12T17:02:49.022-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:02:49.023-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:02:49.188-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:02:49.189-03:00  INFO 8448 --- [sistema-biblioteca] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1761 ms
+2025-11-12T17:02:49.375-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:02:49.382-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:02:49.406-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:02:49.408-03:00  INFO 8448 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-11-12T17:02:49.412-03:00  INFO 8448 --- [sistema-biblioteca] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:02:49.412-03:00  INFO 8448 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-11-12T17:02:49.413-03:00  INFO 8448 --- [sistema-biblioteca] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:02:49.596-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:02:49.673-03:00  INFO 8448 --- [sistema-biblioteca] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:02:49.830-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:02:49.831-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:02:49.935-03:00  INFO 8448 --- [sistema-biblioteca] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:02:50.318-03:00  WARN 8448 --- [sistema-biblioteca] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:02:50.399-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:02:50.507-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:02:50.648-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:02:50.850-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:02:50.878-03:00 DEBUG 8448 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:02:51.178-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:02:51.679-03:00  INFO 8448 --- [sistema-biblioteca] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 49592 (http) with context path '/'
+2025-11-12T17:02:51.703-03:00  INFO 8448 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Started SistemaBibliotecaApplicationTests in 4.328 seconds (process running for 18.799)
+2025-11-12T17:02:52.259-03:00 DEBUG 8448 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@155d1021, started on Wed Nov 12 17:02:34 BRT 2025
+2025-11-12T17:02:52.278-03:00  INFO 8448 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:02:52.291-03:00  INFO 8448 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:02:52.294-03:00  INFO 8448 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:02:52.299-03:00  INFO 8448 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:02:52.379-03:00  INFO 8448 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:02:52.396-03:00  INFO 8448 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:02:52.396-03:00  INFO 8448 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-11-12T17:02:52.398-03:00  INFO 8448 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-11-12T17:16:27.059-03:00  INFO 11948 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Starting EmprestimoServiceIntegrationTest using Java 17.0.11 with PID 11948 (started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:16:27.061-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:16:27.062-03:00  INFO 11948 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : The following 1 profile is active: "test"
+2025-11-12T17:16:27.104-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@56febdc
+2025-11-12T17:16:28.926-03:00  INFO 11948 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:16:29.048-03:00  INFO 11948 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 103 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:16:31.158-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:16:31.278-03:00  INFO 11948 --- [sistema-biblioteca] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:16:31.363-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:16:31.654-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:16:31.723-03:00  INFO 11948 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:16:32.057-03:00  INFO 11948 --- [sistema-biblioteca] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca-test user=SA
+2025-11-12T17:16:32.060-03:00  INFO 11948 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:16:32.184-03:00  INFO 11948 --- [sistema-biblioteca] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:16:33.973-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:16:34.121-03:00  INFO 11948 --- [sistema-biblioteca] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:16:34.879-03:00  INFO 11948 --- [sistema-biblioteca] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:16:35.601-03:00  WARN 11948 --- [sistema-biblioteca] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:16:35.958-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 27 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:16:36.258-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-11-12T17:16:36.630-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:16:37.363-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:16:37.488-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:16:37.861-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-11-12T17:16:37.861-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-11-12T17:16:37.864-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2025-11-12T17:16:38.030-03:00  INFO 11948 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Started EmprestimoServiceIntegrationTest in 11.451 seconds (process running for 12.841)
+2025-11-12T17:16:38.724-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmprestimoController#criar(EmprestimoRequestDTO, Authentication)
+2025-11-12T17:16:38.807-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json" to [com.biblioteca.sistema_biblioteca.dto.EmprestimoRequestDTO@39a7fff]
+2025-11-12T17:16:38.908-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler com.biblioteca.sistema_biblioteca.config.GlobalExceptionHandler#handleGenericException(Exception)
+2025-11-12T17:16:38.931-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2025-11-12T17:16:38.939-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ApiError[erro=Erro interno no servidor, mensagem=Cannot invoke "org.springframework.security.core.Au (truncated)...]
+2025-11-12T17:16:38.948-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [java.lang.NullPointerException: Cannot invoke "org.springframework.security.core.Authentication.getName()" because "auth" is null]
+2025-11-12T17:16:39.591-03:00  INFO 11948 --- [sistema-biblioteca] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplicationTests]: SistemaBibliotecaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-12T17:16:39.629-03:00  INFO 11948 --- [sistema-biblioteca] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplication for test class com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplicationTests
+2025-11-12T17:16:39.638-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-11-12T17:16:39.687-03:00  INFO 11948 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Starting SistemaBibliotecaApplicationTests using Java 17.0.11 with PID 11948 (started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:16:39.687-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:16:39.688-03:00  INFO 11948 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:16:40.505-03:00  INFO 11948 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:16:40.536-03:00  INFO 11948 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 28 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:16:41.042-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2025-11-12T17:16:41.072-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:16:41.073-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:16:41.238-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:16:41.238-03:00  INFO 11948 --- [sistema-biblioteca] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1548 ms
+2025-11-12T17:16:41.379-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:16:41.388-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:16:41.414-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:16:41.417-03:00  INFO 11948 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-11-12T17:16:41.420-03:00  INFO 11948 --- [sistema-biblioteca] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:16:41.420-03:00  INFO 11948 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-11-12T17:16:41.421-03:00  INFO 11948 --- [sistema-biblioteca] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:16:41.583-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:16:41.627-03:00  INFO 11948 --- [sistema-biblioteca] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:16:41.768-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:16:41.768-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:16:41.869-03:00  INFO 11948 --- [sistema-biblioteca] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:16:42.150-03:00  WARN 11948 --- [sistema-biblioteca] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:16:42.239-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:16:42.339-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:16:42.431-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:16:42.574-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:16:42.590-03:00 DEBUG 11948 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:16:42.771-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:16:43.204-03:00  INFO 11948 --- [sistema-biblioteca] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 65320 (http) with context path '/'
+2025-11-12T17:16:43.223-03:00  INFO 11948 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Started SistemaBibliotecaApplicationTests in 3.586 seconds (process running for 18.034)
+2025-11-12T17:16:43.773-03:00 DEBUG 11948 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@56febdc, started on Wed Nov 12 17:16:27 BRT 2025
+2025-11-12T17:16:43.784-03:00  INFO 11948 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:16:43.793-03:00  INFO 11948 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:16:43.797-03:00  INFO 11948 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:16:43.801-03:00  INFO 11948 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:16:43.876-03:00  INFO 11948 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:16:43.883-03:00  INFO 11948 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:16:43.883-03:00  INFO 11948 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-11-12T17:16:43.885-03:00  INFO 11948 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-11-12T17:21:55.877-03:00  INFO 17612 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Starting EmprestimoServiceIntegrationTest using Java 17.0.11 with PID 17612 (started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:21:55.878-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:21:55.879-03:00  INFO 17612 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : The following 1 profile is active: "test"
+2025-11-12T17:21:55.911-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@56febdc
+2025-11-12T17:21:57.616-03:00  INFO 17612 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:21:57.724-03:00  INFO 17612 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 93 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:22:00.015-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:22:00.202-03:00  INFO 17612 --- [sistema-biblioteca] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:22:00.299-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:22:00.585-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:22:00.662-03:00  INFO 17612 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:22:01.104-03:00  INFO 17612 --- [sistema-biblioteca] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca-test user=SA
+2025-11-12T17:22:01.111-03:00  INFO 17612 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:22:01.284-03:00  INFO 17612 --- [sistema-biblioteca] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:22:03.308-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:22:03.420-03:00  INFO 17612 --- [sistema-biblioteca] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:22:04.169-03:00  INFO 17612 --- [sistema-biblioteca] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:22:04.804-03:00  WARN 17612 --- [sistema-biblioteca] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:22:05.044-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 27 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:22:05.349-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-11-12T17:22:05.672-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:22:06.360-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:22:06.484-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:22:06.843-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:22:06.844-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:22:06.845-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-11-12T17:22:06.845-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-11-12T17:22:06.847-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2025-11-12T17:22:06.999-03:00  INFO 17612 --- [sistema-biblioteca] [main] c.b.s.s.EmprestimoServiceIntegrationTest : Started EmprestimoServiceIntegrationTest in 11.614 seconds (process running for 12.82)
+2025-11-12T17:22:07.692-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmprestimoController#criar(EmprestimoRequestDTO, Authentication)
+2025-11-12T17:22:07.773-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [com.biblioteca.sistema_biblioteca.dto.EmprestimoRequestDTO@71fff0b]
+2025-11-12T17:22:08.033-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2025-11-12T17:22:08.035-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ApiResponse[data=com.biblioteca.sistema_biblioteca.dto.EmprestimoResponseDTO@1b3a8691, message=Empré (truncated)...]
+2025-11-12T17:22:08.797-03:00  INFO 17612 --- [sistema-biblioteca] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplicationTests]: SistemaBibliotecaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-11-12T17:22:08.818-03:00  INFO 17612 --- [sistema-biblioteca] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplication for test class com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplicationTests
+2025-11-12T17:22:08.826-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-11-12T17:22:08.875-03:00  INFO 17612 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Starting SistemaBibliotecaApplicationTests using Java 17.0.11 with PID 17612 (started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:22:08.876-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:22:08.877-03:00  INFO 17612 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:22:09.762-03:00  INFO 17612 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:22:09.800-03:00  INFO 17612 --- [sistema-biblioteca] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 34 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:22:10.312-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2025-11-12T17:22:10.340-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:22:10.341-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:22:10.471-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:22:10.473-03:00  INFO 17612 --- [sistema-biblioteca] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1593 ms
+2025-11-12T17:22:10.626-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:22:10.637-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:22:10.658-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:22:10.660-03:00  INFO 17612 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-11-12T17:22:10.663-03:00  INFO 17612 --- [sistema-biblioteca] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:22:10.664-03:00  INFO 17612 --- [sistema-biblioteca] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-11-12T17:22:10.665-03:00  INFO 17612 --- [sistema-biblioteca] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:22:10.829-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:22:10.878-03:00  INFO 17612 --- [sistema-biblioteca] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:22:11.005-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:22:11.006-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:22:11.087-03:00  INFO 17612 --- [sistema-biblioteca] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:22:11.370-03:00  WARN 17612 --- [sistema-biblioteca] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:22:11.438-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:22:11.524-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:22:11.626-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:22:11.768-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:22:11.788-03:00 DEBUG 17612 --- [sistema-biblioteca] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:22:11.973-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:22:12.406-03:00  INFO 17612 --- [sistema-biblioteca] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 63762 (http) with context path '/'
+2025-11-12T17:22:12.423-03:00  INFO 17612 --- [sistema-biblioteca] [main] c.b.s.SistemaBibliotecaApplicationTests  : Started SistemaBibliotecaApplicationTests in 3.598 seconds (process running for 18.245)
+2025-11-12T17:22:13.027-03:00 DEBUG 17612 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@56febdc, started on Wed Nov 12 17:21:55 BRT 2025
+2025-11-12T17:22:13.045-03:00  INFO 17612 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:22:13.059-03:00  INFO 17612 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:22:13.064-03:00  INFO 17612 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:22:13.070-03:00  INFO 17612 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:22:13.153-03:00  INFO 17612 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:22:13.160-03:00  INFO 17612 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:22:13.160-03:00  INFO 17612 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-11-12T17:22:13.162-03:00  INFO 17612 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-11-12T17:22:31.503-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Starting SistemaBibliotecaApplication using Java 17.0.11 with PID 27188 (C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca\target\classes started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:22:31.504-03:00 DEBUG 27188 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:22:31.506-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:22:31.555-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-12T17:22:31.555-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-12T17:22:32.692-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:22:32.766-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 64 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:22:33.439-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:22:33.454-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:22:33.454-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:22:33.508-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:22:33.508-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1952 ms
+2025-11-12T17:22:33.729-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:22:33.780-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:22:33.823-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:22:34.072-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:22:34.107-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:22:34.276-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:22:34.278-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:22:34.345-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:22:35.363-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:22:35.442-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:22:35.748-03:00 DEBUG 27188 --- [sistema-biblioteca] [restartedMain] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:22:35.749-03:00 DEBUG 27188 --- [sistema-biblioteca] [restartedMain] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:22:35.880-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:22:36.188-03:00  WARN 27188 --- [sistema-biblioteca] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:22:36.307-03:00 DEBUG 27188 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:22:36.414-03:00 DEBUG 27188 --- [sistema-biblioteca] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:22:36.540-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:22:36.782-03:00 DEBUG 27188 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:22:36.833-03:00 DEBUG 27188 --- [sistema-biblioteca] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:22:37.093-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:22:37.176-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-12T17:22:37.257-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:22:37.293-03:00  INFO 27188 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Started SistemaBibliotecaApplication in 6.255 seconds (process running for 6.782)
+2025-11-12T17:24:42.915-03:00  INFO 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:24:42.915-03:00  INFO 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:24:42.924-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-11-12T17:24:42.924-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-11-12T17:24:42.924-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-11-12T17:24:42.927-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@1a37f154
+2025-11-12T17:24:42.927-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@5e672e8a
+2025-11-12T17:24:42.927-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-11-12T17:24:42.927-03:00  INFO 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-11-12T17:24:43.019-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2025-11-12T17:24:43.027-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:24:43.061-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:24:43.105-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui.css", parameters={}
+2025-11-12T17:24:43.108-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:24:43.112-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.css", parameters={}
+2025-11-12T17:24:43.114-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:24:43.122-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2025-11-12T17:24:43.123-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2025-11-12T17:24:43.123-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2025-11-12T17:24:43.124-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:24:43.124-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:24:43.125-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:24:43.127-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:24:43.128-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:24:43.143-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:24:43.163-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:24:43.199-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:24:43.361-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2025-11-12T17:24:43.363-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2025-11-12T17:24:43.406-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2025-11-12T17:24:43.453-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, defaultModelsExpandDepth=-1, oauth2RedirectUrl=http://localh (truncated)...]
+2025-11-12T17:24:43.464-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:24:43.521-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2025-11-12T17:24:43.523-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-11-12T17:24:44.293-03:00  INFO 27188 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 747 ms
+2025-11-12T17:24:44.333-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
+2025-11-12T17:24:44.342-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 49, 46, 48, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-11-12T17:24:44.345-03:00 DEBUG 27188 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:32:37.843-03:00  INFO 27188 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:32:37.924-03:00  INFO 27188 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:32:37.942-03:00  INFO 27188 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:32:37.971-03:00  WARN 27188 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-11-12T17:32:37.972-03:00  INFO 27188 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:32:37.975-03:00  INFO 27188 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:33:04.410-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Starting SistemaBibliotecaApplication using Java 17.0.11 with PID 7872 (C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca\target\classes started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:33:04.412-03:00 DEBUG 7872 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:33:04.414-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:33:04.474-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-12T17:33:04.474-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-12T17:33:06.219-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:33:06.342-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 109 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:33:07.302-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:33:07.328-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:33:07.333-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:33:07.461-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:33:07.461-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2986 ms
+2025-11-12T17:33:08.053-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:33:08.246-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:33:08.329-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:33:08.758-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:33:08.811-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:33:09.099-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:33:09.100-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:33:09.190-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:33:10.925-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:33:11.049-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:33:11.507-03:00 DEBUG 7872 --- [sistema-biblioteca] [restartedMain] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:33:11.507-03:00 DEBUG 7872 --- [sistema-biblioteca] [restartedMain] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:33:11.784-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:33:12.246-03:00  WARN 7872 --- [sistema-biblioteca] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:33:12.455-03:00 DEBUG 7872 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:33:12.647-03:00 DEBUG 7872 --- [sistema-biblioteca] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:33:12.803-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:33:13.148-03:00 DEBUG 7872 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:33:13.244-03:00 DEBUG 7872 --- [sistema-biblioteca] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:33:13.563-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:33:13.656-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-12T17:33:13.743-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:33:13.774-03:00  INFO 7872 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Started SistemaBibliotecaApplication in 10.009 seconds (process running for 10.787)
+2025-11-12T17:33:27.474-03:00  INFO 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:33:27.474-03:00  INFO 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:33:27.474-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-11-12T17:33:27.484-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-11-12T17:33:27.484-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-11-12T17:33:27.486-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@5e672e8a
+2025-11-12T17:33:27.486-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@298d209b
+2025-11-12T17:33:27.486-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-11-12T17:33:27.486-03:00  INFO 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 12 ms
+2025-11-12T17:33:27.562-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2025-11-12T17:33:27.569-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:33:27.617-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:27.666-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui.css", parameters={}
+2025-11-12T17:33:27.668-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2025-11-12T17:33:27.668-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:33:27.668-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2025-11-12T17:33:27.668-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2025-11-12T17:33:27.668-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.css", parameters={}
+2025-11-12T17:33:27.669-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:33:27.670-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:33:27.670-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:33:27.671-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:33:27.681-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:27.680-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:27.697-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:27.715-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:27.755-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:27.869-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2025-11-12T17:33:27.870-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2025-11-12T17:33:27.870-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/favicon-32x32.png", parameters={}
+2025-11-12T17:33:27.871-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:33:27.874-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:27.893-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2025-11-12T17:33:27.929-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, defaultModelsExpandDepth=-1, oauth2RedirectUrl=http://localh (truncated)...]
+2025-11-12T17:33:27.940-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:27.980-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2025-11-12T17:33:27.980-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-11-12T17:33:28.734-03:00  INFO 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 730 ms
+2025-11-12T17:33:28.768-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
+2025-11-12T17:33:28.783-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 49, 46, 48, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-11-12T17:33:28.785-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:33:56.608-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : POST "/auth/login", parameters={}
+2025-11-12T17:33:56.608-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.AuthController#login(LoginDTO)
+2025-11-12T17:33:56.643-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [com.biblioteca.sistema_biblioteca.dto.LoginDTO@6834bd1a]
+2025-11-12T17:33:56.687-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2025-11-12T17:33:56.687-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{erro=Usuário não encontrado ou não aprovado}]
+2025-11-12T17:33:56.687-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 403 FORBIDDEN
+2025-11-12T17:34:04.247-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : POST "/auth/login", parameters={}
+2025-11-12T17:34:04.247-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.AuthController#login(LoginDTO)
+2025-11-12T17:34:04.249-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [com.biblioteca.sistema_biblioteca.dto.LoginDTO@d9324a3]
+2025-11-12T17:34:04.590-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2025-11-12T17:34:04.590-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{token=Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbl90ZXN0ZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2Mjk3O (truncated)...]
+2025-11-12T17:34:04.600-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:34:20.650-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/teste-email", parameters={}
+2025-11-12T17:34:20.650-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmailTestController#teste()
+2025-11-12T17:34:22.991-03:00 ERROR 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] c.b.s.service.EmailService               : ? Erro ao enviar e-mail para gui.svalerio2005@gmail.com: Authentication failed
+2025-11-12T17:34:22.991-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json, application/yaml]
+2025-11-12T17:34:22.991-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing ["E-mail enviado com sucesso!"]
+2025-11-12T17:34:22.991-03:00 DEBUG 7872 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:12.286-03:00  INFO 7872 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:42:12.388-03:00  INFO 7872 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:42:12.438-03:00  INFO 7872 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:42:12.663-03:00  WARN 7872 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-11-12T17:42:12.664-03:00  INFO 7872 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:42:12.674-03:00  INFO 7872 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:42:22.597-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Starting SistemaBibliotecaApplication using Java 17.0.11 with PID 29320 (C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca\target\classes started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:42:22.599-03:00 DEBUG 29320 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:42:22.599-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:42:22.650-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-12T17:42:22.650-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-12T17:42:24.729-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:42:24.899-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 129 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:42:26.044-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:42:26.078-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:42:26.078-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:42:26.187-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:42:26.188-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3536 ms
+2025-11-12T17:42:26.536-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:42:26.628-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:42:26.681-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:42:26.997-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:42:27.042-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:42:27.347-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:42:27.347-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:42:27.461-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:42:29.775-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:42:29.893-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:42:30.432-03:00 DEBUG 29320 --- [sistema-biblioteca] [restartedMain] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:42:30.432-03:00 DEBUG 29320 --- [sistema-biblioteca] [restartedMain] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:42:30.647-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:42:31.102-03:00  WARN 29320 --- [sistema-biblioteca] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:42:31.309-03:00 DEBUG 29320 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:42:31.481-03:00 DEBUG 29320 --- [sistema-biblioteca] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:42:31.711-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:42:32.079-03:00 DEBUG 29320 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:42:32.181-03:00 DEBUG 29320 --- [sistema-biblioteca] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:42:32.533-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:42:32.675-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-12T17:42:32.811-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:42:32.945-03:00  INFO 29320 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Started SistemaBibliotecaApplication in 10.856 seconds (process running for 11.316)
+2025-11-12T17:42:33.078-03:00  INFO 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:42:33.078-03:00  INFO 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:42:33.078-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-11-12T17:42:33.078-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-11-12T17:42:33.078-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-11-12T17:42:33.087-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@55ea6c5b
+2025-11-12T17:42:33.089-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@4a93693a
+2025-11-12T17:42:33.089-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-11-12T17:42:33.089-03:00  INFO 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 11 ms
+2025-11-12T17:42:33.210-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2025-11-12T17:42:33.216-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:42:33.260-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:33.325-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.css", parameters={}
+2025-11-12T17:42:33.325-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2025-11-12T17:42:33.326-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui.css", parameters={}
+2025-11-12T17:42:33.327-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:42:33.327-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:42:33.329-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:42:33.338-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2025-11-12T17:42:33.340-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2025-11-12T17:42:33.339-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:33.342-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:42:33.345-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:42:33.357-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:33.372-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:33.387-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:33.431-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:33.584-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2025-11-12T17:42:33.586-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2025-11-12T17:42:33.588-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/favicon-32x32.png", parameters={}
+2025-11-12T17:42:33.588-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:42:33.593-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:33.618-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2025-11-12T17:42:33.644-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, defaultModelsExpandDepth=-1, oauth2RedirectUrl=http://localh (truncated)...]
+2025-11-12T17:42:33.652-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:33.667-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2025-11-12T17:42:33.668-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-11-12T17:42:34.462-03:00  INFO 29320 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 774 ms
+2025-11-12T17:42:34.522-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
+2025-11-12T17:42:34.525-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 49, 46, 48, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-11-12T17:42:34.525-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:42:55.760-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/teste-email", parameters={}
+2025-11-12T17:42:55.760-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmailTestController#teste()
+2025-11-12T17:42:58.984-03:00 ERROR 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] c.b.s.service.EmailService               : ? Erro ao enviar e-mail para gui.svalerio2005@gmail.com: Authentication failed
+2025-11-12T17:42:58.998-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json, application/yaml]
+2025-11-12T17:42:58.998-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing ["E-mail enviado com sucesso!"]
+2025-11-12T17:42:58.998-03:00 DEBUG 29320 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:48:20.166-03:00  INFO 29320 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:48:20.223-03:00  INFO 29320 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:48:20.236-03:00  INFO 29320 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:48:20.257-03:00  WARN 29320 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-11-12T17:48:20.258-03:00  INFO 29320 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:48:20.262-03:00  INFO 29320 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:48:42.065-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Starting SistemaBibliotecaApplication using Java 17.0.11 with PID 14172 (C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca\target\classes started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:48:42.069-03:00 DEBUG 14172 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:48:42.070-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:48:42.153-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-12T17:48:42.153-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-12T17:48:44.191-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:48:44.311-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 106 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:48:45.655-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:48:45.688-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:48:45.688-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:48:45.789-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:48:45.789-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3636 ms
+2025-11-12T17:48:46.164-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:48:46.288-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:48:46.383-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:48:46.986-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:48:47.054-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:48:47.351-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:48:47.351-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:48:47.457-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:48:49.216-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:48:49.368-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:48:49.904-03:00 DEBUG 14172 --- [sistema-biblioteca] [restartedMain] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:48:49.905-03:00 DEBUG 14172 --- [sistema-biblioteca] [restartedMain] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:48:50.138-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:48:50.609-03:00  WARN 14172 --- [sistema-biblioteca] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:48:50.864-03:00 DEBUG 14172 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:48:51.092-03:00 DEBUG 14172 --- [sistema-biblioteca] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:48:51.349-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:48:51.808-03:00 DEBUG 14172 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:48:51.902-03:00 DEBUG 14172 --- [sistema-biblioteca] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:48:52.259-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:48:52.353-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-12T17:48:52.464-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:48:52.497-03:00  INFO 14172 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Started SistemaBibliotecaApplication in 11.524 seconds (process running for 12.295)
+2025-11-12T17:49:01.194-03:00  INFO 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:49:01.196-03:00  INFO 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:49:01.196-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-11-12T17:49:01.196-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-11-12T17:49:01.196-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-11-12T17:49:01.199-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@55ea6c5b
+2025-11-12T17:49:01.199-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@4a93693a
+2025-11-12T17:49:01.200-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-11-12T17:49:01.200-03:00  INFO 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2025-11-12T17:49:01.258-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2025-11-12T17:49:01.260-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:49:01.294-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:01.322-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui.css", parameters={}
+2025-11-12T17:49:01.324-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:49:01.328-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.css", parameters={}
+2025-11-12T17:49:01.334-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:49:01.337-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2025-11-12T17:49:01.339-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2025-11-12T17:49:01.339-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:49:01.343-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:49:01.342-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:01.347-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:01.347-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2025-11-12T17:49:01.351-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:49:01.358-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:01.383-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:01.414-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:01.557-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2025-11-12T17:49:01.558-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/favicon-32x32.png", parameters={}
+2025-11-12T17:49:01.558-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2025-11-12T17:49:01.559-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:49:01.563-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:01.576-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2025-11-12T17:49:01.610-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, defaultModelsExpandDepth=-1, oauth2RedirectUrl=http://localh (truncated)...]
+2025-11-12T17:49:01.618-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:01.663-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2025-11-12T17:49:01.663-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-11-12T17:49:02.376-03:00  INFO 14172 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 699 ms
+2025-11-12T17:49:02.406-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
+2025-11-12T17:49:02.408-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 49, 46, 48, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-11-12T17:49:02.411-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:49:26.472-03:00  WARN 14172 --- [sistema-biblioteca] [http-nio-8080-exec-5] c.b.s.security.JwtFilter                 : Token JWT inválido: JWT strings must contain exactly 2 period characters. Found: 0
+2025-11-12T17:49:45.470-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/teste-email", parameters={}
+2025-11-12T17:49:45.472-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmailTestController#teste()
+2025-11-12T17:49:47.830-03:00 ERROR 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] c.b.s.service.EmailService               : ? Erro ao enviar e-mail para gui.svalerio2005@gmail.com: Authentication failed
+2025-11-12T17:49:47.839-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json, application/yaml]
+2025-11-12T17:49:47.840-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing ["E-mail enviado com sucesso!"]
+2025-11-12T17:49:47.844-03:00 DEBUG 14172 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:18.921-03:00  INFO 14172 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:50:18.971-03:00  INFO 14172 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:50:18.979-03:00  INFO 14172 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:50:18.985-03:00  WARN 14172 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-11-12T17:50:18.987-03:00  INFO 14172 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:50:18.989-03:00  INFO 14172 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:50:28.621-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Starting SistemaBibliotecaApplication using Java 17.0.11 with PID 22680 (C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca\target\classes started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:50:28.623-03:00 DEBUG 22680 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:50:28.624-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:50:28.678-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-12T17:50:28.679-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-12T17:50:30.424-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:50:30.535-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 89 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:50:31.206-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:50:31.221-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:50:31.221-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:50:31.268-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:50:31.268-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2589 ms
+2025-11-12T17:50:31.522-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:50:31.586-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:50:31.696-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:50:31.953-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:50:31.988-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:50:32.161-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:50:32.163-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:50:32.222-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:50:33.290-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:50:33.366-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:50:33.679-03:00 DEBUG 22680 --- [sistema-biblioteca] [restartedMain] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:50:33.680-03:00 DEBUG 22680 --- [sistema-biblioteca] [restartedMain] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:50:33.806-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:50:34.157-03:00  WARN 22680 --- [sistema-biblioteca] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:50:34.306-03:00 DEBUG 22680 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:50:34.437-03:00 DEBUG 22680 --- [sistema-biblioteca] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:50:34.606-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:50:34.852-03:00 DEBUG 22680 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:50:34.904-03:00 DEBUG 22680 --- [sistema-biblioteca] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:50:35.104-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:50:35.174-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-12T17:50:35.246-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:50:35.269-03:00  INFO 22680 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Started SistemaBibliotecaApplication in 7.113 seconds (process running for 7.551)
+2025-11-12T17:50:38.907-03:00  INFO 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:50:38.907-03:00  INFO 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:50:38.907-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-11-12T17:50:38.907-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-11-12T17:50:38.907-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-11-12T17:50:38.907-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@582c4bcc
+2025-11-12T17:50:38.907-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@fdc41e2
+2025-11-12T17:50:38.907-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-11-12T17:50:38.907-03:00  INFO 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-11-12T17:50:38.970-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2025-11-12T17:50:38.976-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:50:39.003-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:39.043-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui.css", parameters={}
+2025-11-12T17:50:39.045-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.css", parameters={}
+2025-11-12T17:50:39.045-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:50:39.047-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:50:39.050-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2025-11-12T17:50:39.050-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2025-11-12T17:50:39.051-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2025-11-12T17:50:39.051-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:39.052-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:50:39.052-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:50:39.053-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:50:39.057-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:39.065-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:39.084-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:39.108-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:39.244-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2025-11-12T17:50:39.245-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2025-11-12T17:50:39.245-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/favicon-32x32.png", parameters={}
+2025-11-12T17:50:39.245-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:50:39.249-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:39.267-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2025-11-12T17:50:39.300-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, defaultModelsExpandDepth=-1, oauth2RedirectUrl=http://localh (truncated)...]
+2025-11-12T17:50:39.313-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:39.330-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2025-11-12T17:50:39.331-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-11-12T17:50:40.105-03:00  INFO 22680 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 758 ms
+2025-11-12T17:50:40.153-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
+2025-11-12T17:50:40.153-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 49, 46, 48, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-11-12T17:50:40.153-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:50:57.721-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/teste-email", parameters={}
+2025-11-12T17:50:57.721-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmailTestController#teste()
+2025-11-12T17:50:59.993-03:00 ERROR 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] c.b.s.service.EmailService               : ? Erro ao enviar e-mail para gui.svalerio2005@gmail.com: Authentication failed
+2025-11-12T17:51:00.006-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json, application/yaml]
+2025-11-12T17:51:00.008-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing ["E-mail enviado com sucesso!"]
+2025-11-12T17:51:00.016-03:00 DEBUG 22680 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:52:40.881-03:00  INFO 22680 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:52:40.938-03:00  INFO 22680 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:52:40.946-03:00  INFO 22680 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:52:40.953-03:00  WARN 22680 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-11-12T17:52:40.954-03:00  INFO 22680 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:52:40.955-03:00  INFO 22680 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:52:50.952-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Starting SistemaBibliotecaApplication using Java 17.0.11 with PID 27656 (C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca\target\classes started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:52:50.954-03:00 DEBUG 27656 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:52:50.955-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:52:51.001-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-12T17:52:51.002-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-12T17:52:52.146-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:52:52.215-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 61 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:52:52.891-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:52:52.904-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:52:52.904-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:52:52.957-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:52:52.957-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1954 ms
+2025-11-12T17:52:53.174-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:52:53.224-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:52:53.261-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:52:53.524-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:52:53.560-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:52:53.738-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:52:53.740-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:52:53.794-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:52:54.828-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:52:54.903-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:52:55.209-03:00 DEBUG 27656 --- [sistema-biblioteca] [restartedMain] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:52:55.210-03:00 DEBUG 27656 --- [sistema-biblioteca] [restartedMain] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:52:55.334-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:52:55.632-03:00  WARN 27656 --- [sistema-biblioteca] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:52:55.749-03:00 DEBUG 27656 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:52:55.863-03:00 DEBUG 27656 --- [sistema-biblioteca] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:52:55.988-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:52:56.228-03:00 DEBUG 27656 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:52:56.286-03:00 DEBUG 27656 --- [sistema-biblioteca] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:52:56.469-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:52:56.536-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-12T17:52:56.607-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:52:56.631-03:00  INFO 27656 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Started SistemaBibliotecaApplication in 6.133 seconds (process running for 6.621)
+2025-11-12T17:53:01.263-03:00  INFO 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:53:01.263-03:00  INFO 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:53:01.263-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-11-12T17:53:01.263-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-11-12T17:53:01.263-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-11-12T17:53:01.272-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3f220ab3
+2025-11-12T17:53:01.272-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@1eb97cc2
+2025-11-12T17:53:01.272-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-11-12T17:53:01.272-03:00  INFO 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 9 ms
+2025-11-12T17:53:01.693-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/teste-email", parameters={}
+2025-11-12T17:53:01.696-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmailTestController#teste()
+2025-11-12T17:53:03.714-03:00 ERROR 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] c.b.s.service.EmailService               : ? Erro ao enviar e-mail para gui.svalerio2005@gmail.com: Authentication failed
+2025-11-12T17:53:03.753-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json, application/yaml]
+2025-11-12T17:53:03.753-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing ["E-mail enviado com sucesso!"]
+2025-11-12T17:53:03.767-03:00 DEBUG 27656 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:55:32.311-03:00  INFO 27656 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-12T17:55:32.366-03:00  INFO 27656 --- [sistema-biblioteca] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-12T17:55:32.375-03:00  INFO 27656 --- [sistema-biblioteca] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:55:32.380-03:00  WARN 27656 --- [sistema-biblioteca] [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-11-12T17:55:32.381-03:00  INFO 27656 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-12T17:55:32.382-03:00  INFO 27656 --- [sistema-biblioteca] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-12T17:56:52.269-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Starting SistemaBibliotecaApplication using Java 17.0.11 with PID 20744 (C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca\target\classes started by lucia in C:\Users\lucia\OneDrive\Área de Trabalho\Documentos\Guilherme\ProjetoBiblioteca)
+2025-11-12T17:56:52.271-03:00 DEBUG 20744 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Running with Spring Boot v3.5.7, Spring v6.2.12
+2025-11-12T17:56:52.271-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-11-12T17:56:52.325-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-12T17:56:52.325-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-12T17:56:53.469-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-12T17:56:53.542-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 7 JPA repository interfaces.
+2025-11-12T17:56:54.205-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-12T17:56:54.226-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-12T17:56:54.226-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-12T17:56:54.274-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-12T17:56:54.275-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1950 ms
+2025-11-12T17:56:54.493-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-12T17:56:54.544-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-12T17:56:54.581-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-12T17:56:54.832-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-12T17:56:54.866-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-12T17:56:55.031-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:biblioteca user=SA
+2025-11-12T17:56:55.033-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-12T17:56:55.087-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-12T17:56:56.091-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-12T17:56:56.171-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-12T17:56:56.470-03:00 DEBUG 20744 --- [sistema-biblioteca] [restartedMain] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2025-11-12T17:56:56.471-03:00 DEBUG 20744 --- [sistema-biblioteca] [restartedMain] c.b.s.security.JwtFilter                 : Filter 'jwtFilter' configured for use
+2025-11-12T17:56:56.605-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-11-12T17:56:56.904-03:00  WARN 20744 --- [sistema-biblioteca] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-12T17:56:57.028-03:00 DEBUG 20744 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2025-11-12T17:56:57.133-03:00 DEBUG 20744 --- [sistema-biblioteca] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-11-12T17:56:57.256-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 6 endpoints beneath base path '/actuator'
+2025-11-12T17:56:57.519-03:00 DEBUG 20744 --- [sistema-biblioteca] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-11-12T17:56:57.571-03:00 DEBUG 20744 --- [sistema-biblioteca] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-11-12T17:56:57.759-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:biblioteca'
+2025-11-12T17:56:57.833-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-12T17:56:57.919-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-12T17:56:57.944-03:00  INFO 20744 --- [sistema-biblioteca] [restartedMain] c.b.s.SistemaBibliotecaApplication       : Started SistemaBibliotecaApplication in 6.164 seconds (process running for 6.591)
+2025-11-12T17:57:01.936-03:00  INFO 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-12T17:57:01.936-03:00  INFO 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-12T17:57:01.936-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-11-12T17:57:01.936-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-11-12T17:57:01.942-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-11-12T17:57:01.943-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@61d788e6
+2025-11-12T17:57:01.943-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@60468bde
+2025-11-12T17:57:01.943-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-11-12T17:57:01.943-03:00  INFO 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+2025-11-12T17:57:02.021-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2025-11-12T17:57:02.024-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:57:02.060-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:02.112-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui.css", parameters={}
+2025-11-12T17:57:02.112-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.css", parameters={}
+2025-11-12T17:57:02.115-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:57:02.115-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:57:02.116-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2025-11-12T17:57:02.119-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2025-11-12T17:57:02.120-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:57:02.120-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:57:02.120-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2025-11-12T17:57:02.123-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:57:02.125-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:02.141-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:02.144-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:02.168-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:02.208-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:02.376-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2025-11-12T17:57:02.377-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2025-11-12T17:57:02.380-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/favicon-32x32.png", parameters={}
+2025-11-12T17:57:02.381-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-11-12T17:57:02.387-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:02.412-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2025-11-12T17:57:02.451-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, defaultModelsExpandDepth=-1, oauth2RedirectUrl=http://localh (truncated)...]
+2025-11-12T17:57:02.460-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:02.492-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2025-11-12T17:57:02.493-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-11-12T17:57:03.172-03:00  INFO 20744 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 662 ms
+2025-11-12T17:57:03.187-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
+2025-11-12T17:57:03.187-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 49, 46, 48, 34, 44, 34, 105, 110, 10 (truncated)...]
+2025-11-12T17:57:03.187-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-11-12T17:57:21.053-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/teste-email", parameters={}
+2025-11-12T17:57:21.053-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.biblioteca.sistema_biblioteca.controller.EmailTestController#teste()
+2025-11-12T17:57:25.050-03:00  INFO 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] c.b.s.service.EmailService               : ? E-mail enviado para gui.svalerio2005@gmail.com
+2025-11-12T17:57:25.054-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json, application/yaml]
+2025-11-12T17:57:25.054-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing ["E-mail enviado com sucesso!"]
+2025-11-12T17:57:25.059-03:00 DEBUG 20744 --- [sistema-biblioteca] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK

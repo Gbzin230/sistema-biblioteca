@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = com.biblioteca.sistema_biblioteca.SistemaBibliotecaApplication.class)
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
 class EmprestimoServiceIntegrationTest {
 
@@ -49,19 +50,17 @@ class EmprestimoServiceIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "joaosilva", roles = "USUARIO")
     void quandoCriarEmprestimo_entaoRetorna200() throws Exception {
-        // 🔸 Cria usuário ativo
+        // 🔸 Cria o usuário/pessoa com o mesmo username do mock
         Usuario usuario = new Usuario();
         usuario.setNome("João da Silva");
         usuario.setEmail("joao@teste.com");
         usuario.setSenha("123456");
-        usuario.setUsername("joaosilva");
+        usuario.setUsername("joaosilva"); // precisa bater com o @WithMockUser
         usuario.setFlagAtivo(true);
         usuario.setLimiteSlots(3);
         usuarioRepository.saveAndFlush(usuario);
-
-        Usuario loaded = usuarioRepository.findById(usuario.getId()).orElseThrow();
-        System.out.println(">>> FLAG NO BANCO: " + loaded.isFlagAtivo());
 
         // 🔸 Cria livro disponível
         Livro livro = new Livro();
@@ -69,14 +68,14 @@ class EmprestimoServiceIntegrationTest {
         livro.setAutor("J.R.R. Tolkien");
         livro.setFlagAtivo(true);
         livro.setStatus(Livro.Status.DISPONIVEL);
-        livro = livroRepository.save(livro);
+        livroRepository.saveAndFlush(livro);
 
-        // 🔸 Cria DTO de requisição
+        // 🔸 DTO de requisição
         EmprestimoRequestDTO req = new EmprestimoRequestDTO();
         req.setUsuarioId(usuario.getId());
         req.setLivroId(livro.getId());
 
-        // 🔸 Faz requisição e valida resposta
+        // 🔸 Executa requisição
         mockMvc.perform(post("/emprestimos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -85,4 +84,5 @@ class EmprestimoServiceIntegrationTest {
                 .andExpect(jsonPath("$.data.usuarioId", is(usuario.getId().intValue())))
                 .andExpect(jsonPath("$.data.livroId", is(livro.getId().intValue())));
     }
+
 }
