@@ -59,7 +59,18 @@ public class Pessoa {
     public void setFlagAtivo(boolean flagAtivo) { this.flagAtivo = flagAtivo; }
 
     public String getRoleString() {
-        return this.getClass().getSimpleName().toUpperCase(); // exemplo: USUARIO, ADMINISTRADOR, etc.
+        // se você quiser mapear valores diferentes:
+        String simple = this.getClass().getSimpleName().toUpperCase();
+        // retorna USUARIO, FUNCIONARIO, ADMIN
+        return simple;
+    }
+
+    @PrePersist
+    private void prePersist() {
+        if (!this.flagAtivo) {
+            // por padrão: usuários criados não aprovados? ou true se quiser
+            this.flagAtivo = true; // ou false
+        }
     }
 }
 

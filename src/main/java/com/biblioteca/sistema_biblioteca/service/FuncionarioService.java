@@ -76,7 +76,7 @@ public class FuncionarioService {
     }
 
     public List<Livro> consultarHistoricoUsuario(Usuario usuario) {
-        return usuario.getEmprestimos().stream()
+        return usuario.consultaHistorico().stream()
                 .map(Emprestimo::getLivro)
                 .toList();
     }

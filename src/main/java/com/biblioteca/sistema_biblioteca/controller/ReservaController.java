@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/reservas")
@@ -37,14 +39,18 @@ public class ReservaController {
         this.modelMapper = modelMapper;
     }
 
-    // 🔹 CRIAR RESERVA
+    // 🎯 Criar reserva — USUÁRIO autenticado
+    @PreAuthorize("hasRole('USUARIO')")
     @PostMapping
-    public ResponseEntity<ApiResponse<ReservaResponseDTO>> criar(@Valid @RequestBody ReservaRequestDTO dto) {
+    public ResponseEntity<ApiResponse<ReservaResponseDTO>> criar(@Valid @RequestBody ReservaRequestDTO dto,
+                                                                 Authentication auth) {
         Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         Livro livro = livroRepository.findById(dto.getLivroId())
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
 
+        String username = auth.getName();
+        reservaService.validarUsuarioReserva(dto.getUsuarioId(), username);
         Reserva reserva = new Reserva();
         reserva.setUsuario(usuario);
         reserva.setLivro(livro);
@@ -58,13 +64,16 @@ public class ReservaController {
         return ResponseEntity.ok(new ApiResponse<>(resp, "Reserva criada com sucesso."));
     }
 
+    // ✅ Cancelar reserva — USUÁRIO (sua) ou ADMIN
+    @PreAuthorize("hasAnyRole('USUARIO','ADMIN')")
     @PutMapping("/{id}/cancelar")
-    public ResponseEntity<ApiResponse<String>> cancelar(@PathVariable Long id) {
-        reservaService.cancelarReserva(id);
+    public ResponseEntity<ApiResponse<String>> cancelar(@PathVariable Long id, Authentication auth) {
+        reservaService.cancelarAutorizado(id, auth.getName());
         return ResponseEntity.ok(new ApiResponse<>("OK", "Reserva cancelada com sucesso"));
     }
 
-    // 🔹 LISTAR TODAS
+    // 👀 Listar reservas — FUNCIONARIO / ADMIN
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<ReservaResponseDTO>>> listar() {
         List<ReservaResponseDTO> lista = reservaService.listar().stream()

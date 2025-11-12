@@ -6,6 +6,8 @@ import com.biblioteca.sistema_biblioteca.service.EmprestimoScheduler;
 import com.biblioteca.sistema_biblioteca.service.EmprestimoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -28,8 +30,15 @@ public class EmprestimoController {
         this.modelMapper = modelMapper;
     }
 
+    // 🎯 Criar empréstimo — USUÁRIO autenticado
+    @PreAuthorize("hasRole('USUARIO')")
     @PostMapping
-    public ResponseEntity<ApiResponse<EmprestimoResponseDTO>> criar(@Valid @RequestBody EmprestimoRequestDTO dto) {
+    public ResponseEntity<ApiResponse<EmprestimoResponseDTO>> criar(@Valid @RequestBody EmprestimoRequestDTO dto,
+                                                                    Authentication auth) {
+        // ✅ checa se o usuário autenticado é o mesmo do empréstimo
+        String username = auth.getName();
+        emprestimoService.validarUsuarioEmprestimo(dto.getUsuarioId(), username);
+
         Emprestimo criado = emprestimoService.realizarEmprestimo(dto.getUsuarioId(), dto.getLivroId());
         EmprestimoResponseDTO resp = modelMapper.map(criado, EmprestimoResponseDTO.class);
         if (criado.getUsuario() != null) resp.setUsuarioId(criado.getUsuario().getId());
@@ -37,8 +46,11 @@ public class EmprestimoController {
         return ResponseEntity.ok(new ApiResponse<>(resp, "Empréstimo realizado com sucesso."));
     }
 
+    // 🎯 Renovar empréstimo — somente o dono
+    @PreAuthorize("hasRole('USUARIO')")
     @PutMapping("/{id}/renovar")
-    public ResponseEntity<ApiResponse<EmprestimoResponseDTO>> renovar(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<EmprestimoResponseDTO>> renovar(@PathVariable Long id, Authentication auth) {
+        emprestimoService.validarDonoDoEmprestimo(id, auth.getName());
         Emprestimo renovado = emprestimoService.renovarEmprestimo(id);
         EmprestimoResponseDTO resp = modelMapper.map(renovado, EmprestimoResponseDTO.class);
         if (renovado.getUsuario() != null) resp.setUsuarioId(renovado.getUsuario().getId());
@@ -46,12 +58,16 @@ public class EmprestimoController {
         return ResponseEntity.ok(new ApiResponse<>(resp, "Empréstimo renovado com sucesso."));
     }
 
+    // ✅ Devolver — USUÁRIO (próprio) ou ADMIN/FUNCIONARIO (forçado)
+    @PreAuthorize("hasAnyRole('USUARIO','FUNCIONARIO','ADMIN')")
     @PutMapping("/{id}/devolver")
-    public ResponseEntity<ApiResponse<String>> devolver(@PathVariable Long id) {
-        emprestimoService.devolverLivro(id);
+    public ResponseEntity<ApiResponse<String>> devolver(@PathVariable Long id, Authentication auth) {
+        emprestimoService.devolverAutorizado(id, auth.getName());
         return ResponseEntity.ok(new ApiResponse<>("OK", "Livro devolvido com sucesso."));
     }
 
+    // 👀 Listar todos — ADMIN/FUNCIONARIO
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<EmprestimoResponseDTO>>> listar() {
         List<EmprestimoResponseDTO> lista = emprestimoService.listarEmprestimos().stream()
@@ -65,6 +81,8 @@ public class EmprestimoController {
         return ResponseEntity.ok(new ApiResponse<>(lista, "Lista de empréstimos"));
     }
 
+    // 👀 Atrasados — ADMIN/FUNCIONARIO
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @GetMapping("/atrasados")
     public ResponseEntity<ApiResponse<List<EmprestimoResponseDTO>>> atrasados() {
         List<EmprestimoResponseDTO> atrasados = emprestimoService.buscarEmprestimosAtrasados().stream()
@@ -78,13 +96,17 @@ public class EmprestimoController {
         return ResponseEntity.ok(new ApiResponse<>(atrasados, "Empréstimos atrasados"));
     }
 
+    // ✅ Status — dono, FUNCIONARIO ou ADMIN
+    @PreAuthorize("hasAnyRole('USUARIO','FUNCIONARIO','ADMIN')")
     @GetMapping("/{id}/status")
-    public ResponseEntity<ApiResponse<String>> status(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<String>> status(@PathVariable Long id, Authentication auth) {
+        emprestimoService.validarDonoDoEmprestimo(id, auth.getName());
         String status = emprestimoService.buscarPorId(id).verificarStatus().name();
         return ResponseEntity.ok(new ApiResponse<>(status, "Status do empréstimo"));
     }
 
-    // endpoint manual de devolução automática
+    // ⚙️ Rotina de devolução automática — ADMIN/FUNCIONARIO
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @PostMapping("/devolver-vencidos")
     public ResponseEntity<ApiResponse<String>> devolverVencidos() {
         emprestimoScheduler.devolverEmprestimosVencidos();

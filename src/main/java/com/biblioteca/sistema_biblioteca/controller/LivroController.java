@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -24,17 +25,15 @@ public class LivroController {
         this.livroRepository = livroRepository;
         this.modelMapper = modelMapper;
     }
-
-    // ✅ LISTAR LIVROS (com paginação)
+    // ✅ LISTAR LIVROS — público
     @GetMapping
     public ResponseEntity<ApiResponse<ApiPageResponse<LivroResponseDTO>>> listar(Pageable pageable) {
         Page<Livro> livrosPage = livroRepository.findAll(pageable);
-
         var response = ApiPageResponse.of(livrosPage, livro -> modelMapper.map(livro, LivroResponseDTO.class));
         return ResponseEntity.ok(new ApiResponse<>(response, "Livros listados com sucesso"));
     }
 
-    // ✅ BUSCAR POR ID
+    // ✅ BUSCAR POR ID — público
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<LivroResponseDTO>> buscarPorId(@PathVariable Long id) {
         Livro livro = livroService.buscarPorId(id);
@@ -42,7 +41,8 @@ public class LivroController {
         return ResponseEntity.ok(new ApiResponse<>(responseDTO, "Livro encontrado com sucesso"));
     }
 
-    // ✅ CRIAR LIVRO
+    // 🚫 Criar livro — SOMENTE FUNCIONÁRIO OU ADMIN
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<LivroResponseDTO>> criar(@Valid @RequestBody LivroRequestDTO dto) {
         Livro livro = modelMapper.map(dto, Livro.class);
@@ -51,18 +51,18 @@ public class LivroController {
         return ResponseEntity.ok(new ApiResponse<>(response, "Livro criado com sucesso"));
     }
 
-    // ✅ ATUALIZAR LIVRO
+    // 🚫 Atualizar livro — SOMENTE FUNCIONÁRIO OU ADMIN
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<LivroResponseDTO>> atualizar(
-            @PathVariable Long id,
-            @Valid @RequestBody LivroRequestDTO dto
-    ) {
+    public ResponseEntity<ApiResponse<LivroResponseDTO>> atualizar(@PathVariable Long id,
+                                                                   @Valid @RequestBody LivroRequestDTO dto) {
         Livro atualizado = livroService.atualizar(id, modelMapper.map(dto, Livro.class));
         LivroResponseDTO response = modelMapper.map(atualizado, LivroResponseDTO.class);
         return ResponseEntity.ok(new ApiResponse<>(response, "Livro atualizado com sucesso"));
     }
 
-    // ✅ DELETAR LIVRO
+    // 🚫 Deletar livro — SOMENTE ADMIN
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deletar(@PathVariable Long id) {
         livroService.deletar(id);

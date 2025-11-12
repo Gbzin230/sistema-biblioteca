@@ -24,6 +24,7 @@ public class EmprestimoServiceTest {
     private LivroRepository livroRepository;
     private UsuarioRepository usuarioRepository;
     private ReservaRepository reservaRepository;
+    private PessoaRepository pessoaRepository;
 
     @BeforeEach
     void setup() {
@@ -31,7 +32,8 @@ public class EmprestimoServiceTest {
         livroRepository = mock(LivroRepository.class);
         usuarioRepository = mock(UsuarioRepository.class);
         reservaRepository = mock(ReservaRepository.class);
-        service = new EmprestimoService(emprestimoRepository, livroRepository, usuarioRepository, reservaRepository);
+        pessoaRepository = mock(PessoaRepository.class);
+        service = new EmprestimoService(emprestimoRepository, livroRepository, usuarioRepository, reservaRepository, pessoaRepository);
     }
 
     @Test

@@ -1,17 +1,11 @@
 package com.biblioteca.sistema_biblioteca.service;
 
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
-import com.biblioteca.sistema_biblioteca.model.Emprestimo;
-import com.biblioteca.sistema_biblioteca.model.Livro;
-import com.biblioteca.sistema_biblioteca.model.Reserva;
-import com.biblioteca.sistema_biblioteca.model.Usuario;
-import com.biblioteca.sistema_biblioteca.repository.EmprestimoRepository;
-import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
-import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
-import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
+import com.biblioteca.sistema_biblioteca.model.*;
+import com.biblioteca.sistema_biblioteca.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +18,7 @@ public class EmprestimoService {
     private final LivroRepository livroRepository;
     private final UsuarioRepository usuarioRepository;
     private final ReservaRepository reservaRepository;
+    private final PessoaRepository pessoaRepository;
 
     private static final int PRAZO_PADRAO_DIAS = 7;
     private static final int MAX_RENOVACOES = 2;
@@ -31,11 +26,13 @@ public class EmprestimoService {
     public EmprestimoService(EmprestimoRepository emprestimoRepository,
                              LivroRepository livroRepository,
                              UsuarioRepository usuarioRepository,
-                             ReservaRepository reservaRepository) {
+                             ReservaRepository reservaRepository,
+                             PessoaRepository pessoaRepository) {
         this.emprestimoRepository = emprestimoRepository;
         this.livroRepository = livroRepository;
         this.usuarioRepository = usuarioRepository;
         this.reservaRepository = reservaRepository;
+        this.pessoaRepository = pessoaRepository;
     }
 
     @Transactional
@@ -161,4 +158,41 @@ public class EmprestimoService {
     public int countEmprestimosAtivos(Usuario usuario) {
         return emprestimoRepository.countByUsuarioAndStatus(usuario, Emprestimo.Status.ATIVO);
     }
+
+    // 🔐 Verifica se o usuário autenticado é o dono do empréstimo
+    public void validarDonoDoEmprestimo(Long emprestimoId, String username) {
+        Emprestimo e = emprestimoRepository.findById(emprestimoId)
+                .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
+        if (!e.getUsuario().getUsername().equals(username)) {
+            throw new AccessDeniedException("Você não pode acessar empréstimos de outro usuário.");
+        }
+    }
+
+    // 🔐 Valida se o usuário logado é o mesmo do empréstimo
+    public void validarUsuarioEmprestimo(Long usuarioId, String username) {
+        Pessoa pessoa = pessoaRepository.findByUsername(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+        if (!pessoa.getId().equals(usuarioId)) {
+            throw new AccessDeniedException("Você só pode realizar empréstimos em seu próprio nome.");
+        }
+    }
+
+    // 🔐 Permite devolver apenas se for o dono ou ADMIN/FUNCIONÁRIO
+    public void devolverAutorizado(Long emprestimoId, String username) {
+        Emprestimo e = emprestimoRepository.findById(emprestimoId)
+                .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
+
+        Pessoa pessoa = pessoaRepository.findByUsername(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        String role = pessoa.getRoleString();
+
+        if (role.equalsIgnoreCase("USUARIO") &&
+                !e.getUsuario().getUsername().equals(username)) {
+            throw new AccessDeniedException("Você não pode devolver empréstimos de outro usuário.");
+        }
+
+        devolverLivro(emprestimoId); // chama o método original
+    }
+
 }

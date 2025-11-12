@@ -3,16 +3,13 @@ package com.biblioteca.sistema_biblioteca.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.biblioteca.sistema_biblioteca.repository.*;
 import org.springframework.stereotype.Service;
 
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
-import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
-import com.biblioteca.sistema_biblioteca.repository.EmprestimoRepository;
-import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
-import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 
 import jakarta.transaction.Transactional;
@@ -43,26 +40,6 @@ public class UsuarioService {
 
     public Optional<Usuario> buscaPorId(Long id) {
         return usuarioRepository.findById(id);
-    }
-
-    @Transactional
-    public void deletar(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
-
-        boolean temEmprestimo = emprestimoRepository.existsByUsuario(usuario);
-        boolean temReserva = reservaRepository.existsByUsuario(usuario);
-
-        if (temEmprestimo || temReserva) {
-            throw new RegraNegocioException(
-                    "Não é possível deletar o usuário. Ele possui histórico de empréstimos ou reservas no sistema."
-            );
-        }
-
-        // Garante que nada pendente é mandado pro banco antes do delete
-        usuarioRepository.flush();
-
-        usuarioRepository.delete(usuario);
     }
 
 
@@ -107,5 +84,41 @@ public class UsuarioService {
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         return usuario.consultaHistorico();
+    }
+
+    @Transactional
+    public Usuario aprovarUsuario(Long id) {
+        Usuario u = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+        u.setFlagAtivo(true);
+        return usuarioRepository.save(u);
+    }
+
+    @Transactional
+    public Usuario bloquearUsuario(Long id) {
+        Usuario u = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+        u.setFlagAtivo(false);
+        return usuarioRepository.save(u);
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        boolean temEmprestimo = emprestimoRepository.existsByUsuario(usuario);
+        boolean temReserva = reservaRepository.existsByUsuario(usuario);
+
+        if (temEmprestimo || temReserva) {
+            throw new RegraNegocioException(
+                    "Não é possível deletar o usuário. Ele possui histórico de empréstimos ou reservas no sistema."
+            );
+        }
+
+        // Garante que nada pendente é mandado pro banco antes do delete
+        usuarioRepository.flush();
+
+        usuarioRepository.delete(usuario);
     }
 }

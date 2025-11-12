@@ -1,11 +1,14 @@
 package com.biblioteca.sistema_biblioteca.service;
 
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
+import com.biblioteca.sistema_biblioteca.model.Pessoa;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
+import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
 import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -16,13 +19,16 @@ public class ReservaService {
     private final ReservaRepository reservaRepository;
     private final LivroRepository livroRepository;
     private final EmprestimoService emprestimoService;
+    private final PessoaRepository pessoaRepository;
 
     public ReservaService(ReservaRepository reservaRepository,
                           LivroRepository livroRepository,
-                          EmprestimoService emprestimoService) {
+                          EmprestimoService emprestimoService,
+                          PessoaRepository pessoaRepository) {
         this.reservaRepository = reservaRepository;
         this.livroRepository = livroRepository;
         this.emprestimoService = emprestimoService;
+        this.pessoaRepository = pessoaRepository;
     }
 
     @Transactional
@@ -83,6 +89,34 @@ public class ReservaService {
     public List<Reserva> listar() {
         return reservaRepository.findAll();
     }
+
+    // 🔐 Valida se o usuário logado é o mesmo que está criando a reserva
+    public void validarUsuarioReserva(Long usuarioId, String username) {
+        Pessoa pessoa = pessoaRepository.findByUsername(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+        if (!pessoa.getId().equals(usuarioId)) {
+            throw new AccessDeniedException("Você só pode criar reservas em seu próprio nome.");
+        }
+    }
+
+    // 🔐 Valida se o usuário pode cancelar a reserva (dono ou admin)
+    public void cancelarAutorizado(Long reservaId, String username) {
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new RegraNegocioException("Reserva não encontrada."));
+
+        Pessoa pessoa = pessoaRepository.findByUsername(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        String role = pessoa.getRoleString();
+
+        if (role.equalsIgnoreCase("USUARIO") &&
+                !reserva.getUsuario().getUsername().equals(username)) {
+            throw new AccessDeniedException("Você não pode cancelar reservas de outro usuário.");
+        }
+
+        cancelarReserva(reservaId); // chama o método original
+    }
+
 }
 
 
