@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 @ConditionalOnProperty(prefix = "spring.scheduling", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class EmprestimoScheduler {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmprestimoScheduler.class);
     private final EmprestimoRepository emprestimoRepository;
     private final EmprestimoService emprestimoService;
 
@@ -48,7 +51,7 @@ public class EmprestimoScheduler {
         }
 
         if (!emprestimosAtivos.isEmpty()) {
-            System.out.println("📊 Total de devoluções automáticas: " + emprestimosAtivos.size());
+            logger.info("📊 Total de devoluções automáticas: {}", emprestimosAtivos.size());
         }
     }
 }

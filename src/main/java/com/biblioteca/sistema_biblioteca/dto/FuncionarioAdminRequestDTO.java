@@ -5,14 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class PessoaRequestDTO {
+public class FuncionarioAdminRequestDTO {
 
     @NotBlank(message = "O nome de usuário é obrigatório.")
     @Size(min = 3, max = 20, message = "O nome de usuário deve ter entre 3 e 20 caracteres.")
     private String username;
 
     @NotBlank(message = "O nome é obrigatório.")
-    @Size(min = 3, message = "O nome deve ter pelo menos 3 caracteres.")
     private String nome;
 
     @NotBlank(message = "O email é obrigatório.")
@@ -32,7 +31,7 @@ public class PessoaRequestDTO {
     private String telefone;
 
     @NotBlank(message = "O CPF é obrigatório.")
-    @Pattern(regexp = "^\\d{11}$", message = "O CPF deve conter exatamente 11 números (somente dígitos).")
+    @Pattern(regexp = "^\\d{11}$", message = "O CPF deve conter exatamente 11 números.")
     private String cpf;
 
     @NotBlank(message = "O endereço é obrigatório.")

@@ -8,20 +8,4 @@ import lombok.*;
 @Entity
 @DiscriminatorValue("ADMIN")
 public class Admin extends Funcionario {
-
-    // Métodos Admin
-
-    // public void cadastrarFuncionario() {
-    // // Lógica
-
-    // }
-
-    // public void bloquearPessoa(String username) {
-    // // Lógica
-    // }
-
-    // public void forcarDesalocacao(Emprestimo emprestimo) {
-    // // Lógica
-
-    // }
 }

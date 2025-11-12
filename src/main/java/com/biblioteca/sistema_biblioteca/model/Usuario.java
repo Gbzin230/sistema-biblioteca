@@ -21,7 +21,7 @@ public class Usuario extends Pessoa {
     private List<Reserva> reservasAtivas = new ArrayList<>();
 
     public Usuario() {
-        this.setFlagAtivo(true);
+        this.setFlagAtivo(false);
         this.limiteSlots = 3;
     }
 

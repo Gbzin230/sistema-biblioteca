@@ -67,9 +67,10 @@ public class Pessoa {
 
     @PrePersist
     private void prePersist() {
+        // 🔒 Por padrão, mantém o que foi definido pelo Controller
+        // Se for nulo (não setado manualmente), assume false (aguardando aprovação)
         if (!this.flagAtivo) {
-            // por padrão: usuários criados não aprovados? ou true se quiser
-            this.flagAtivo = true; // ou false
+            this.flagAtivo = false;
         }
     }
 }

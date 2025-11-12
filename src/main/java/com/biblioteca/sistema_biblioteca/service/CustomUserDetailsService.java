@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -26,17 +27,22 @@ public class CustomUserDetailsService implements UserDetailsService {
         Pessoa pessoa = pessoaRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
-        // 🔹 Garante que o Spring Security reconheça o papel corretamente (ROLE_ prefixado)
-        String role = "ROLE_" + pessoa.getRoleString().toUpperCase();
+        // 🚫 Bloqueia login se o usuário ainda não foi aprovado
+        if (!pessoa.isFlagAtivo()) {
+            throw new UsernameNotFoundException("Usuário ainda não aprovado pelo sistema. Aguarde validação de um funcionário ou admin.");
+        }
 
+        String role = "ROLE_" + pessoa.getRoleString().toUpperCase();
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
-        // 🔹 Configura o objeto UserDetails do Spring com status de ativação
         return User.builder()
                 .username(pessoa.getUsername())
                 .password(pessoa.getSenha())
                 .authorities(authorities)
-                .disabled(!pessoa.isFlagAtivo()) // se flag_ativo = false → bloqueia login
                 .build();
+    }
+
+    public Optional<Pessoa> getPessoaByUsername(String username) {
+        return pessoaRepository.findByUsername(username);
     }
 }
