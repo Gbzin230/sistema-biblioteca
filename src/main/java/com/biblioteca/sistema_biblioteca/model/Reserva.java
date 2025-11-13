@@ -2,8 +2,10 @@ package com.biblioteca.sistema_biblioteca.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import com.biblioteca.sistema_biblioteca.model.converter.ReservaStatusConverter;
 
 @Entity
+@Table(name = "TB_RESERVA")
 public class Reserva {
 
     public enum ReservaStatus {
@@ -14,19 +16,25 @@ public class Reserva {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cod_reserva")
     private Long id;
 
+    @Column(name = "dt_solicitacao")
     private LocalDate dtSolicitacao;
+
+    @Column(name = "num_posicao_fila")
     private Integer posicaoFila;
 
+    @Convert(converter = ReservaStatusConverter.class)
+    @Column(name = "cod_status_reserva")
     private ReservaStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "cod_usuario")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "livro_id")
+    @JoinColumn(name = "cod_livro")
     private Livro livro;
 
     public Reserva() {

@@ -3,25 +3,47 @@ package com.biblioteca.sistema_biblioteca.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "TB_USUARIO")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public class Pessoa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cod_usuario")
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "cod_username", unique = true, nullable = false)
     private String username;
 
+    @Column(name = "txt_nome")
     private String nome;
+
+    @Column(name = "dt_nascimento")
     private String dtNascimento;
+
+    @Column(name = "txt_email")
     private String email;
-    private String senha;     // 🔐 importante
+
+    @Column(name = "senha_hash")
+    private String senha;
+
+    @Column(name = "num_telefone")
     private String telefone;
+
+    @Column(name = "num_endereco")
     private String endereco;
+
+    @Column(name = "cod_cpf")
     private String cpf;
+
+    @Column(name = "char_sexo")
     private char sexo;
+
+    @Column(name = "role", insertable = false, updatable = false)
+    private String roleString;
+
+    @Column(name = "flag_ativo")
     private boolean flagAtivo;
 
     // ===== Getters e Setters =====
@@ -58,12 +80,8 @@ public class Pessoa {
     public boolean isFlagAtivo() { return flagAtivo; }
     public void setFlagAtivo(boolean flagAtivo) { this.flagAtivo = flagAtivo; }
 
-    public String getRoleString() {
-        // se você quiser mapear valores diferentes:
-        String simple = this.getClass().getSimpleName().toUpperCase();
-        // retorna USUARIO, FUNCIONARIO, ADMIN
-        return simple;
-    }
+    public String getRoleString() { return roleString != null ? roleString : this.getClass().getSimpleName().toUpperCase(); }
+    public void setRoleString(String roleString) { this.roleString = roleString; }
 
     @PrePersist
     private void prePersist() {

@@ -2,27 +2,36 @@ package com.biblioteca.sistema_biblioteca.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import com.biblioteca.sistema_biblioteca.model.converter.EmprestimoStatusConverter;
 
 @Entity
+@Table(name = "TB_EMPRESTIMO")
 public class Emprestimo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cod_emprestimo")
     private Long id;
 
+    @Column(name = "dt_inicio")
     private LocalDate dtInicio;
+
+    @Column(name = "dt_prevista_devolucao")
     private LocalDate dtPrevistaDevolucao;
+
+    @Column(name = "num_renovacoes")
     private Integer numRenovacoes;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = EmprestimoStatusConverter.class)
+    @Column(name = "cod_status")
     private Status status;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "cod_usuario")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "livro_id", nullable = false)
+    @JoinColumn(name = "cod_livro", nullable = false)
     private Livro livro;
 
     public enum Status {

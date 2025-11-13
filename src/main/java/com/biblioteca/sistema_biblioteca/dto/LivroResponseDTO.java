@@ -8,7 +8,7 @@ public class LivroResponseDTO {
     private String autor;
     private String editora;
     private String tema;
-    private String tags;
+    private java.util.List<String> tags;
     private Integer anoLancamento;
     private String sinopse;
     private Livro.Status status;
@@ -27,8 +27,8 @@ public class LivroResponseDTO {
     public String getTema() { return tema; }
     public void setTema(String tema) { this.tema = tema; }
 
-    public String getTags() { return tags; }
-    public void setTags(String tags) { this.tags = tags; }
+    public java.util.List<String> getTags() { return tags; }
+    public void setTags(java.util.List<String> tags) { this.tags = tags; }
 
     public Integer getAnoLancamento() { return anoLancamento; }
     public void setAnoLancamento(Integer anoLancamento) { this.anoLancamento = anoLancamento; }

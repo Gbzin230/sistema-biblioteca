@@ -54,7 +54,7 @@ public class EmprestimoService {
             throw new RegraNegocioException("Usuário bloqueado não pode realizar empréstimos.");
         }
 
-        if (!livro.isDisponivel()) {
+        if (!livro.isDisponivel() && livro.getStatus() != Livro.Status.RESERVADO) {
             throw new RegraNegocioException("Livro não está disponível para empréstimo.");
         }
 
@@ -110,25 +110,32 @@ public class EmprestimoService {
         Livro livro = emprestimo.getLivro();
 
         if (livro != null) {
-            Optional<Reserva> proximaReserva = reservaRepository.findFirstByLivroAndStatusOrderByDtSolicitacaoAsc(
-                    livro, Reserva.ReservaStatus.ATIVA
-            );
+            List<Reserva> fila = reservaRepository.findByLivroAndStatusOrderByDtSolicitacaoAsc(livro, Reserva.ReservaStatus.ATIVA);
 
-            if (proximaReserva.isPresent()) {
-                Reserva reserva = proximaReserva.get();
+            boolean emprestado = false;
+            for (Reserva reserva : fila) {
                 Usuario usuario = reserva.getUsuario();
+                int emprestimosAtivos = emprestimoRepository.countByUsuarioAndStatus(usuario, Emprestimo.Status.ATIVO);
+                int reservasAtivas = reservaRepository.countByUsuarioAndStatus(usuario, Reserva.ReservaStatus.ATIVA);
+                int totalSlots = emprestimosAtivos + reservasAtivas;
 
-                if (usuario.podeEmprestar()) {
+                if (Boolean.TRUE.equals(usuario.isFlagAtivo()) && totalSlots < 3) {
                     Emprestimo novoEmprestimo = new Emprestimo(usuario, livro);
                     livro.alterarStatus(Livro.Status.EMPRESTADO);
                     emprestimoRepository.save(novoEmprestimo);
                     reserva.setStatus(Reserva.ReservaStatus.CONFIRMADA);
                     reservaRepository.save(reserva);
-                } else {
-                    livro.alterarStatus(Livro.Status.DISPONIVEL);
+                    emprestado = true;
+                    break;
                 }
-            } else {
-                livro.alterarStatus(Livro.Status.DISPONIVEL);
+            }
+
+            if (!emprestado) {
+                if (fila.isEmpty()) {
+                    livro.alterarStatus(Livro.Status.DISPONIVEL);
+                } else {
+                    livro.alterarStatus(Livro.Status.RESERVADO);
+                }
             }
 
             livroRepository.save(livro);

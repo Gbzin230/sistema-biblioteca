@@ -2,8 +2,11 @@ package com.biblioteca.sistema_biblioteca.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 
 public class PessoaRequestDTO {
 
@@ -42,6 +45,10 @@ public class PessoaRequestDTO {
     @Pattern(regexp = "^[MFmf]$", message = "O sexo deve ser 'M' ou 'F'.")
     private String sexo;
 
+    @NotNull(message = "A data de nascimento é obrigatória.")
+    @Past(message = "A data de nascimento deve ser no passado.")
+    private LocalDate dtNascimento;
+
     // Getters e Setters
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -66,5 +73,8 @@ public class PessoaRequestDTO {
 
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
+
+    public LocalDate getDtNascimento() { return dtNascimento; }
+    public void setDtNascimento(LocalDate dtNascimento) { this.dtNascimento = dtNascimento; }
 }
 

@@ -48,8 +48,21 @@ public class ReservaService {
             throw new RegraNegocioException("Usuário atingiu o limite máximo de 3 slots (empréstimos + reservas).");
         }
 
+        Livro livro = reserva.getLivro();
+
+        if (livro.isDisponivel()) {
+            emprestimoService.realizarEmprestimo(usuario.getId(), livro.getId());
+            reserva.setStatus(Reserva.ReservaStatus.CONFIRMADA);
+            return reservaRepository.save(reserva);
+        }
+
         reserva.setStatus(Reserva.ReservaStatus.ATIVA);
-        return reservaRepository.save(reserva);
+        Reserva salva = reservaRepository.save(reserva);
+        if (livro.getStatus() != Livro.Status.EMPRESTADO) {
+            livro.alterarStatus(Livro.Status.RESERVADO);
+            livroRepository.save(livro);
+        }
+        return salva;
     }
 
 
@@ -59,7 +72,7 @@ public class ReservaService {
                 .orElseThrow(() -> new RegraNegocioException("Reserva não encontrada."));
 
         Livro livro = reserva.getLivro();
-        if (!livro.isDisponivel()) {
+        if (!livro.isDisponivel() && livro.getStatus() != Livro.Status.RESERVADO) {
             throw new RegraNegocioException("Livro não disponível para empréstimo.");
         }
 

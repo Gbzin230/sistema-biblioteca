@@ -40,6 +40,10 @@ public class PessoaController {
     public ResponseEntity<PessoaResponseDTO> cadastrar(@Valid @RequestBody PessoaRequestDTO dto) {
         Usuario usuario = modelMapper.map(dto, Usuario.class);
         usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        // Ajustes de campos que exigem conversão ou não são mapeados automaticamente
+        if (dto.getSexo() != null && !dto.getSexo().isEmpty()) {
+            usuario.setSexo(dto.getSexo().charAt(0));
+        }
 
         // 🔒 Por segurança: novos usuários ficam inativos até aprovação
         usuario.setFlagAtivo(false);

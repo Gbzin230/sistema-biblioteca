@@ -61,7 +61,10 @@ public class ReservaController {
         resp.setUsuarioId(usuario.getId());
         resp.setLivroId(livro.getId());
 
-        return ResponseEntity.ok(new ApiResponse<>(resp, "Reserva criada com sucesso."));
+        String mensagem = (salva.getStatus() == Reserva.ReservaStatus.CONFIRMADA)
+                ? "Livro disponível; empréstimo realizado"
+                : "Reserva criada com sucesso.";
+        return ResponseEntity.ok(new ApiResponse<>(resp, mensagem));
     }
 
     // ✅ Cancelar reserva — USUÁRIO (sua) ou ADMIN

@@ -1,5 +1,7 @@
 package com.biblioteca.sistema_biblioteca.dto;
 
+import java.time.LocalDate;
+
 public class PessoaResponseDTO {
 
     private Long id;
@@ -10,6 +12,7 @@ public class PessoaResponseDTO {
     private String cpf;
     private String endereco;
     private String sexo;
+    private LocalDate dtNascimento;
     private Integer limiteSlots = 3;
 
     // Getters e Setters
@@ -37,6 +40,9 @@ public class PessoaResponseDTO {
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
 
+    public LocalDate getDtNascimento() { return dtNascimento; }
+    public void setDtNascimento(LocalDate dtNascimento) { this.dtNascimento = dtNascimento; }
+
     public Integer getLimiteSlots() {
         return limiteSlots;
     }
@@ -45,4 +51,3 @@ public class PessoaResponseDTO {
         this.limiteSlots = limiteSlots;
     }
 }
-
