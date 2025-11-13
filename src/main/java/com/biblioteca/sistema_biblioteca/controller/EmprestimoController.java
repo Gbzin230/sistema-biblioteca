@@ -2,7 +2,6 @@ package com.biblioteca.sistema_biblioteca.controller;
 
 import com.biblioteca.sistema_biblioteca.dto.*;
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
-import com.biblioteca.sistema_biblioteca.service.EmprestimoScheduler;
 import com.biblioteca.sistema_biblioteca.service.EmprestimoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +18,11 @@ import java.util.stream.Collectors;
 public class EmprestimoController {
 
     private final EmprestimoService emprestimoService;
-    private final EmprestimoScheduler emprestimoScheduler;
     private final ModelMapper modelMapper;
 
     public EmprestimoController(EmprestimoService emprestimoService,
-                                EmprestimoScheduler emprestimoScheduler,
                                 ModelMapper modelMapper) {
         this.emprestimoService = emprestimoService;
-        this.emprestimoScheduler = emprestimoScheduler;
         this.modelMapper = modelMapper;
     }
 
@@ -103,14 +99,6 @@ public class EmprestimoController {
         emprestimoService.validarDonoDoEmprestimo(id, auth.getName());
         String status = emprestimoService.buscarPorId(id).verificarStatus().name();
         return ResponseEntity.ok(new ApiResponse<>(status, "Status do empréstimo"));
-    }
-
-    // ⚙️ Rotina manual de verificação e devolução automática — ADMIN/FUNCIONARIO
-    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
-    @PostMapping("/verificar-emprestimos")
-    public ResponseEntity<ApiResponse<String>> verificarEmprestimos() {
-        emprestimoScheduler.verificarEmprestimos();
-        return ResponseEntity.ok(new ApiResponse<>("Processo de verificação e envio de e-mails executado com sucesso!", "Rotina manual"));
     }
 }
 
