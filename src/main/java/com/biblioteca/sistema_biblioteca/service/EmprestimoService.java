@@ -19,6 +19,7 @@ public class EmprestimoService {
     private final UsuarioRepository usuarioRepository;
     private final ReservaRepository reservaRepository;
     private final PessoaRepository pessoaRepository;
+    private final StatusLivroRepository statusLivroRepository;
 
     private static final int PRAZO_PADRAO_DIAS = 7;
     private static final int MAX_RENOVACOES = 2;
@@ -27,13 +28,15 @@ public class EmprestimoService {
                              LivroRepository livroRepository,
                              UsuarioRepository usuarioRepository,
                              ReservaRepository reservaRepository,
-                             PessoaRepository pessoaRepository) {
+                             PessoaRepository pessoaRepository,
+                             StatusLivroRepository statusLivroRepository) {
 
         this.emprestimoRepository = emprestimoRepository;
         this.livroRepository = livroRepository;
         this.usuarioRepository = usuarioRepository;
         this.reservaRepository = reservaRepository;
         this.pessoaRepository = pessoaRepository;
+        this.statusLivroRepository = statusLivroRepository;
     }
 
     // ====================================================================
@@ -59,7 +62,13 @@ public class EmprestimoService {
             throw new RegraNegocioException("Usuário bloqueado não pode realizar empréstimos.");
         }
 
-        if (!livro.isDisponivel() && livro.getStatus() != Livro.Status.RESERVADO) {
+        StatusLivro reservado = statusLivroRepository.findByNomeIgnoreCase("RESERVADO")
+                .orElseThrow(() -> new RegraNegocioException("Status 'RESERVADO' não existe."));
+
+        StatusLivro emprestado = statusLivroRepository.findByNomeIgnoreCase("EMPRESTADO")
+                .orElseThrow(() -> new RegraNegocioException("Status 'EMPRESTADO' não existe."));
+
+        if (!livro.isDisponivel() && livro.getStatus() != reservado) {
             throw new RegraNegocioException("Livro não está disponível.");
         }
 
@@ -68,7 +77,7 @@ public class EmprestimoService {
         emprestimo.setDtPrevistaDevolucao(LocalDate.now().plusDays(PRAZO_PADRAO_DIAS));
         emprestimo.setStatus(Emprestimo.Status.ATIVO);
 
-        livro.alterarStatus(Livro.Status.EMPRESTADO);
+        livro.setStatus(emprestado);
         livroRepository.save(livro);
 
         return emprestimoRepository.save(emprestimo);
@@ -123,7 +132,16 @@ public class EmprestimoService {
 
         if (livro == null) return;
 
-        // Fila de reservas
+        StatusLivro statusDisponivel = statusLivroRepository.findByNomeIgnoreCase("DISPONIVEL")
+                .orElseThrow(() -> new RegraNegocioException("Status 'DISPONIVEL' não existe."));
+
+        StatusLivro statusEmprestado = statusLivroRepository.findByNomeIgnoreCase("EMPRESTADO")
+                .orElseThrow(() -> new RegraNegocioException("Status 'EMPRESTADO' não existe."));
+
+        StatusLivro statusReservado = statusLivroRepository.findByNomeIgnoreCase("RESERVADO")
+                .orElseThrow(() -> new RegraNegocioException("Status 'RESERVADO' não existe."));
+
+        // Fila de reservas ordenada
         List<Reserva> fila = reservaRepository
                 .findByLivroAndStatusOrderByDtSolicitacaoAsc(livro, Reserva.ReservaStatus.ATIVA);
 
@@ -143,7 +161,7 @@ public class EmprestimoService {
                 novoEmprestimo.setDtPrevistaDevolucao(LocalDate.now().plusDays(PRAZO_PADRAO_DIAS));
                 novoEmprestimo.setStatus(Emprestimo.Status.ATIVO);
 
-                livro.alterarStatus(Livro.Status.EMPRESTADO);
+                livro.setStatus(statusEmprestado);
 
                 emprestimoRepository.save(novoEmprestimo);
 
@@ -155,9 +173,8 @@ public class EmprestimoService {
             }
         }
 
-        // Se não emprestou para ninguém → atualiza status do livro
         if (!emprestado) {
-            livro.alterarStatus(fila.isEmpty() ? Livro.Status.DISPONIVEL : Livro.Status.RESERVADO);
+            livro.setStatus(fila.isEmpty() ? statusDisponivel : statusReservado);
         }
 
         livroRepository.save(livro);
@@ -183,7 +200,7 @@ public class EmprestimoService {
         return emprestimoRepository.findAll().stream()
                 .filter(e -> e.getStatus() == Emprestimo.Status.ATIVO)
                 .filter(e -> e.getDtPrevistaDevolucao() != null &&
-                             e.getDtPrevistaDevolucao().isBefore(hoje))
+                        e.getDtPrevistaDevolucao().isBefore(hoje))
                 .collect(Collectors.toList());
     }
 
@@ -225,7 +242,7 @@ public class EmprestimoService {
         String role = pessoa.getRoleString();
 
         if (role.equalsIgnoreCase("USUARIO") &&
-            !emprestimo.getUsuario().getUsername().equals(username)) {
+                !emprestimo.getUsuario().getUsername().equals(username)) {
 
             throw new AccessDeniedException("Você não pode devolver empréstimos de outro usuário.");
         }

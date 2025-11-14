@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,19 +21,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/pessoas")
 public class PessoaController {
 
-    private final PessoaRepository pessoaRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
     private final UsuarioService usuarioService;
+    private final ModelMapper modelMapper;
 
-    public PessoaController(PessoaRepository pessoaRepository,
-                            PasswordEncoder passwordEncoder,
-                            ModelMapper modelMapper,
-                            UsuarioService usuarioService) {
-        this.pessoaRepository = pessoaRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.modelMapper = modelMapper;
+    public PessoaController(UsuarioService usuarioService, ModelMapper modelMapper) {
         this.usuarioService = usuarioService;
+        this.modelMapper = modelMapper;
     }
 
     // ============================================================
@@ -41,21 +35,31 @@ public class PessoaController {
     @PostMapping
     public ResponseEntity<PessoaResponseDTO> cadastrar(@Valid @RequestBody PessoaRequestDTO dto) {
 
-        Usuario usuario = modelMapper.map(dto, Usuario.class);
+        Usuario usuario = new Usuario();
 
-        usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        usuario.setUsername(dto.getUsername());
+        usuario.setNome(dto.getNome());
+        usuario.setEmail(dto.getEmail());
+        usuario.setTelefone(dto.getTelefone());
+        usuario.setCpf(dto.getCpf());
+        usuario.setEndereco(dto.getEndereco());
+        usuario.setSexo(dto.getSexo().charAt(0));
 
-        if (dto.getSexo() != null && !dto.getSexo().isEmpty()) {
-            usuario.setSexo(dto.getSexo().charAt(0));
-        }
+        DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
+        usuario.setDtNascimento(dto.getDtNascimento().format(formatter));
 
-        // 🔒 Novos usuários aguardam aprovação
+        // valores padrão
+        usuario.setLimiteSlots(3);
         usuario.setFlagAtivo(false);
+        usuario.setRoleString("USUARIO");
 
-        Usuario salvo = pessoaRepository.save(usuario);
+        // senha criptografada
+        usuario.setSenha(usuarioService.encodePassword(dto.getSenha()));
 
-        PessoaResponseDTO response = modelMapper.map(salvo, PessoaResponseDTO.class);
-        return ResponseEntity.ok(response);
+        Usuario salvo = usuarioService.salvar(usuario);
+
+        PessoaResponseDTO resp = modelMapper.map(salvo, PessoaResponseDTO.class);
+        return ResponseEntity.ok(resp);
     }
 
     // ============================================================
@@ -65,7 +69,7 @@ public class PessoaController {
     @GetMapping
     public ResponseEntity<List<PessoaResponseDTO>> listar() {
 
-        List<PessoaResponseDTO> pessoas = pessoaRepository.findAll()
+        List<PessoaResponseDTO> pessoas = usuarioService.listarUsuarios()
                 .stream()
                 .map(p -> modelMapper.map(p, PessoaResponseDTO.class))
                 .collect(Collectors.toList());

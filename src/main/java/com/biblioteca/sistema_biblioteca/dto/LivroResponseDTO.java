@@ -1,6 +1,7 @@
 package com.biblioteca.sistema_biblioteca.dto;
 
 import com.biblioteca.sistema_biblioteca.model.Livro;
+import java.util.List;
 
 public class LivroResponseDTO {
 
@@ -8,10 +9,10 @@ public class LivroResponseDTO {
     private String autor;
     private String editora;
     private String tema;
-    private java.util.List<String> tags;
+    private List<String> tags;
     private Integer anoLancamento;
     private String sinopse;
-    private Livro.Status status;
+    private String status; // <-- AGORA É STRING
     private Boolean flagAtivo;
 
     // Getters e Setters
@@ -27,8 +28,8 @@ public class LivroResponseDTO {
     public String getTema() { return tema; }
     public void setTema(String tema) { this.tema = tema; }
 
-    public java.util.List<String> getTags() { return tags; }
-    public void setTags(java.util.List<String> tags) { this.tags = tags; }
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = tags; }
 
     public Integer getAnoLancamento() { return anoLancamento; }
     public void setAnoLancamento(Integer anoLancamento) { this.anoLancamento = anoLancamento; }
@@ -36,8 +37,8 @@ public class LivroResponseDTO {
     public String getSinopse() { return sinopse; }
     public void setSinopse(String sinopse) { this.sinopse = sinopse; }
 
-    public Livro.Status getStatus() { return status; }
-    public void setStatus(Livro.Status status) { this.status = status; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public Boolean getFlagAtivo() { return flagAtivo; }
     public void setFlagAtivo(Boolean flagAtivo) { this.flagAtivo = flagAtivo; }

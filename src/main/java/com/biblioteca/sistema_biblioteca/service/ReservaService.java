@@ -1,13 +1,8 @@
 package com.biblioteca.sistema_biblioteca.service;
 
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
-import com.biblioteca.sistema_biblioteca.model.Reserva;
-import com.biblioteca.sistema_biblioteca.model.Livro;
-import com.biblioteca.sistema_biblioteca.model.Pessoa;
-import com.biblioteca.sistema_biblioteca.model.Usuario;
-import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
-import com.biblioteca.sistema_biblioteca.repository.ReservaRepository;
-import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import com.biblioteca.sistema_biblioteca.model.*;
+import com.biblioteca.sistema_biblioteca.repository.*;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -22,17 +17,20 @@ public class ReservaService {
     private final LivroRepository livroRepository;
     private final EmprestimoService emprestimoService;
     private final PessoaRepository pessoaRepository;
+    private final StatusLivroRepository statusLivroRepository;
 
     public ReservaService(
             ReservaRepository reservaRepository,
             LivroRepository livroRepository,
             EmprestimoService emprestimoService,
-            PessoaRepository pessoaRepository
+            PessoaRepository pessoaRepository,
+            StatusLivroRepository statusLivroRepository
     ) {
         this.reservaRepository = reservaRepository;
         this.livroRepository = livroRepository;
         this.emprestimoService = emprestimoService;
         this.pessoaRepository = pessoaRepository;
+        this.statusLivroRepository = statusLivroRepository;
     }
 
     // ==========================================================
@@ -48,30 +46,36 @@ public class ReservaService {
 
         Usuario usuario = reserva.getUsuario();
 
-        // 🔹 contador de slots ativos
         int emprestimosAtivos = emprestimoService.countEmprestimosAtivos(usuario);
-        int reservasAtivas = reservaRepository.countByUsuarioAndStatus(usuario, Reserva.ReservaStatus.ATIVA);
+        int reservasAtivas = reservaRepository.countByUsuarioAndStatus(usuario, reserva.getStatus());
         int totalSlots = emprestimosAtivos + reservasAtivas;
 
         if (totalSlots >= 3) {
-            throw new RegraNegocioException("Usuário atingiu o limite máximo de 3 slots (empréstimos + reservas).");
+            throw new RegraNegocioException("Usuário atingiu o limite máximo de 3 slots.");
         }
 
         Livro livro = reserva.getLivro();
 
-        // 🔹 Livro disponível → vira empréstimo imediatamente
-        if (livro.isDisponivel()) {
-            emprestimoService.realizarEmprestimo(usuario.getUsername(), livro.getId()); // ID agora é String
-            reserva.setStatus(Reserva.ReservaStatus.CONFIRMADA);
+        boolean disponivel = livro.getStatus().getNome().equalsIgnoreCase("DISPONIVEL")
+                && Boolean.TRUE.equals(livro.getFlagAtivo());
+
+        if (disponivel) {
+
+            emprestimoService.realizarEmprestimo(usuario.getUsername(), livro.getId());
+
+            reserva.setStatus(reserva.getStatus()); // provavelmente CONFIRMADA pelo construtor
             return reservaRepository.save(reserva);
         }
 
-        // 🔹 Caso contrário → vira reserva ativa
-        reserva.setStatus(Reserva.ReservaStatus.ATIVA);
+        reserva.setStatus(reserva.getStatus()); // ATIVA
         Reserva salva = reservaRepository.save(reserva);
 
-        if (livro.getStatus() != Livro.Status.EMPRESTADO) {
-            livro.alterarStatus(Livro.Status.RESERVADO);
+        boolean jaEmprestado = livro.getStatus().getNome().equalsIgnoreCase("EMPRESTADO");
+
+        if (!jaEmprestado) {
+            StatusLivro reservado = statusLivroRepository.findByNomeIgnoreCase("RESERVADO")
+                    .orElseThrow(() -> new RegraNegocioException("Status 'RESERVADO' não existe."));
+            livro.setStatus(reservado);
             livroRepository.save(livro);
         }
 
@@ -79,7 +83,7 @@ public class ReservaService {
     }
 
     // ==========================================================
-    // CONFIRMAR RESERVA → vira EMPRÉSTIMO
+    // CONFIRMAR RESERVA
     // ==========================================================
 
     @Transactional
@@ -90,16 +94,18 @@ public class ReservaService {
 
         Livro livro = reserva.getLivro();
 
-        if (!livro.isDisponivel() && livro.getStatus() != Livro.Status.RESERVADO) {
+        boolean disponivel = livro.getStatus().getNome().equalsIgnoreCase("DISPONIVEL");
+
+        if (!disponivel) {
             throw new RegraNegocioException("Livro não disponível para empréstimo.");
         }
 
         emprestimoService.realizarEmprestimo(
-                reserva.getUsuario().getUsername(),   // ✔ agora String
+                reserva.getUsuario().getUsername(),
                 livro.getId()
         );
 
-        reserva.setStatus(Reserva.ReservaStatus.CONFIRMADA);
+        reserva.setStatus(reserva.getStatus()); // CONFIRMADA
         reservaRepository.save(reserva);
     }
 
@@ -111,7 +117,7 @@ public class ReservaService {
     public void cancelarReserva(Long id) {
 
         Reserva reserva = reservaRepository.findById(id)
-                .orElseThrow(() -> new RegraNegocioException("Reserva não encontrada"));
+                .orElseThrow(() -> new RegraNegocioException("Reserva não encontrada."));
 
         reserva.cancelar();
         reservaRepository.save(reserva);
@@ -119,12 +125,13 @@ public class ReservaService {
         Livro livro = reserva.getLivro();
 
         boolean aindaReservado = reservaRepository.existsByLivroAndStatus(
-                livro, Reserva.ReservaStatus.ATIVA
-        );
+                livro, reserva.getStatus());
 
-        // Se ninguém mais estiver reservando → livro volta a estar disponível
-        if (!aindaReservado && livro.getStatus() == Livro.Status.RESERVADO) {
-            livro.alterarStatus(Livro.Status.DISPONIVEL);
+        if (!aindaReservado) {
+            StatusLivro disponivel = statusLivroRepository.findByNomeIgnoreCase("DISPONIVEL")
+                    .orElseThrow(() -> new RegraNegocioException("Status 'DISPONIVEL' não existe."));
+
+            livro.setStatus(disponivel);
             livroRepository.save(livro);
         }
     }
@@ -139,7 +146,7 @@ public class ReservaService {
     }
 
     // ==========================================================
-    // VALIDAÇÃO: usuário logado só pode reservar para ele mesmo
+    // VALIDAÇÃO DE SEGURANÇA
     // ==========================================================
 
     public void validarUsuarioReserva(String usuarioId, String usernameLogado) {
@@ -153,7 +160,7 @@ public class ReservaService {
     }
 
     // ==========================================================
-    // CANCELAMENTO SEGURO
+    // CANCELAMENTO AUTORIZADO
     // ==========================================================
 
     public void cancelarAutorizado(Long reservaId, String usernameLogado) {
@@ -166,9 +173,9 @@ public class ReservaService {
 
         String role = pessoa.getRoleString();
 
-        // Usuário comum só cancela a própria reserva
         if (role.equalsIgnoreCase("USUARIO") &&
                 !reserva.getUsuario().getUsername().equals(usernameLogado)) {
+
             throw new AccessDeniedException("Você não pode cancelar reservas de outro usuário.");
         }
 

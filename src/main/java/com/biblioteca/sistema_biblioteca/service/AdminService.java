@@ -11,30 +11,33 @@ import com.biblioteca.sistema_biblioteca.model.Funcionario;
 import com.biblioteca.sistema_biblioteca.model.Pessoa;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.model.Livro;
-import com.biblioteca.sistema_biblioteca.repository.AdminRepository;
-import com.biblioteca.sistema_biblioteca.repository.FuncionarioRepository;
-import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
-import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
-import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
+import com.biblioteca.sistema_biblioteca.model.StatusLivro;
+import com.biblioteca.sistema_biblioteca.repository.*;
 
 @Service
 public class AdminService {
+
     private final AdminRepository adminRepository;
     private final FuncionarioRepository funcionarioRepository;
     private final LivroRepository livroRepository;
     private final UsuarioRepository usuarioRepository;
     private final PessoaRepository pessoaRepository;
+    private final StatusLivroRepository statusLivroRepository;
 
-    public AdminService(AdminRepository adminRepository,
+    public AdminService(
+            AdminRepository adminRepository,
             FuncionarioRepository funcionarioRepository,
             LivroRepository livroRepository,
             UsuarioRepository usuarioRepository,
-            PessoaRepository pessoaRepository) {
+            PessoaRepository pessoaRepository,
+            StatusLivroRepository statusLivroRepository) {
+
         this.adminRepository = adminRepository;
         this.funcionarioRepository = funcionarioRepository;
         this.livroRepository = livroRepository;
         this.usuarioRepository = usuarioRepository;
         this.pessoaRepository = pessoaRepository;
+        this.statusLivroRepository = statusLivroRepository;
     }
 
     // CRUD
@@ -54,8 +57,6 @@ public class AdminService {
         adminRepository.deleteById(id);
     }
 
-    // Métodos Administrativos
-
     // Funcionário
     public Funcionario cadastrarFuncionario(Funcionario funcionario) {
         return funcionarioRepository.save(funcionario);
@@ -63,25 +64,31 @@ public class AdminService {
 
     public void bloquearPessoa(String username) {
         pessoaRepository.findByUsername(username).ifPresent(p -> {
-
             p.setFlagAtivo(false);
             pessoaRepository.save(p);
-
         });
-
     }
 
     public void forcarDesalocacao(Emprestimo emprestimo) {
         if (emprestimo != null) {
+
             Usuario usuario = emprestimo.getUsuario();
             Livro livro = emprestimo.getLivro();
 
             if (usuario != null && livro != null) {
-                usuario.devolverLivro(emprestimo); // já remove e muda status do livro
-                livro.alterarStatus(Livro.Status.DISPONIVEL);
+
+                // devolve pela lógica do usuário
+                usuario.devolverLivro(emprestimo);
+
+                // seta status DISPONIVEL (pela entidade)
+                StatusLivro disponivel = statusLivroRepository.findByNomeIgnoreCase("DISPONIVEL")
+                        .orElseThrow(() -> new RuntimeException("Status DISPONIVEL não encontrado"));
+
+                livro.setStatus(disponivel);
+
+                livroRepository.save(livro);
                 pessoaRepository.save(usuario);
             }
         }
     }
-
 }

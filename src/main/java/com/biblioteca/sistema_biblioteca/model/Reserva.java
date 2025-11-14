@@ -1,8 +1,7 @@
 package com.biblioteca.sistema_biblioteca.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
-import com.biblioteca.sistema_biblioteca.model.converter.ReservaStatusConverter;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TB_RESERVA")
@@ -19,18 +18,18 @@ public class Reserva {
     @Column(name = "cod_reserva")
     private Long id;
 
-    @Column(name = "dt_solicitacao")
-    private LocalDate dtSolicitacao;
+    @Column(name = "dt_inicio_reserva")
+    private LocalDateTime dtInicioReserva;
 
-    @Column(name = "num_posicao_fila")
-    private Integer posicaoFila;
+    @Column(name = "dt_fim_reserva")
+    private LocalDateTime dtFimReserva;
 
-    @Convert(converter = ReservaStatusConverter.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "cod_status_reserva")
     private ReservaStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "cod_usuario")
+    @JoinColumn(name = "cod_username") // ← Nome correto do banco
     private Usuario usuario;
 
     @ManyToOne
@@ -38,11 +37,9 @@ public class Reserva {
     private Livro livro;
 
     public Reserva() {
-        this.dtSolicitacao = LocalDate.now();
+        this.dtInicioReserva = LocalDateTime.now();
         this.status = ReservaStatus.ATIVA;
     }
-
-    // ======== Métodos de Negócio ========
 
     public Reserva(Usuario usuario, Livro livro) {
         this();
@@ -51,12 +48,9 @@ public class Reserva {
     }
 
     public Emprestimo confirmar() {
-        if (this.status == ReservaStatus.ATIVA && livro != null && livro.isDisponivel()) {
+        if (this.status == ReservaStatus.ATIVA && livro != null) {
             this.status = ReservaStatus.CONFIRMADA;
-            livro.alterarStatus(Livro.Status.EMPRESTADO);
-
-            Emprestimo emprestimo = new Emprestimo(this.usuario, this.livro);
-            return emprestimo;
+            return new Emprestimo(this.usuario, this.livro);
         }
         return null;
     }
@@ -65,57 +59,23 @@ public class Reserva {
         this.status = ReservaStatus.CANCELADA;
     }
 
-    public void atualizarPosicaoFila(Integer posicaoFila) {
-        this.posicaoFila = posicaoFila;
-    }
+    // Getters e Setters =====================
 
-    // ======== Getters e Setters ========
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public LocalDateTime getDtInicioReserva() { return dtInicioReserva; }
+    public void setDtInicioReserva(LocalDateTime dtInicioReserva) { this.dtInicioReserva = dtInicioReserva; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public LocalDateTime getDtFimReserva() { return dtFimReserva; }
+    public void setDtFimReserva(LocalDateTime dtFimReserva) { this.dtFimReserva = dtFimReserva; }
 
-    public LocalDate getDtSolicitacao() {
-        return dtSolicitacao;
-    }
+    public ReservaStatus getStatus() { return status; }
+    public void setStatus(ReservaStatus status) { this.status = status; }
 
-    public void setDtSolicitacao(LocalDate dtSolicitacao) {
-        this.dtSolicitacao = dtSolicitacao;
-    }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public Integer getPosicaoFila() {
-        return posicaoFila;
-    }
-
-    public void setPosicaoFila(Integer posicaoFila) {
-        this.posicaoFila = posicaoFila;
-    }
-
-    public ReservaStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ReservaStatus status) {
-        this.status = status;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Livro getLivro() {
-        return livro;
-    }
-
-    public void setLivro(Livro livro) {
-        this.livro = livro;
-    }
+    public Livro getLivro() { return livro; }
+    public void setLivro(Livro livro) { this.livro = livro; }
 }

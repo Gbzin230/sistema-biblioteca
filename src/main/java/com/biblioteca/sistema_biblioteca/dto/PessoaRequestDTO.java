@@ -46,8 +46,8 @@ public class PessoaRequestDTO {
     private String sexo;
 
     @NotNull(message = "A data de nascimento é obrigatória.")
-    @Past(message = "A data de nascimento deve ser no passado.")
     private LocalDate dtNascimento;
+
 
     // Getters e Setters
     public String getUsername() { return username; }

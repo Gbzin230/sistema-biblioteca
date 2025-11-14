@@ -39,16 +39,20 @@ public class Usuario extends Pessoa {
         this.limiteSlots = limiteSlots;
     }
 
-    // validações e métodos de negócio (mantidos)
+    // ======================
+    // Validações
+    // ======================
+
     private void validarAtivo() {
         if (!isFlagAtivo()) {
-            throw new IllegalStateException("Usuário não aprovado. Aguarde a aprovação para acessar o site.");
+            throw new IllegalStateException("Usuário não aprovado. Aguarde a aprovação para acessar o sistema.");
         }
     }
 
     public int slotsUsados() {
         validarAtivo();
-        return (livrosAtivos == null ? 0 : livrosAtivos.size()) + (reservasAtivas == null ? 0 : reservasAtivas.size());
+        return (livrosAtivos == null ? 0 : livrosAtivos.size())
+             + (reservasAtivas == null ? 0 : reservasAtivas.size());
     }
 
     public int slotsDisponiveis() {
@@ -59,46 +63,55 @@ public class Usuario extends Pessoa {
     public boolean podeReservar() { validarAtivo(); return slotsDisponiveis() > 0; }
     public boolean podeEmprestar() { validarAtivo(); return slotsDisponiveis() > 0; }
 
+    // ======================
+    // Regras de Empréstimo
+    // ======================
+
     public Emprestimo emprestarLivro(Livro livro) {
         validarAtivo();
-        if (!livro.isDisponivel()) throw new IllegalStateException("Livro não disponível para empréstimo");
-        if (!podeEmprestar()) throw new IllegalStateException("Limite de empréstimos e reservas atingido");
-        livro.alterarStatus(Livro.Status.EMPRESTADO);
-        Emprestimo e = new Emprestimo(this, livro);
-        livrosAtivos.add(e);
-        return e;
+
+        if (!podeEmprestar())
+            throw new IllegalStateException("Limite de empréstimos e reservas atingido");
+
+        Emprestimo emprestimo = new Emprestimo(this, livro);
+
+        livrosAtivos.add(emprestimo);
+
+        return emprestimo;
     }
 
     public void devolverLivro(Emprestimo emprestimo) {
         validarAtivo();
         livrosAtivos.remove(emprestimo);
-        emprestimo.getLivro().alterarStatus(Livro.Status.DISPONIVEL);
     }
+
+    // ======================
+    // Regras de Reserva
+    // ======================
 
     public Reserva reservarLivro(Livro livro) {
         validarAtivo();
-        if (!podeReservar()) throw new IllegalStateException("Limite de empréstimos e reservas atingido");
-        livro.alterarStatus(Livro.Status.RESERVADO);
-        Reserva r = new Reserva(this, livro);
-        reservasAtivas.add(r);
-        return r;
+
+        if (!podeReservar())
+            throw new IllegalStateException("Limite de empréstimos e reservas atingido");
+
+        Reserva reserva = new Reserva(this, livro);
+        reservasAtivas.add(reserva);
+
+        return reserva;
     }
 
     public void cancelarReserva(Livro livro) {
         validarAtivo();
         if (livro == null) return;
-        Reserva alvo = null;
-        for (Reserva r : new ArrayList<>(reservasAtivas)) {
-            if (r.getLivro().equals(livro) && r.getStatus() == Reserva.ReservaStatus.ATIVA) {
-                alvo = r;
-                break;
-            }
-        }
-        if (alvo == null) throw new IllegalStateException("Nenhuma reserva ativa encontrada para este livro com este usuário.");
+
+        Reserva alvo = reservasAtivas.stream()
+                .filter(r -> r.getLivro().equals(livro)
+                          && r.getStatus() == Reserva.ReservaStatus.ATIVA)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Nenhuma reserva ativa encontrada para este livro."));
+
         alvo.cancelar();
-        boolean aindaTemReservaLocal = reservasAtivas.stream()
-                .anyMatch(r -> r.getLivro().equals(livro) && r.getStatus() == Reserva.ReservaStatus.ATIVA);
-        if (!aindaTemReservaLocal) livro.alterarStatus(Livro.Status.DISPONIVEL);
     }
 
     public List<Emprestimo> consultaHistorico() {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.biblioteca.sistema_biblioteca.repository.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
@@ -21,21 +22,58 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EmprestimoRepository emprestimoRepository;
     private final ReservaRepository reservaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             EmprestimoRepository emprestimoRepository,
-            ReservaRepository reservaRepository
+            ReservaRepository reservaRepository,
+            PasswordEncoder passwordEncoder
     ) {
         this.usuarioRepository = usuarioRepository;
         this.emprestimoRepository = emprestimoRepository;
         this.reservaRepository = reservaRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // CRUD
+    // ============================================================
+    // 🔐 PASSWORD ENCODE
+    // ============================================================
+    public String encodePassword(String senha) {
+        return passwordEncoder.encode(senha);
+    }
+
+    // ============================================================
+    // ✔ VALIDAÇÕES
+    // ============================================================
+
+    public boolean existsByUsername(String username) {
+        return usuarioRepository.existsById(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return usuarioRepository.findByEmail(email).isPresent();
+    }
+
+    // ============================================================
+    // 🟢 SALVAR USUÁRIO (com validações)
+    // ============================================================
     public Usuario salvar(Usuario usuario) {
+
+        if (existsByUsername(usuario.getUsername())) {
+            throw new RegraNegocioException("Nome de usuário já existe.");
+        }
+
+        if (existsByEmail(usuario.getEmail())) {
+            throw new RegraNegocioException("Email já cadastrado.");
+        }
+
         return usuarioRepository.save(usuario);
     }
+
+    // ============================================================
+    // LISTAR / BUSCAR
+    // ============================================================
 
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
@@ -45,7 +83,10 @@ public class UsuarioService {
         return usuarioRepository.findById(username);
     }
 
-    // Métodos de Domínio
+    // ============================================================
+    // DOMÍNIO (EMPRÉSTIMO, RESERVA, ETC)
+    // ============================================================
+
     public Emprestimo emprestarLivro(String username, Livro livro) {
         Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
@@ -86,6 +127,10 @@ public class UsuarioService {
 
         return usuario.consultaHistorico();
     }
+
+    // ============================================================
+    // GESTÃO ADMINISTRATIVA
+    // ============================================================
 
     @Transactional
     public Usuario aprovarUsuario(String username) {
