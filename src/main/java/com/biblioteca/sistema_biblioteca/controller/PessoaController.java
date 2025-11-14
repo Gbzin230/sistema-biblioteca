@@ -23,7 +23,7 @@ public class PessoaController {
     private final PessoaRepository pessoaRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
-    private final UsuarioService usuarioService; // service que contém lógica de deletar e aprovar
+    private final UsuarioService usuarioService;
 
     public PessoaController(PessoaRepository pessoaRepository,
                             PasswordEncoder passwordEncoder,
@@ -35,50 +35,61 @@ public class PessoaController {
         this.usuarioService = usuarioService;
     }
 
-    // Cadastro público
+    // ============================================================
+    // 🟢 CADASTRO PÚBLICO
+    // ============================================================
     @PostMapping
     public ResponseEntity<PessoaResponseDTO> cadastrar(@Valid @RequestBody PessoaRequestDTO dto) {
+
         Usuario usuario = modelMapper.map(dto, Usuario.class);
+
         usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
-        // Ajustes de campos que exigem conversão ou não são mapeados automaticamente
+
         if (dto.getSexo() != null && !dto.getSexo().isEmpty()) {
             usuario.setSexo(dto.getSexo().charAt(0));
         }
 
-        // 🔒 Por segurança: novos usuários ficam inativos até aprovação
+        // 🔒 Novos usuários aguardam aprovação
         usuario.setFlagAtivo(false);
 
-        // Garante que sempre é um usuário comum
         Usuario salvo = pessoaRepository.save(usuario);
 
         PessoaResponseDTO response = modelMapper.map(salvo, PessoaResponseDTO.class);
         return ResponseEntity.ok(response);
     }
 
-    // listar - apenas FUNCIONARIO ou ADMIN
+    // ============================================================
+    // 📋 LISTAR — FUNCIONARIO ou ADMIN
+    // ============================================================
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @GetMapping
     public ResponseEntity<List<PessoaResponseDTO>> listar() {
+
         List<PessoaResponseDTO> pessoas = pessoaRepository.findAll()
                 .stream()
                 .map(p -> modelMapper.map(p, PessoaResponseDTO.class))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(pessoas);
     }
 
-    // bloquear - ADMIN
+    // ============================================================
+    // ⛔ BLOQUEAR — ADMIN
+    // ============================================================
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}/bloquear")
-    public ResponseEntity<?> bloquear(@PathVariable Long id) {
-        usuarioService.bloquearUsuario(id); // implementado no service
+    @PutMapping("/{username}/bloquear")
+    public ResponseEntity<?> bloquear(@PathVariable String username) {
+        usuarioService.bloquearUsuario(username);
         return ResponseEntity.ok().build();
     }
 
-    // deletar - ADMIN (ou preferir soft-delete)
+    // ============================================================
+    // ❌ DELETAR — ADMIN
+    // ============================================================
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletar(@PathVariable Long id) {
-        usuarioService.deletar(id);
+    @DeleteMapping("/{username}")
+    public ResponseEntity<?> deletar(@PathVariable String username) {
+        usuarioService.deletar(username);
         return ResponseEntity.noContent().build();
     }
 }

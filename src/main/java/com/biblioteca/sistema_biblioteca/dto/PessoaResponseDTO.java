@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 public class PessoaResponseDTO {
 
-    private Long id;
     private String username;
     private String nome;
     private String email;
@@ -16,9 +15,6 @@ public class PessoaResponseDTO {
     private Integer limiteSlots = 3;
 
     // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 

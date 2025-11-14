@@ -19,9 +19,10 @@ public class FuncionarioController {
         this.usuarioService = usuarioService;
     }
 
-    @PutMapping("/aprovar-usuario/{id}")
-    public ResponseEntity<String> aprovarUsuario(@PathVariable Long id) {
-        Usuario aprovado = usuarioService.aprovarUsuario(id);
+    // 🔥 AGORA USA username, NÃO Long id
+    @PutMapping("/aprovar-usuario/{username}")
+    public ResponseEntity<String> aprovarUsuario(@PathVariable String username) {
+        Usuario aprovado = usuarioService.aprovarUsuario(username);
         return ResponseEntity.ok("Usuário '" + aprovado.getNome() + "' aprovado com sucesso!");
     }
 

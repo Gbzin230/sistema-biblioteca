@@ -9,11 +9,7 @@ import jakarta.persistence.*;
 public class Pessoa {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cod_usuario")
-    private Long id;
-
-    @Column(name = "cod_username", unique = true, nullable = false)
+    @Column(name = "cod_username")   // ✔ PK string do banco
     private String username;
 
     @Column(name = "txt_nome")
@@ -47,9 +43,6 @@ public class Pessoa {
     private boolean flagAtivo;
 
     // ===== Getters e Setters =====
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 

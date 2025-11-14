@@ -4,27 +4,23 @@ import jakarta.validation.constraints.NotNull;
 
 public class ReservaRequestDTO {
 
-    @NotNull(message = "O ID do usuário é obrigatório.")
-    private Long usuarioId;
+    @NotNull(message = "username é obrigatório")
+    private String username;
 
-    @NotNull(message = "O ID do livro é obrigatório.")
+    @NotNull(message = "O ID de Livro é obrigatório")
     private Long livroId;
 
-    // Getters e Setters
-    public Long getUsuarioId() {
-        return usuarioId;
+    public String getUsername() {
+        return username;
     }
-
-    public void setUsuarioId(Long usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getLivroId() {
         return livroId;
     }
-
     public void setLivroId(Long livroId) {
         this.livroId = livroId;
     }
 }
-

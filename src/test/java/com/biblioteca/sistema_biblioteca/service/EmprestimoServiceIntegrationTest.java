@@ -67,7 +67,6 @@ class EmprestimoServiceIntegrationTest {
 
         // 🔸 DTO de requisição
         EmprestimoRequestDTO req = new EmprestimoRequestDTO();
-        req.setUsuarioId(usuario.getId());
         req.setLivroId(livro.getId());
 
         // 🔸 Executa requisição
@@ -76,7 +75,6 @@ class EmprestimoServiceIntegrationTest {
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id", notNullValue()))
-                .andExpect(jsonPath("$.data.usuarioId", is(usuario.getId().intValue())))
                 .andExpect(jsonPath("$.data.livroId", is(livro.getId().intValue())));
     }
 

@@ -4,15 +4,27 @@ import jakarta.validation.constraints.NotNull;
 
 public class EmprestimoRequestDTO {
 
-    @NotNull(message = "usuarioId é obrigatório")
-    private Long usuarioId;
+    @NotNull(message = "username é obrigatório")
+    private String username;
 
     @NotNull(message = "livroId é obrigatório")
     private Long livroId;
 
-    public Long getUsuarioId() { return usuarioId; }
-    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
+    // GETTERS E SETTERS CORRETOS
 
-    public Long getLivroId() { return livroId; }
-    public void setLivroId(Long livroId) { this.livroId = livroId; }
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Long getLivroId() {
+        return livroId;
+    }
+
+    public void setLivroId(Long livroId) {
+        this.livroId = livroId;
+    }
 }

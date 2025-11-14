@@ -22,13 +22,16 @@ public class UsuarioService {
     private final EmprestimoRepository emprestimoRepository;
     private final ReservaRepository reservaRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository,
-                          EmprestimoRepository emprestimoRepository,
-                          ReservaRepository reservaRepository) {
+    public UsuarioService(
+            UsuarioRepository usuarioRepository,
+            EmprestimoRepository emprestimoRepository,
+            ReservaRepository reservaRepository
+    ) {
         this.usuarioRepository = usuarioRepository;
         this.emprestimoRepository = emprestimoRepository;
         this.reservaRepository = reservaRepository;
     }
+
     // CRUD
     public Usuario salvar(Usuario usuario) {
         return usuarioRepository.save(usuario);
@@ -38,15 +41,13 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> buscaPorId(Long id) {
-        return usuarioRepository.findById(id);
+    public Optional<Usuario> buscaPorId(String username) {
+        return usuarioRepository.findById(username);
     }
 
-
     // Métodos de Domínio
-
-    public Emprestimo emprestarLivro(Long usuarioId, Livro livro) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
+    public Emprestimo emprestarLivro(String username, Livro livro) {
+        Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         Emprestimo emprestimo = usuario.emprestarLivro(livro);
@@ -54,16 +55,16 @@ public class UsuarioService {
         return emprestimo;
     }
 
-    public void devolverLivro(Long usuarioId, Emprestimo emprestimo) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
+    public void devolverLivro(String username, Emprestimo emprestimo) {
+        Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         usuario.devolverLivro(emprestimo);
         usuarioRepository.save(usuario);
     }
 
-    public Reserva reservarLivro(Long usuarioId, Livro livro) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
+    public Reserva reservarLivro(String username, Livro livro) {
+        Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         Reserva reserva = usuario.reservarLivro(livro);
@@ -71,40 +72,40 @@ public class UsuarioService {
         return reserva;
     }
 
-    public void cancelarReserva(Long usuarioId, Livro livro) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
+    public void cancelarReserva(String username, Livro livro) {
+        Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         usuario.cancelarReserva(livro);
         usuarioRepository.save(usuario);
     }
 
-    public List<Emprestimo> consultaHistorico(Long usuarioId) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
+    public List<Emprestimo> consultaHistorico(String username) {
+        Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         return usuario.consultaHistorico();
     }
 
     @Transactional
-    public Usuario aprovarUsuario(Long id) {
-        Usuario u = usuarioRepository.findById(id)
+    public Usuario aprovarUsuario(String username) {
+        Usuario u = usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
         u.setFlagAtivo(true);
         return usuarioRepository.save(u);
     }
 
     @Transactional
-    public Usuario bloquearUsuario(Long id) {
-        Usuario u = usuarioRepository.findById(id)
+    public Usuario bloquearUsuario(String username) {
+        Usuario u = usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
         u.setFlagAtivo(false);
         return usuarioRepository.save(u);
     }
 
     @Transactional
-    public void deletar(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
+    public void deletar(String username) {
+        Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
 
         boolean temEmprestimo = emprestimoRepository.existsByUsuario(usuario);
@@ -112,13 +113,11 @@ public class UsuarioService {
 
         if (temEmprestimo || temReserva) {
             throw new RegraNegocioException(
-                    "Não é possível deletar o usuário. Ele possui histórico de empréstimos ou reservas no sistema."
+                "Não é possível deletar o usuário. Ele possui histórico de empréstimos ou reservas."
             );
         }
 
-        // Garante que nada pendente é mandado pro banco antes do delete
         usuarioRepository.flush();
-
         usuarioRepository.delete(usuario);
     }
 }
