@@ -41,9 +41,9 @@ public class PessoaRequestDTO {
     @NotBlank(message = "O endereço é obrigatório.")
     private String endereco;
 
-    @NotBlank(message = "O sexo é obrigatório (M ou F).")
-    @Pattern(regexp = "^[MFmf]$", message = "O sexo deve ser 'M' ou 'F'.")
-    private String sexo;
+    @NotNull(message = "O sexo é obrigatório (M ou F).")
+    private Character sexo;
+
 
     @NotNull(message = "A data de nascimento é obrigatória.")
     private LocalDate dtNascimento;
@@ -71,8 +71,8 @@ public class PessoaRequestDTO {
     public String getEndereco() { return endereco; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
 
-    public String getSexo() { return sexo; }
-    public void setSexo(String sexo) { this.sexo = sexo; }
+    public Character getSexo() { return sexo; }
+    public void setSexo(Character sexo) { this.sexo = sexo; }
 
     public LocalDate getDtNascimento() { return dtNascimento; }
     public void setDtNascimento(LocalDate dtNascimento) { this.dtNascimento = dtNascimento; }
