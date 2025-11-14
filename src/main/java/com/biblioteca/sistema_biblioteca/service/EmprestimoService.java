@@ -143,7 +143,7 @@ public class EmprestimoService {
 
         // Fila de reservas ordenada
         List<Reserva> fila = reservaRepository
-                .findByLivroAndStatusOrderByDtSolicitacaoAsc(livro, Reserva.ReservaStatus.ATIVA);
+        .findByLivroAndStatusOrderByDtInicioReservaAsc(livro, Reserva.ReservaStatus.ATIVA);
 
         boolean emprestado = false;
 

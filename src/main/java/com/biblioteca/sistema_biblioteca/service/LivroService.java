@@ -242,7 +242,7 @@ public class LivroService {
     // CONSULTAR FILA
     // ===============================================================
     public int consultarListaReserva(Livro livro) {
-        List<Reserva> reservas = reservaRepository.findByLivroAndStatusOrderByDtSolicitacaoAsc(
+        List<Reserva> reservas = reservaRepository.findByLivroAndStatusOrderByDtInicioReservaAsc(
                 livro,
                 Reserva.ReservaStatus.ATIVA
         );

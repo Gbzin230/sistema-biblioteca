@@ -29,7 +29,7 @@ public class Reserva {
     private ReservaStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "cod_username") // ← Nome correto do banco
+    @JoinColumn(name = "cod_username")
     private Usuario usuario;
 
     @ManyToOne
