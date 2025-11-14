@@ -43,7 +43,7 @@ public class PessoaController {
         usuario.setTelefone(dto.getTelefone());
         usuario.setCpf(dto.getCpf());
         usuario.setEndereco(dto.getEndereco());
-        usuario.setSexo(dto.getSexo().charAt(0));
+        usuario.setSexo(dto.getSexo());
 
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         usuario.setDtNascimento(dto.getDtNascimento().format(formatter));
