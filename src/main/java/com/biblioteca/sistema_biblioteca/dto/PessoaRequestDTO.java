@@ -72,7 +72,7 @@ public class PessoaRequestDTO {
     public void setEndereco(String endereco) { this.endereco = endereco; }
 
     public Character getSexo() { return sexo; }
-    public void setSexo(Character sexo) { this.sexo = sexo; }
+    public void setSexo(Character sexo) { this.sexo = sexo.toUpperCase(0); }
 
     public LocalDate getDtNascimento() { return dtNascimento; }
     public void setDtNascimento(LocalDate dtNascimento) { this.dtNascimento = dtNascimento; }

@@ -56,7 +56,7 @@ public class AdminController {
         a.setTelefone(dto.getTelefone());
         a.setCpf(dto.getCpf());
         a.setEndereco(dto.getEndereco());
-        a.setSexo(dto.getSexo().charAt(0));
+        a.setSexo(dto.getSexo());
         a.setFlagAtivo(true);
 
         adminRepository.save(a);
