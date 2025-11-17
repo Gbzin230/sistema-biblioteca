@@ -27,31 +27,39 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/swagger-config",
-                                "/webjars/**",
-                                "/actuator/**",
-                                "/auth/**",
-                                "/h2-console/**"
-                        ).permitAll()
+            .cors(cors -> cors.configurationSource(request -> {
+                org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
+                config.setAllowCredentials(true);
+                config.addAllowedOriginPattern("http://localhost:4200");
+                config.addAllowedHeader("*");
+                config.addAllowedMethod("*"); // GET, POST, PUT, DELETE, OPTIONS
+                return config;
+            }))
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(
+                            "/v3/api-docs/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/swagger-resources/**",
+                            "/swagger-config",
+                            "/webjars/**",
+                            "/actuator/**",
+                            "/auth/**",
+                            "/h2-console/**"
+                    ).permitAll()
 
-                        // 🔓 Cadastro público de usuário
-                        .requestMatchers(HttpMethod.POST, "/pessoas").permitAll()
+                    // Cadastro público
+                    .requestMatchers(HttpMethod.POST, "/pessoas").permitAll()
 
-                        // 🔒 Demais endpoints exigem autenticação
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                    .anyRequest().authenticated()
+            )
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {

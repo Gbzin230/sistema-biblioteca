@@ -31,7 +31,7 @@ public class PessoaRequestDTO {
     private String senha;
 
     @NotBlank(message = "O telefone é obrigatório.")
-    @Pattern(regexp = "^\\(?\\d{2}\\)? ?9?\\d{4}-?\\d{4}$", message = "Formato de telefone inválido. Exemplo: (11)91234-5678")
+    @Pattern(regexp = "^\\d{8,11}$", message = "O telefone deve conter entre 8 e 11 dígitos numéricos.")
     private String telefone;
 
     @NotBlank(message = "O CPF é obrigatório.")
@@ -72,7 +72,7 @@ public class PessoaRequestDTO {
     public void setEndereco(String endereco) { this.endereco = endereco; }
 
     public Character getSexo() { return sexo; }
-    public void setSexo(Character sexo) { this.sexo = sexo.toUpperCase(0); }
+    public void setSexo(Character sexo) { this.sexo = sexo; }
 
     public LocalDate getDtNascimento() { return dtNascimento; }
     public void setDtNascimento(LocalDate dtNascimento) { this.dtNascimento = dtNascimento; }

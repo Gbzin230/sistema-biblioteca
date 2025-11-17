@@ -39,7 +39,7 @@ public class FuncionarioAdminRequestDTO {
 
     @NotBlank(message = "O sexo é obrigatório (M ou F).")
     @Pattern(regexp = "^[MFmf]$", message = "O sexo deve ser 'M' ou 'F'.")
-    private String sexo;
+    private Character sexo;
 
     // Getters e Setters
     public String getUsername() { return username; }
@@ -63,7 +63,7 @@ public class FuncionarioAdminRequestDTO {
     public String getEndereco() { return endereco; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
 
-    public String getSexo() { return sexo; }
-    public void setSexo(String sexo) { this.sexo = sexo; }
+    public Character getSexo() { return sexo; }
+    public void setSexo(Character sexo) { this.sexo = sexo; }
 }
 
