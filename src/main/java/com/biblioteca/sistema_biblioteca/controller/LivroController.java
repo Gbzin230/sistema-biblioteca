@@ -62,7 +62,7 @@ public class LivroController {
     }
 
     // 🚫 Deletar livro — SOMENTE ADMIN
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deletar(@PathVariable Long id) {
         livroService.deletar(id);

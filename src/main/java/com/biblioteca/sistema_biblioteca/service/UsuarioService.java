@@ -11,6 +11,7 @@ import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
+import com.biblioteca.sistema_biblioteca.dto.PessoaUpdateDTO;
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 
 import jakarta.transaction.Transactional;
@@ -70,6 +71,8 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
+
+    
 
     // ============================================================
     // LISTAR / BUSCAR
@@ -165,4 +168,31 @@ public class UsuarioService {
         usuarioRepository.flush();
         usuarioRepository.delete(usuario);
     }
+
+    @Transactional
+    public Usuario atualizarUsuario(PessoaUpdateDTO dto, String identificador) {
+
+        // procurar por username OU email OU cpf
+        Usuario usuario = usuarioRepository
+                .findByUsernameOrEmailOrCpf(identificador, identificador, identificador)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        // Atualiza somente os campos enviados
+        if (dto.getNome() != null) usuario.setNome(dto.getNome());
+        if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
+        if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
+        if (dto.getCpf() != null) usuario.setCpf(dto.getCpf());
+        if (dto.getEndereco() != null) usuario.setEndereco(dto.getEndereco());
+        if (dto.getSexo() != null) usuario.setSexo(Character.toUpperCase(dto.getSexo()));
+        if (dto.getDtNascimento() != null) usuario.setDtNascimento(dto.getDtNascimento().toString());
+        if (dto.getSenha() != null) {
+            usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        }
+
+        return usuarioRepository.save(usuario);
+    }
+
+
 }
+
+

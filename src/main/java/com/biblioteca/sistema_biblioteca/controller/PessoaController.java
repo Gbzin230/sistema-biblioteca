@@ -2,6 +2,7 @@ package com.biblioteca.sistema_biblioteca.controller;
 
 import com.biblioteca.sistema_biblioteca.dto.PessoaRequestDTO;
 import com.biblioteca.sistema_biblioteca.dto.PessoaResponseDTO;
+import com.biblioteca.sistema_biblioteca.dto.PessoaUpdateDTO;
 import com.biblioteca.sistema_biblioteca.model.Pessoa;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
@@ -96,4 +97,15 @@ public class PessoaController {
         usuarioService.deletar(username);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/update/{identificador}")
+    public ResponseEntity<PessoaResponseDTO> atualizar(
+            @PathVariable String identificador,
+            @RequestBody PessoaUpdateDTO dto
+    ) {
+        Usuario atualizado = usuarioService.atualizarUsuario(dto, identificador);
+        PessoaResponseDTO resp = modelMapper.map(atualizado, PessoaResponseDTO.class);
+        return ResponseEntity.ok(resp);
+    }
+
 }

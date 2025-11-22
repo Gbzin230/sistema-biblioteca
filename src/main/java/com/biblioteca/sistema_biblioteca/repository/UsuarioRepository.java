@@ -8,4 +8,5 @@ import com.biblioteca.sistema_biblioteca.model.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, String> {
     Optional<Usuario> findByUsername(String username);
     Optional<Usuario> findByEmail(String email);
+    Optional<Usuario> findByUsernameOrEmailOrCpf(String username, String email, String cpf);
 }
