@@ -10,7 +10,7 @@ public class Tema {
     @Column(name = "cod_tema")
     private Long id;
 
-    @Column(name = "txt_nome", unique = true, nullable = false)
+    @Column(name = "nome_tema", unique = true, nullable = false)
     private String nome;
 
     public Long getId() { return id; }

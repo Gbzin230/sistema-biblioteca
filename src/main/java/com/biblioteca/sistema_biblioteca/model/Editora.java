@@ -10,7 +10,7 @@ public class Editora {
     @Column(name = "cod_editora")
     private Long id;
 
-    @Column(name = "txt_nome", unique = true, nullable = false)
+    @Column(name = "nome_editora", unique = true, nullable = false)
     private String nome;
 
     public Long getId() { return id; }

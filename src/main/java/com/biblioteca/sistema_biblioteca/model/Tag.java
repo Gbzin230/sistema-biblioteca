@@ -10,7 +10,7 @@ public class Tag {
     @Column(name = "cod_tag")
     private Long id;
 
-    @Column(name = "txt_nome", unique = true, nullable = false)
+    @Column(name = "nome_tag", unique = true, nullable = false)
     private String nome;
 
     public Long getId() { return id; }
