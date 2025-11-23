@@ -10,7 +10,8 @@ public class LivroResponseDTO {
     private String editora;
     private String tema;
     private List<String> tags;
-    private Integer anoLancamento;
+    private String anoLancamento;
+    private Integer quantidadeDisponivel;
     private String sinopse;
     private String status; // <-- AGORA É STRING
     private Boolean flagAtivo;
@@ -31,8 +32,11 @@ public class LivroResponseDTO {
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }
 
-    public Integer getAnoLancamento() { return anoLancamento; }
-    public void setAnoLancamento(Integer anoLancamento) { this.anoLancamento = anoLancamento; }
+    public String getAnoLancamento() { return anoLancamento; }
+    public void setAnoLancamento(String anoLancamento) { this.anoLancamento = anoLancamento; }
+
+    public Integer getQuantidadeDisponivel() { return quantidadeDisponivel; }
+    public void setQuantidadeDisponivel(Integer quantidadeDisponivel) { this.quantidadeDisponivel = quantidadeDisponivel; }
 
     public String getSinopse() { return sinopse; }
     public void setSinopse(String sinopse) { this.sinopse = sinopse; }

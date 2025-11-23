@@ -17,9 +17,6 @@ public class Livro {
     @Column(name = "txt_titulo")
     private String titulo;
 
-    // ============================
-    // TRANSITÓRIOS (exibidores)
-    // ============================
     @Transient
     private String autor;
 
@@ -31,10 +28,6 @@ public class Livro {
 
     @Transient
     private List<String> tags;
-
-    // ============================
-    // RELACIONAMENTOS
-    // ============================
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "TB_LIVRO_AUTOR",
@@ -62,12 +55,8 @@ public class Livro {
     @JoinColumn(name = "cod_obra")
     private Obra obraEntidade;
 
-    // ============================
-    // CAMPOS DO BANCO
-    // ============================
-
     @Column(name = "ano_lancamento")
-    private String anoLancamento; // <— corrigido para bater com VARCHAR(4)
+    private String anoLancamento;
 
     @Column(name = "flag_ativo")
     private Boolean flagAtivo;
@@ -75,17 +64,21 @@ public class Livro {
     @Column(name = "txt_sinopse", columnDefinition = "TEXT")
     private String sinopse;
 
-    // ============================
-    // STATUS DO LIVRO (FK)
-    // =============================
+    @Column(name = "num_total_licencas")
+    private Integer quantidadeDisponivel;
+
+    @Column(name = "uri_img_livro")
+    private String uriImgLivro;
+
+    @Column(name = "url_livro")
+    private String uriArquivoLivro;
+
+    @Column(name = "dt_validade")
+    private String dtValidade;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "cod_status", nullable = false)
     private StatusLivro status;
-
-    // ============================
-    // MÉTODOS DE NEGÓCIO
-    // ============================
 
     public boolean isDisponivel() {
         return flagAtivo != null
@@ -93,10 +86,6 @@ public class Livro {
                 && status != null
                 && status.getNome().equalsIgnoreCase("DISPONIVEL");
     }
-
-    // ============================
-    // GETTERS E SETTERS
-    // ============================
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -158,4 +147,16 @@ public class Livro {
 
     public StatusLivro getStatus() { return status; }
     public void setStatus(StatusLivro status) { this.status = status; }
+
+    public Integer getQuantidadeDisponivel() { return quantidadeDisponivel; }
+    public void setQuantidadeDisponivel(Integer quantidadeDisponivel) { this.quantidadeDisponivel = quantidadeDisponivel; }
+
+    public String getUriImgLivro() { return uriImgLivro; }
+    public void setUriImgLivro(String uriImgLivro) { this.uriImgLivro = uriImgLivro; }
+
+    public String getUriArquivoLivro() { return uriArquivoLivro; }
+    public void setUriArquivoLivro(String uriArquivoLivro) { this.uriArquivoLivro = uriArquivoLivro; }
+
+    public String getDtValidade() { return dtValidade; }
+    public void setDtValidade(String dtValidade) { this.dtValidade = dtValidade; }
 }

@@ -1,7 +1,6 @@
 package com.biblioteca.sistema_biblioteca.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +18,19 @@ public class LivroRequestDTO {
 
     private List<String> tags = new ArrayList<>();
 
-    private Integer anoLancamento;
+    private String anoLancamento;
 
     private String sinopse;
+
+    private Integer quantidadeDisponivel;
+
+    private Long codObra;           
+
+    private String dtValidade;         // VARCHAR(8)
+
+    private String uriImgLivro;        // caminho da capa
+    
+    private String uriArquivoLivro;    // caminho do PDF
 
     // ============= GETTERS E SETTERS =============
 
@@ -40,9 +49,26 @@ public class LivroRequestDTO {
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }
 
-    public Integer getAnoLancamento() { return anoLancamento; }
-    public void setAnoLancamento(Integer anoLancamento) { this.anoLancamento = anoLancamento; }
+    public String getAnoLancamento() { return anoLancamento; }
+    public void setAnoLancamento(String anoLancamento) { this.anoLancamento = anoLancamento; }
+
+    public Integer getQuantidadeDisponivel() { return quantidadeDisponivel; }
+    public void setQuantidadeDisponivel(Integer quantidadeDisponivel) { this.quantidadeDisponivel = quantidadeDisponivel; }
 
     public String getSinopse() { return sinopse; }
     public void setSinopse(String sinopse) { this.sinopse = sinopse; }
+
+    public Long getCodObra() { return codObra; }
+    public void setCodObra(Long codObra) { this.codObra = codObra; }
+
+    public String getDtValidade() { return dtValidade; }
+    public void setDtValidade(String dtValidade) { this.dtValidade = dtValidade; }
+
+    public String getUriImgLivro() { return uriImgLivro; }
+    public void setUriImgLivro(String uriImgLivro) { this.uriImgLivro = uriImgLivro; }
+
+    public String getUriArquivoLivro() { return uriArquivoLivro; }
+    public void setUriArquivoLivro(String uriArquivoLivro) { this.uriArquivoLivro = uriArquivoLivro; }
+
+    
 }

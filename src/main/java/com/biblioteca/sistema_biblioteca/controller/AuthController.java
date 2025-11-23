@@ -54,8 +54,17 @@ public class AuthController {
             ));
         }
 
-        // 3 — Verifica aprovação
-        if (Boolean.FALSE.equals(usuario.getFlagAtivo()) || usuario.getCodStatus() == null || usuario.getCodStatus().equals(1)) {
+        // 3 — Verifica BLOQUEIO / INATIVO primeiro
+        if (usuario.getCodStatus() != null && (usuario.getCodStatus() == 3 || usuario.getCodStatus() == 4)) {
+            return ResponseEntity.status(403).body(Map.of(
+                    "erro", "Usuário bloqueado.",
+                    "banned", true,
+                    "status", 403
+            ));
+        }
+
+        // 4 — Verifica pendência (aguardando aprovação)
+        if (!Boolean.TRUE.equals(usuario.getFlagAtivo()) || usuario.getCodStatus() == null || usuario.getCodStatus() == 1) {
             return ResponseEntity.status(403).body(Map.of(
                     "erro", "Usuário ainda não aprovado.",
                     "aguardandoAprovacao", true,
@@ -63,12 +72,6 @@ public class AuthController {
             ));
         }
 
-        if( usuario.getCodStatus().equals(3) || usuario.getCodStatus().equals(4)) {
-            return ResponseEntity.status(403).body(Map.of(
-                    "erro", "Usuário inativo ou bloqueado.",
-                    "status", 403
-            ));
-        }
 
         // 4 — Autentica usuário
         authenticationManager.authenticate(

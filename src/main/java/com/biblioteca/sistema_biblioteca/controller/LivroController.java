@@ -4,12 +4,19 @@ import com.biblioteca.sistema_biblioteca.dto.*;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
 import com.biblioteca.sistema_biblioteca.service.LivroService;
+
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.http.MediaType;
 import jakarta.validation.Valid;
 
 @RestController
@@ -25,6 +32,7 @@ public class LivroController {
         this.livroRepository = livroRepository;
         this.modelMapper = modelMapper;
     }
+
     // ✅ LISTAR LIVROS — público
     @GetMapping
     public ResponseEntity<ApiResponse<ApiPageResponse<LivroResponseDTO>>> listar(Pageable pageable) {
@@ -51,6 +59,30 @@ public class LivroController {
         return ResponseEntity.ok(new ApiResponse<>(response, "Livro criado com sucesso"));
     }
 
+    // 🚫 UPLOAD DE ARQUIVO DO LIVRO — SOMENTE FUNCIONÁRIO OU ADMIN
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
+    @PostMapping(
+            value = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = LivroRequestDTO.class)
+            )
+    )
+    public ResponseEntity<?> criarComUpload(
+            @RequestPart(value = "dto") @Valid LivroRequestDTO dto,
+            @RequestPart(value = "capa", required = false) MultipartFile capa,
+            @RequestPart(value = "pdf", required = false) MultipartFile pdf
+    ) {
+
+        Livro salvo = livroService.criarComArquivos(dto, capa, pdf);
+
+        LivroResponseDTO response = modelMapper.map(salvo, LivroResponseDTO.class);
+        return ResponseEntity.ok(new ApiResponse<>(response, "Livro criado com sucesso"));
+    }
+
     // 🚫 Atualizar livro — SOMENTE FUNCIONÁRIO OU ADMIN
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @PutMapping("/{id}")
@@ -69,5 +101,3 @@ public class LivroController {
         return ResponseEntity.ok(new ApiResponse<>("OK", "Livro removido com sucesso"));
     }
 }
-
-

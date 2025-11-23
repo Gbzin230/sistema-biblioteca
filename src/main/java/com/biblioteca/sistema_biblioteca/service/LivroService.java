@@ -7,10 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.biblioteca.sistema_biblioteca.model.*;
 import com.biblioteca.sistema_biblioteca.repository.*;
-
+import com.biblioteca.sistema_biblioteca.dto.LivroRequestDTO;
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 
 @Service
@@ -24,6 +25,9 @@ public class LivroService {
     private final TagRepository tagRepository;
     private final EditoraRepository editoraRepository;
     private final StatusLivroRepository statusLivroRepository;
+    private final FileStorageService fileStorageService;
+
+    private final String UPLOAD_DIR = "uploads/";
 
     public LivroService(LivroRepository livroRepository,
                         EmprestimoRepository emprestimoRepository,
@@ -32,7 +36,8 @@ public class LivroService {
                         TemaRepository temaRepository,
                         TagRepository tagRepository,
                         EditoraRepository editoraRepository,
-                        StatusLivroRepository statusLivroRepository) {
+                        StatusLivroRepository statusLivroRepository,
+                        FileStorageService fileStorageService) {
 
         this.livroRepository = livroRepository;
         this.emprestimoRepository = emprestimoRepository;
@@ -42,6 +47,7 @@ public class LivroService {
         this.tagRepository = tagRepository;
         this.editoraRepository = editoraRepository;
         this.statusLivroRepository = statusLivroRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     // ===============================================================
@@ -111,6 +117,121 @@ public class LivroService {
 
         return livroRepository.save(livro);
     }
+
+    private String salvarArquivo(MultipartFile file, String subpasta) {
+        try {
+            if (file == null || file.isEmpty()) return null;
+
+            String pasta = UPLOAD_DIR + subpasta + "/";
+            java.nio.file.Files.createDirectories(java.nio.file.Paths.get(pasta));
+
+            String nome = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String caminho = pasta + nome;
+
+            file.transferTo(new java.io.File(caminho));
+            return caminho;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao salvar arquivo: " + e.getMessage());
+        }
+    }
+
+
+    // ===============================================================
+    // UPLOAD DE LIVRO
+    // ===============================================================
+    @Transactional
+    public Livro criarComArquivos(LivroRequestDTO dto, MultipartFile capa, MultipartFile pdf) {
+
+        Livro livro = new Livro();
+        livro.setTitulo(dto.getTitulo());
+        livro.setAnoLancamento(dto.getAnoLancamento());
+        livro.setSinopse(dto.getSinopse());
+        livro.setFlagAtivo(true);
+        livro.setQuantidadeDisponivel(dto.getQuantidadeDisponivel());
+
+        // ===== dtValidade =====
+        String validade = (dto.getDtValidade() == null || dto.getDtValidade().isBlank())
+                ? "20401230"
+                : dto.getDtValidade();
+        livro.setDtValidade(validade);
+
+        // ===== EDITORA =====
+        if (dto.getEditora() != null && !dto.getEditora().isBlank()) {
+            Editora editora = editoraRepository.findByNomeIgnoreCase(dto.getEditora())
+                    .orElseGet(() -> {
+                        Editora e = new Editora();
+                        e.setNome(dto.getEditora());
+                        return editoraRepository.save(e);
+                    });
+            livro.setEditoraEntidade(editora);
+        }
+
+        // ===== OBRA =====
+        if (dto.getObra() != null && !dto.getObra().isBlank()) {
+            Obra obra = obraRepository.findByNomeIgnoreCase(dto.getObra())
+                    .orElseGet(() -> {
+                        Obra o = new Obra();
+                        o.setNome(dto.getObra());
+                        return obraRepository.save(o);
+                    });
+            livro.setObraEntidade(obra);
+        }
+
+        // ===== AUTOR =====
+        if (dto.getAutor() != null && !dto.getAutor().isBlank()) {
+            Autor autor = autorRepository.findByNomeIgnoreCase(dto.getAutor())
+                    .orElseGet(() -> {
+                        Autor novo = new Autor();
+                        novo.setNome(dto.getAutor());
+                        return autorRepository.save(novo);
+                    });
+            livro.setAutores(Set.of(autor));
+        }
+
+        // ===== TEMA =====
+        if (dto.getTema() != null && !dto.getTema().isBlank()) {
+            Tema tema = temaRepository.findByNomeIgnoreCase(dto.getTema())
+                    .orElseGet(() -> {
+                        Tema novo = new Tema();
+                        novo.setNome(dto.getTema());
+                        return temaRepository.save(novo);
+                    });
+            livro.setTemas(Set.of(tema));
+        }
+
+        // ===== TAGS =====
+        if (dto.getTags() != null && !dto.getTags().isEmpty()) {
+            var tags = dto.getTags().stream()
+                    .map(String::trim)
+                    .filter(s -> !s.isBlank())
+                    .map(nome -> tagRepository.findByNomeIgnoreCase(nome)
+                            .orElseGet(() -> {
+                                Tag t = new Tag();
+                                t.setNome(nome);
+                                return tagRepository.save(t);
+                            })
+                    )
+                    .collect(java.util.stream.Collectors.toSet());
+            livro.setTagsEntidades(tags);
+        }
+
+        // ===== ARQUIVOS =====
+
+        if (capa != null && !capa.isEmpty()) {
+            String pathCapa = fileStorageService.salvarArquivo(capa, "capas");
+            livro.setUriImgLivro(pathCapa);
+        }
+
+        if (pdf != null && !pdf.isEmpty()) {
+            String pathPdf = fileStorageService.salvarArquivo(pdf, "pdfs");
+            livro.setUriArquivoLivro(pathPdf);
+        }
+
+        // ===== Salvar com FK resolvidas =====
+        return livroRepository.save(livro);
+    }
+
 
     // ===============================================================
     // LISTAR TODOS

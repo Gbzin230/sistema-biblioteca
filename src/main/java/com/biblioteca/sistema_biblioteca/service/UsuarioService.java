@@ -205,6 +205,59 @@ public class UsuarioService {
     }
 
     @Transactional
+    public Usuario desbloquearUsuario(String username) {
+        Usuario u = usuarioRepository.findById(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        u.setFlagAtivo(true);
+        u.setCodStatus(2); // 2 = ATIVO
+
+        return usuarioRepository.save(u);
+    }
+
+    @Transactional
+    public int bloquearUsuariosEmMassa(List<String> usernames) {
+        int count = 0;
+
+        for (String username : usernames) {
+            try {
+                Usuario u = usuarioRepository.findById(username)
+                        .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado: " + username));
+
+                u.setFlagAtivo(false);
+                u.setCodStatus(3);
+                usuarioRepository.save(u);
+                count++;
+
+            } catch (Exception e) {
+                
+            }
+        }
+
+        return count;
+    }
+
+    @Transactional
+    public int desbloquearUsuariosEmMassa(List<String> usernames) {
+        int count = 0;
+
+        for (String username : usernames) {
+            try {
+                Usuario u = usuarioRepository.findById(username)
+                        .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado: " + username));
+
+                u.setFlagAtivo(true);
+                u.setCodStatus(2); // 2 = ATIVO
+                usuarioRepository.save(u);
+                count++;
+
+            } catch (Exception ignored) {}
+        }
+
+        return count;
+    }
+
+    @Transactional
     public void deletar(String username) {
         Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));

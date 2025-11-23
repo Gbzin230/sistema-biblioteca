@@ -4,6 +4,7 @@ import com.biblioteca.sistema_biblioteca.dto.PessoaRequestDTO;
 import com.biblioteca.sistema_biblioteca.dto.PessoaResponseDTO;
 import com.biblioteca.sistema_biblioteca.dto.PessoaUpdateDTO;
 import com.biblioteca.sistema_biblioteca.dto.UsuarioListagemDTO;
+import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.model.Role;
 import com.biblioteca.sistema_biblioteca.service.UsuarioService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/pessoas")
@@ -95,9 +97,75 @@ public class PessoaController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{username}/bloquear")
     public ResponseEntity<?> bloquear(@PathVariable String username) {
-        usuarioService.bloquearUsuario(username);
-        return ResponseEntity.ok().build();
+
+        Usuario bloqueado = usuarioService.bloquearUsuario(username);
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Usuário bloqueado com sucesso",
+                "username", bloqueado.getUsername()
+            )
+        );
     }
+
+    // ============================================================
+    // 🔓 DESBLOQUEAR — ADMIN
+    // ============================================================
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{username}/desbloquear")
+    public ResponseEntity<?> desbloquear(@PathVariable String username) {
+
+        Usuario desbloqueado = usuarioService.desbloquearUsuario(username);
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Usuário desbloqueado com sucesso",
+                "username", desbloqueado.getUsername()
+            )
+        );
+    }
+
+
+    // ============================================================
+    // ⛔ BLOQUEAR MULTIPLOS — ADMIN
+    // ============================================================
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/bloquear-multiplos")
+    public ResponseEntity<?> bloquearMultiplos(@RequestBody Map<String, List<String>> body) {
+
+        List<String> usernames = body.get("usernames");
+
+        int total = usuarioService.bloquearUsuariosEmMassa(usernames);
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Usuários bloqueados com sucesso",
+                "total", total
+            )
+        );
+    }
+
+    // ============================================================
+    // 🔓 DESBLOQUEAR MULTIPLOS — ADMIN
+    // ============================================================
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/desbloquear-multiplos")
+    public ResponseEntity<?> desbloquearMultiplos(@RequestBody Map<String, List<String>> body) {
+
+        List<String> usernames = body.get("usernames");
+
+        int total = usuarioService.desbloquearUsuariosEmMassa(usernames);
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Usuários desbloqueados com sucesso",
+                "total", total
+            )
+        );
+    }
+
+
+
 
     // ============================================================
     // ❌ DELETAR — ADMIN
