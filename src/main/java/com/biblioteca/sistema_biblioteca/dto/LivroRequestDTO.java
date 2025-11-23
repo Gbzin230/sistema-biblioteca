@@ -16,6 +16,8 @@ public class LivroRequestDTO {
 
     private String tema;
 
+    private String obra;
+
     private List<String> tags = new ArrayList<>();
 
     private String anoLancamento;
@@ -29,7 +31,7 @@ public class LivroRequestDTO {
     private String dtValidade;         // VARCHAR(8)
 
     private String uriImgLivro;        // caminho da capa
-    
+
     private String uriArquivoLivro;    // caminho do PDF
 
     // ============= GETTERS E SETTERS =============
@@ -48,6 +50,9 @@ public class LivroRequestDTO {
 
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }
+
+    public String getObra() { return obra; }
+    public void setObra(String obra) { this.obra = obra; }
 
     public String getAnoLancamento() { return anoLancamento; }
     public void setAnoLancamento(String anoLancamento) { this.anoLancamento = anoLancamento; }

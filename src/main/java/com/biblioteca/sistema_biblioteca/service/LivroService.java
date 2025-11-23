@@ -26,6 +26,7 @@ public class LivroService {
     private final EditoraRepository editoraRepository;
     private final StatusLivroRepository statusLivroRepository;
     private final FileStorageService fileStorageService;
+    private final ObraRepository obraRepository;
 
     private final String UPLOAD_DIR = "uploads/";
 
@@ -37,7 +38,8 @@ public class LivroService {
                         TagRepository tagRepository,
                         EditoraRepository editoraRepository,
                         StatusLivroRepository statusLivroRepository,
-                        FileStorageService fileStorageService) {
+                        FileStorageService fileStorageService,
+                        ObraRepository obraRepository) {
 
         this.livroRepository = livroRepository;
         this.emprestimoRepository = emprestimoRepository;
@@ -48,6 +50,7 @@ public class LivroService {
         this.editoraRepository = editoraRepository;
         this.statusLivroRepository = statusLivroRepository;
         this.fileStorageService = fileStorageService;
+        this.obraRepository = obraRepository; 
     }
 
     // ===============================================================
@@ -118,24 +121,6 @@ public class LivroService {
         return livroRepository.save(livro);
     }
 
-    private String salvarArquivo(MultipartFile file, String subpasta) {
-        try {
-            if (file == null || file.isEmpty()) return null;
-
-            String pasta = UPLOAD_DIR + subpasta + "/";
-            java.nio.file.Files.createDirectories(java.nio.file.Paths.get(pasta));
-
-            String nome = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            String caminho = pasta + nome;
-
-            file.transferTo(new java.io.File(caminho));
-            return caminho;
-
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao salvar arquivo: " + e.getMessage());
-        }
-    }
-
 
     // ===============================================================
     // UPLOAD DE LIVRO
@@ -155,6 +140,11 @@ public class LivroService {
                 ? "20401230"
                 : dto.getDtValidade();
         livro.setDtValidade(validade);
+
+        // 🟩 DEFINIR STATUS AQUI — ANTES DO SAVE OU QUALQUER FLUSH
+        StatusLivro disponivel = statusLivroRepository.findByNomeIgnoreCase("DISPONIVEL")
+                .orElseThrow(() -> new RegraNegocioException("Status 'DISPONIVEL' não existe."));
+        livro.setStatus(disponivel);
 
         // ===== EDITORA =====
         if (dto.getEditora() != null && !dto.getEditora().isBlank()) {
