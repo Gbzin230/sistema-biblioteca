@@ -23,10 +23,10 @@ public class PessoaRequestDTO {
     private String email;
 
     @NotBlank(message = "A senha é obrigatória.")
-    @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres.")
+    @Size(min = 8, message = "A senha deve ter no mínimo 6 caracteres.")
     @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            message = "A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais."
+    regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{6,}$",
+    message = "A senha deve conter letra minúscula, maiúscula, número e caractere especial."
     )
     private String senha;
 

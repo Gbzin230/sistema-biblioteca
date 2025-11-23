@@ -1,7 +1,5 @@
 package com.biblioteca.sistema_biblioteca;
 
-import com.biblioteca.sistema_biblioteca.model.Admin;
-import com.biblioteca.sistema_biblioteca.model.Funcionario;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Pessoa;
 import com.biblioteca.sistema_biblioteca.model.Usuario;

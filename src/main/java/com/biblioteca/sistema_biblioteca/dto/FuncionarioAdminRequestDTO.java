@@ -2,6 +2,7 @@ package com.biblioteca.sistema_biblioteca.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -19,11 +20,11 @@ public class FuncionarioAdminRequestDTO {
     private String email;
 
     @NotBlank(message = "A senha é obrigatória.")
-    @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres.")
+    @Size(min = 8, message = "A senha deve ter no mínimo 6 caracteres.")
     @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            message = "A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais."
-    )
+    regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{6,}$",
+    message = "A senha deve conter letra minúscula, maiúscula, número e caractere especial."
+)
     private String senha;
 
     @NotBlank(message = "O telefone é obrigatório.")
@@ -37,8 +38,7 @@ public class FuncionarioAdminRequestDTO {
     @NotBlank(message = "O endereço é obrigatório.")
     private String endereco;
 
-    @NotBlank(message = "O sexo é obrigatório (M ou F).")
-    @Pattern(regexp = "^[MFmf]$", message = "O sexo deve ser 'M' ou 'F'.")
+    @NotNull(message = "O sexo é obrigatório (M ou F).")
     private Character sexo;
 
     // Getters e Setters
@@ -64,6 +64,8 @@ public class FuncionarioAdminRequestDTO {
     public void setEndereco(String endereco) { this.endereco = endereco; }
 
     public Character getSexo() { return sexo; }
+
     public void setSexo(Character sexo) { this.sexo = sexo; }
+
 }
 
