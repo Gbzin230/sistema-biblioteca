@@ -3,8 +3,10 @@ package com.biblioteca.sistema_biblioteca.controller;
 import com.biblioteca.sistema_biblioteca.dto.FuncionarioAdminRequestDTO;
 import com.biblioteca.sistema_biblioteca.model.Admin;
 import com.biblioteca.sistema_biblioteca.model.Funcionario;
-import com.biblioteca.sistema_biblioteca.repository.AdminRepository;
-import com.biblioteca.sistema_biblioteca.repository.FuncionarioRepository;
+import com.biblioteca.sistema_biblioteca.model.Role;
+import com.biblioteca.sistema_biblioteca.repository.RoleRepository;
+import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,21 +17,28 @@ import jakarta.validation.Valid;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final AdminRepository adminRepository;
-    private final FuncionarioRepository funcionarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AdminController(AdminRepository adminRepository,
-                           FuncionarioRepository funcionarioRepository,
+    public AdminController(UsuarioRepository usuarioRepository,
+                           RoleRepository roleRepository,
                            PasswordEncoder passwordEncoder) {
-        this.adminRepository = adminRepository;
-        this.funcionarioRepository = funcionarioRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    // =========================================================
+    // CRIAR FUNCIONÁRIO
+    // =========================================================
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/criar-funcionario")
     public ResponseEntity<?> criarFuncionario(@Valid @RequestBody FuncionarioAdminRequestDTO dto) {
+
+        Role funcRole = roleRepository.findByNomeIgnoreCase("FUNCIONARIO")
+                .orElseThrow(() -> new RuntimeException("Role FUNCIONARIO não encontrada"));
+
         Funcionario f = new Funcionario();
         f.setUsername(dto.getUsername());
         f.setSenha(passwordEncoder.encode(dto.getSenha()));
@@ -40,14 +49,22 @@ public class AdminController {
         f.setEndereco(dto.getEndereco());
         f.setSexo(dto.getSexo());
         f.setFlagAtivo(true);
+        f.setRole(funcRole);
 
-        funcionarioRepository.save(f);
+        usuarioRepository.save(f);  // usa tabela tb_usuario
         return ResponseEntity.ok("Funcionário criado com sucesso!");
     }
 
+    // =========================================================
+    // CRIAR ADMIN
+    // =========================================================
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/criar-admin")
     public ResponseEntity<?> criarAdmin(@Valid @RequestBody FuncionarioAdminRequestDTO dto) {
+
+        Role adminRole = roleRepository.findByNomeIgnoreCase("ADMIN")
+                .orElseThrow(() -> new RuntimeException("Role ADMIN não encontrada"));
+
         Admin a = new Admin();
         a.setUsername(dto.getUsername());
         a.setSenha(passwordEncoder.encode(dto.getSenha()));
@@ -58,8 +75,9 @@ public class AdminController {
         a.setEndereco(dto.getEndereco());
         a.setSexo(dto.getSexo());
         a.setFlagAtivo(true);
+        a.setRole(adminRole);
 
-        adminRepository.save(a);
+        usuarioRepository.save(a);
         return ResponseEntity.ok("Administrador criado com sucesso!");
     }
 }

@@ -1,11 +1,8 @@
 package com.biblioteca.sistema_biblioteca.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+public class Funcionario extends Usuario {
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@DiscriminatorValue("FUNCIONARIO")
-public class Funcionario extends Pessoa {
+    public Funcionario() {
+        super();
+    }
 }

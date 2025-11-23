@@ -67,7 +67,7 @@ public class Livro {
     // ============================
 
     @Column(name = "ano_lancamento")
-    private Integer anoLancamento;
+    private String anoLancamento; // <— corrigido para bater com VARCHAR(4)
 
     @Column(name = "flag_ativo")
     private Boolean flagAtivo;
@@ -147,8 +147,8 @@ public class Livro {
             editora = editoraEntidade.getNome();
     }
 
-    public Integer getAnoLancamento() { return anoLancamento; }
-    public void setAnoLancamento(Integer anoLancamento) { this.anoLancamento = anoLancamento; }
+    public String getAnoLancamento() { return anoLancamento; }
+    public void setAnoLancamento(String anoLancamento) { this.anoLancamento = anoLancamento; }
 
     public Boolean getFlagAtivo() { return flagAtivo; }
     public void setFlagAtivo(Boolean flagAtivo) { this.flagAtivo = flagAtivo; }

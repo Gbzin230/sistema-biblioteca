@@ -4,14 +4,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "TB_RESERVA")
+@Table(name = "tb_reserva") // sempre deixe minúsculo igual no banco
 public class Reserva {
-
-    public enum ReservaStatus {
-        ATIVA,
-        CONFIRMADA,
-        CANCELADA
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +18,9 @@ public class Reserva {
     @Column(name = "dt_fim_reserva")
     private LocalDateTime dtFimReserva;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "cod_status_reserva")
-    private ReservaStatus status;
+    @ManyToOne
+    @JoinColumn(name = "cod_status_reserva") // FK -> tb_status_reserva(cod_status)
+    private StatusReserva status;
 
     @ManyToOne
     @JoinColumn(name = "cod_username")
@@ -38,44 +32,64 @@ public class Reserva {
 
     public Reserva() {
         this.dtInicioReserva = LocalDateTime.now();
-        this.status = ReservaStatus.ATIVA;
     }
 
-    public Reserva(Usuario usuario, Livro livro) {
+    public Reserva(Usuario usuario, Livro livro, StatusReserva status) {
         this();
         this.usuario = usuario;
         this.livro = livro;
+        this.status = status;
     }
 
-    public Emprestimo confirmar() {
-        if (this.status == ReservaStatus.ATIVA && livro != null) {
-            this.status = ReservaStatus.CONFIRMADA;
-            return new Emprestimo(this.usuario, this.livro);
-        }
-        return null;
+    // ======================
+    // GETTERS E SETTERS
+    // ======================
+
+    public Long getId() {
+        return id;
     }
 
-    public void cancelar() {
-        this.status = ReservaStatus.CANCELADA;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    // Getters e Setters =====================
+    public LocalDateTime getDtInicioReserva() {
+        return dtInicioReserva;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setDtInicioReserva(LocalDateTime dtInicioReserva) {
+        this.dtInicioReserva = dtInicioReserva;
+    }
 
-    public LocalDateTime getDtInicioReserva() { return dtInicioReserva; }
-    public void setDtInicioReserva(LocalDateTime dtInicioReserva) { this.dtInicioReserva = dtInicioReserva; }
+    public LocalDateTime getDtFimReserva() {
+        return dtFimReserva;
+    }
 
-    public LocalDateTime getDtFimReserva() { return dtFimReserva; }
-    public void setDtFimReserva(LocalDateTime dtFimReserva) { this.dtFimReserva = dtFimReserva; }
+    public void setDtFimReserva(LocalDateTime dtFimReserva) {
+        this.dtFimReserva = dtFimReserva;
+    }
 
-    public ReservaStatus getStatus() { return status; }
-    public void setStatus(ReservaStatus status) { this.status = status; }
+    public StatusReserva getStatus() {
+        return status;
+    }
 
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    public void setStatus(StatusReserva status) {
+        this.status = status;
+    }
 
-    public Livro getLivro() { return livro; }
-    public void setLivro(Livro livro) { this.livro = livro; }
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Livro getLivro() {
+        return livro;
+    }
+
+    public void setLivro(Livro livro) {
+        this.livro = livro;
+    }
 }

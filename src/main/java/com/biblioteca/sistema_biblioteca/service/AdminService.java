@@ -5,90 +5,122 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.biblioteca.sistema_biblioteca.model.Admin;
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
-import com.biblioteca.sistema_biblioteca.model.Funcionario;
-import com.biblioteca.sistema_biblioteca.model.Pessoa;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.model.Livro;
+import com.biblioteca.sistema_biblioteca.model.Role;
 import com.biblioteca.sistema_biblioteca.model.StatusLivro;
-import com.biblioteca.sistema_biblioteca.repository.*;
+
+import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
+import com.biblioteca.sistema_biblioteca.repository.RoleRepository;
+import com.biblioteca.sistema_biblioteca.repository.StatusLivroRepository;
 
 @Service
 public class AdminService {
 
-    private final AdminRepository adminRepository;
-    private final FuncionarioRepository funcionarioRepository;
-    private final LivroRepository livroRepository;
     private final UsuarioRepository usuarioRepository;
-    private final PessoaRepository pessoaRepository;
+    private final LivroRepository livroRepository;
+    private final RoleRepository roleRepository;
     private final StatusLivroRepository statusLivroRepository;
 
     public AdminService(
-            AdminRepository adminRepository,
-            FuncionarioRepository funcionarioRepository,
-            LivroRepository livroRepository,
             UsuarioRepository usuarioRepository,
-            PessoaRepository pessoaRepository,
+            LivroRepository livroRepository,
+            RoleRepository roleRepository,
             StatusLivroRepository statusLivroRepository) {
 
-        this.adminRepository = adminRepository;
-        this.funcionarioRepository = funcionarioRepository;
-        this.livroRepository = livroRepository;
         this.usuarioRepository = usuarioRepository;
-        this.pessoaRepository = pessoaRepository;
+        this.livroRepository = livroRepository;
+        this.roleRepository = roleRepository;
         this.statusLivroRepository = statusLivroRepository;
     }
 
-    // CRUD
-    public Admin salvarAdmin(Admin admin) {
-        return adminRepository.save(admin);
+    // ===============================================
+    // ADMIN
+    // ===============================================
+    public Usuario salvarAdmin(Usuario usuario) {
+
+        Role adminRole = roleRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("Role ADMIN não encontrada"));
+
+        usuario.setRole(adminRole);
+        usuario.setFlagAtivo(true);
+
+        return usuarioRepository.save(usuario);
     }
 
-    public List<Admin> listarAdmins() {
-        return adminRepository.findAll();
+    public List<Usuario> listarAdmins() {
+        Role adminRole = roleRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("Role ADMIN não encontrada"));
+
+        return usuarioRepository.findAll()
+                .stream()
+                .filter(u -> u.getRole() != null &&
+                             u.getRole().getId().equals(adminRole.getId()))
+                .toList();
     }
 
-    public Optional<Admin> buscarAdminPorId(Long id) {
-        return adminRepository.findById(id);
+    public Optional<Usuario> buscarAdminPorId(String username) {
+        return usuarioRepository.findById(username);
     }
 
-    public void deletarAdmin(Long id) {
-        adminRepository.deleteById(id);
+    public void deletarAdmin(String username) {
+        usuarioRepository.deleteById(username);
     }
 
-    // Funcionário
-    public Funcionario cadastrarFuncionario(Funcionario funcionario) {
-        return funcionarioRepository.save(funcionario);
+    // ===============================================
+    // FUNCIONÁRIO
+    // ===============================================
+
+    public Usuario cadastrarFuncionario(Usuario usuario) {
+
+        Role funcRole = roleRepository.findById(2)
+                .orElseThrow(() -> new RuntimeException("Role FUNCIONARIO não encontrada"));
+
+        usuario.setRole(funcRole);
+        usuario.setFlagAtivo(true);
+
+        return usuarioRepository.save(usuario);
     }
+
+    // ===============================================
+    // BLOQUEIO / DESATIVAÇÃO
+    // ===============================================
 
     public void bloquearPessoa(String username) {
-        pessoaRepository.findByUsername(username).ifPresent(p -> {
-            p.setFlagAtivo(false);
-            pessoaRepository.save(p);
+        usuarioRepository.findById(username).ifPresent(user -> {
+            user.setFlagAtivo(false);
+            usuarioRepository.save(user);
         });
     }
 
+    // ===============================================
+    // FORÇAR DESALOCAÇÃO / DEVOLUÇÃO
+    // ===============================================
+
     public void forcarDesalocacao(Emprestimo emprestimo) {
-        if (emprestimo != null) {
+        if (emprestimo == null) return;
 
-            Usuario usuario = emprestimo.getUsuario();
-            Livro livro = emprestimo.getLivro();
+        Livro livro = emprestimo.getLivro();
 
-            if (usuario != null && livro != null) {
+        if (livro != null) {
 
-                // devolve pela lógica do usuário
-                usuario.devolverLivro(emprestimo);
+            // 1) Atualiza status do livro → DISPONÍVEL
+            StatusLivro disponivel = statusLivroRepository.findByNomeIgnoreCase("DISPONIVEL")
+                    .orElseThrow(() -> new RuntimeException("Status DISPONIVEL não encontrado"));
 
-                // seta status DISPONIVEL (pela entidade)
-                StatusLivro disponivel = statusLivroRepository.findByNomeIgnoreCase("DISPONIVEL")
-                        .orElseThrow(() -> new RuntimeException("Status DISPONIVEL não encontrado"));
+            livro.setStatus(disponivel);
+            livroRepository.save(livro);
 
-                livro.setStatus(disponivel);
-
-                livroRepository.save(livro);
-                pessoaRepository.save(usuario);
+            // 2) Atualiza status do empréstimo (opcional)
+            if (emprestimo.getStatus() != null) {
+                emprestimo.getStatus().setNome("FINALIZADO");
             }
+
+            // 3) IMPORTANTE: NÃO chama usuario.devolverLivro(),
+            // para evitar problemas com coleções LAZY.
+            // A devolução é tratada exclusivamente pelo livro.
         }
     }
 }

@@ -1,48 +1,48 @@
 package com.biblioteca.sistema_biblioteca.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 
-@Entity
-@Table(name = "TB_USUARIO")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
-public class Pessoa {
+@MappedSuperclass
+public abstract class Pessoa {
 
+    // corresponde ao cod_username VARCHAR(255) PK em tb_usuario
     @Id
-    @Column(name = "cod_username")   // ✔ PK string do banco
-    private String username;
+    @Column(name = "cod_username", nullable = false, updatable = false)
+    protected String username;
 
     @Column(name = "txt_nome")
-    private String nome;
+    protected String nome;
 
     @Column(name = "dt_nascimento")
-    private String dtNascimento;
-
-    @Column(name = "txt_email")
-    private String email;
+    protected String dtNascimento;
 
     @Column(name = "senha_hash")
-    private String senha;
+    protected String senha;
+
+    @Column(name = "txt_email")
+    protected String email;
 
     @Column(name = "num_telefone")
-    private String telefone;
+    protected String telefone;
 
     @Column(name = "num_endereco")
-    private String endereco;
+    protected String endereco;
 
-    @Column(name = "cod_cpf")
-    private String cpf;
+    @Column(name = "cod_cpf", unique = true)
+    protected String cpf;
 
     @Column(name = "char_sexo")
-    private char sexo;
-
-    @Column(name = "role", insertable = false, updatable = false)
-    private String roleString;
+    protected Character sexo;
 
     @Column(name = "flag_ativo")
-    private boolean flagAtivo;
+    protected Boolean flagAtivo;
 
-    // ===== Getters e Setters =====
+    // =======================
+    // GETTERS / SETTERS
+    // =======================
+
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
@@ -52,11 +52,11 @@ public class Pessoa {
     public String getDtNascimento() { return dtNascimento; }
     public void setDtNascimento(String dtNascimento) { this.dtNascimento = dtNascimento; }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
@@ -67,22 +67,9 @@ public class Pessoa {
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
 
-    public char getSexo() { return sexo; }
-    public void setSexo(char sexo) { this.sexo = sexo; }
+    public Character getSexo() { return sexo; }
+    public void setSexo(Character sexo) { this.sexo = sexo; }
 
-    public boolean isFlagAtivo() { return flagAtivo; }
-    public void setFlagAtivo(boolean flagAtivo) { this.flagAtivo = flagAtivo; }
-
-    public String getRoleString() { return roleString != null ? roleString : this.getClass().getSimpleName().toUpperCase(); }
-    public void setRoleString(String roleString) { this.roleString = roleString; }
-
-    @PrePersist
-    private void prePersist() {
-        // 🔒 Por padrão, mantém o que foi definido pelo Controller
-        // Se for nulo (não setado manualmente), assume false (aguardando aprovação)
-        if (!this.flagAtivo) {
-            this.flagAtivo = false;
-        }
-    }
+    public Boolean getFlagAtivo() { return flagAtivo; }
+    public void setFlagAtivo(Boolean flagAtivo) { this.flagAtivo = flagAtivo; }
 }
-

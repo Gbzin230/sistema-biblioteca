@@ -1,18 +1,45 @@
 package com.biblioteca.sistema_biblioteca.model;
 
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.persistence.*;
-import lombok.*;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@DiscriminatorValue("USUARIO")
+@Table(name = "tb_usuario")
 public class Usuario extends Pessoa {
 
-    @Column(nullable = true)
-    private Integer limiteSlots = 3;
+    // ============================================================
+    // CAMPOS ESPECÍFICOS DO USUÁRIO
+    // ============================================================
+
+    @Column(name = "cod_status")
+    private Integer codStatus;
+
+    @Column(name = "url_documento")
+    private String urlDocumento;
+
+    @Column(name = "num_cep")
+    private String cep;
+
+    @Column(name = "dt_cadastro")
+    private LocalDateTime dtCadastro;
+
+    @Column(name = "dt_desativacao")
+    private LocalDateTime dtDesativacao;
+
+    @Column(name = "dt_banimento")
+    private LocalDateTime dtBanimento;
+
+    @Column(name = "limite_slots")
+    private Integer limiteSlots;
+
+    @Column(name = "url_capa")
+    private String urlCapa;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cod_role")
+    private Role role;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Emprestimo> livrosAtivos = new ArrayList<>();
@@ -20,64 +47,77 @@ public class Usuario extends Pessoa {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reserva> reservasAtivas = new ArrayList<>();
 
+
+    // ============================================================
+    // CONSTRUTORES
+    // ============================================================
+
     public Usuario() {
-        this.setFlagAtivo(false);
+        this.flagAtivo = true;
+        this.codStatus = 1; // 1 = PENDENTE
         this.limiteSlots = 3;
+        this.dtCadastro = LocalDateTime.now();
     }
 
-    public Usuario(String nome, String email) {
+    public Usuario(Role rolePadrao) {
         this();
-        this.setNome(nome);
-        this.setEmail(email);
+        this.role = rolePadrao;
     }
 
-    public Integer getLimiteSlots() {
-        return limiteSlots != null ? limiteSlots : 3;
+
+    // ============================================================
+    // REGRAS DE NEGÓCIO
+    // ============================================================
+
+    // 🔥 ATIVA O USUÁRIO
+    public void ativar() {
+        this.flagAtivo = true;
+        this.codStatus = 2; // 2 = ATIVO
+        this.dtDesativacao = null;
     }
 
-    public void setLimiteSlots(Integer limiteSlots) {
-        this.limiteSlots = limiteSlots;
+    // 🔥 BLOQUEIA O USUÁRIO
+    public void bloquear() {
+        this.flagAtivo = false;
+        this.codStatus = 3; // 1 = INATIVO
+        this.dtDesativacao = LocalDateTime.now();
     }
 
-    // ======================
-    // Validações
-    // ======================
+    // 🔥 DESATIVA O USUÁRIO
+    public void desativar() {
+        this.flagAtivo = false;
+        this.codStatus = 4; // 1 = INATIVO
+        this.dtDesativacao = LocalDateTime.now();
+    }
 
+    // Verifica se pode realizar operações
     private void validarAtivo() {
-        if (!isFlagAtivo()) {
-            throw new IllegalStateException("Usuário não aprovado. Aguarde a aprovação para acessar o sistema.");
+        if (Boolean.FALSE.equals(flagAtivo) || codStatus == null || !codStatus.equals(2)) {
+            throw new IllegalStateException("Usuário não está ativo no sistema.");
         }
     }
 
-    public int slotsUsados() {
+    public boolean podeEmprestar() {
         validarAtivo();
-        return (livrosAtivos == null ? 0 : livrosAtivos.size())
-             + (reservasAtivas == null ? 0 : reservasAtivas.size());
+        return (livrosAtivos.size() + reservasAtivas.size()) < limiteSlots;
     }
 
-    public int slotsDisponiveis() {
+    public boolean podeReservar() {
         validarAtivo();
-        return getLimiteSlots() - slotsUsados();
+        return (livrosAtivos.size() + reservasAtivas.size()) < limiteSlots;
     }
-
-    public boolean podeReservar() { validarAtivo(); return slotsDisponiveis() > 0; }
-    public boolean podeEmprestar() { validarAtivo(); return slotsDisponiveis() > 0; }
-
-    // ======================
-    // Regras de Empréstimo
-    // ======================
 
     public Emprestimo emprestarLivro(Livro livro) {
         validarAtivo();
 
-        if (!podeEmprestar())
-            throw new IllegalStateException("Limite de empréstimos e reservas atingido");
+        if (!podeEmprestar()) {
+            throw new IllegalStateException("Limite de empréstimos atingido.");
+        }
 
-        Emprestimo emprestimo = new Emprestimo(this, livro);
+        Emprestimo emp = new Emprestimo(this, livro);
+        livrosAtivos.add(emp);
 
-        livrosAtivos.add(emprestimo);
-
-        return emprestimo;
+        return emp;
     }
 
     public void devolverLivro(Emprestimo emprestimo) {
@@ -85,37 +125,68 @@ public class Usuario extends Pessoa {
         livrosAtivos.remove(emprestimo);
     }
 
-    // ======================
-    // Regras de Reserva
-    // ======================
-
-    public Reserva reservarLivro(Livro livro) {
+    public Reserva reservarLivro(Livro livro, StatusReserva statusInicial) {
         validarAtivo();
 
-        if (!podeReservar())
-            throw new IllegalStateException("Limite de empréstimos e reservas atingido");
+        if (!podeReservar()) {
+            throw new IllegalStateException("Limite de reservas atingido.");
+        }
 
-        Reserva reserva = new Reserva(this, livro);
-        reservasAtivas.add(reserva);
+        Reserva r = new Reserva(this, livro, statusInicial);
+        reservasAtivas.add(r);
 
-        return reserva;
+        return r;
     }
 
     public void cancelarReserva(Livro livro) {
         validarAtivo();
-        if (livro == null) return;
 
         Reserva alvo = reservasAtivas.stream()
-                .filter(r -> r.getLivro().equals(livro)
-                          && r.getStatus() == Reserva.ReservaStatus.ATIVA)
+                .filter(r -> r.getLivro().equals(livro) &&
+                        r.getStatus().getNome().equalsIgnoreCase("ATIVA"))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Nenhuma reserva ativa encontrada para este livro."));
+                .orElseThrow(() -> new IllegalStateException("Nenhuma reserva ativa desse livro."));
 
-        alvo.cancelar();
+        alvo.getStatus().setNome("CANCELADA");
     }
 
     public List<Emprestimo> consultaHistorico() {
         validarAtivo();
         return new ArrayList<>(livrosAtivos);
     }
+
+
+    // ============================================================
+    // GETTERS / SETTERS
+    // ============================================================
+
+    public Integer getCodStatus() { return codStatus; }
+    public void setCodStatus(Integer codStatus) { this.codStatus = codStatus; }
+
+    public String getUrlDocumento() { return urlDocumento; }
+    public void setUrlDocumento(String urlDocumento) { this.urlDocumento = urlDocumento; }
+
+    public String getCep() { return cep; }
+    public void setCep(String cep) { this.cep = cep; }
+
+    public LocalDateTime getDtCadastro() { return dtCadastro; }
+    public void setDtCadastro(LocalDateTime dtCadastro) { this.dtCadastro = dtCadastro; }
+
+    public LocalDateTime getDtDesativacao() { return dtDesativacao; }
+    public void setDtDesativacao(LocalDateTime dtDesativacao) { this.dtDesativacao = dtDesativacao; }
+
+    public LocalDateTime getDtBanimento() { return dtBanimento; }
+    public void setDtBanimento(LocalDateTime dtBanimento) { this.dtBanimento = dtBanimento; }
+
+    public Integer getLimiteSlots() { return limiteSlots; }
+    public void setLimiteSlots(Integer limiteSlots) { this.limiteSlots = limiteSlots; }
+
+    public String getUrlCapa() { return urlCapa; }
+    public void setUrlCapa(String urlCapa) { this.urlCapa = urlCapa; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
+
+    public List<Emprestimo> getLivrosAtivos() { return livrosAtivos; }
+    public List<Reserva> getReservasAtivas() { return reservasAtivas; }
 }

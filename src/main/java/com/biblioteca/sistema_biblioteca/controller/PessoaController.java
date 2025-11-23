@@ -3,31 +3,47 @@ package com.biblioteca.sistema_biblioteca.controller;
 import com.biblioteca.sistema_biblioteca.dto.PessoaRequestDTO;
 import com.biblioteca.sistema_biblioteca.dto.PessoaResponseDTO;
 import com.biblioteca.sistema_biblioteca.dto.PessoaUpdateDTO;
-import com.biblioteca.sistema_biblioteca.model.Pessoa;
+import com.biblioteca.sistema_biblioteca.dto.UsuarioListagemDTO;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
-import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
+import com.biblioteca.sistema_biblioteca.model.Role;
 import com.biblioteca.sistema_biblioteca.service.UsuarioService;
+import com.biblioteca.sistema_biblioteca.service.FuncionarioService;
+import com.biblioteca.sistema_biblioteca.repository.RoleRepository;
+import com.biblioteca.sistema_biblioteca.repository.StatusUsuarioRepository;
+
 import org.modelmapper.ModelMapper;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 
+import jakarta.validation.Valid;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pessoas")
 public class PessoaController {
 
     private final UsuarioService usuarioService;
+    private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
+    private final StatusUsuarioRepository statusUsuarioRepository;
+    private final FuncionarioService funcionarioService;
 
-    public PessoaController(UsuarioService usuarioService, ModelMapper modelMapper) {
+    // 🔥 CONSTRUTOR ÚNICO
+    public PessoaController(
+            UsuarioService usuarioService,
+            RoleRepository roleRepository,
+            ModelMapper modelMapper,
+            FuncionarioService funcionarioService,
+            StatusUsuarioRepository statusUsuarioRepository
+    ) {
         this.usuarioService = usuarioService;
+        this.roleRepository = roleRepository;
         this.modelMapper = modelMapper;
+        this.funcionarioService = funcionarioService;
+        this.statusUsuarioRepository = statusUsuarioRepository;
     }
 
     // ============================================================
@@ -49,12 +65,13 @@ public class PessoaController {
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         usuario.setDtNascimento(dto.getDtNascimento().format(formatter));
 
-        // valores padrão
         usuario.setLimiteSlots(3);
         usuario.setFlagAtivo(false);
-        usuario.setRoleString("USUARIO");
 
-        // senha criptografada
+        Role userRole = roleRepository.findByNomeIgnoreCase("USUARIO")
+                .orElseThrow(() -> new RuntimeException("Role USUARIO não encontrada"));
+        usuario.setRole(userRole);
+
         usuario.setSenha(usuarioService.encodePassword(dto.getSenha()));
 
         Usuario salvo = usuarioService.salvar(usuario);
@@ -64,18 +81,12 @@ public class PessoaController {
     }
 
     // ============================================================
-    // 📋 LISTAR — FUNCIONARIO ou ADMIN
+    // 📋 LISTAGEM — FUNCIONÁRIO OU ADMIN
     // ============================================================
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
-    @GetMapping
-    public ResponseEntity<List<PessoaResponseDTO>> listar() {
-
-        List<PessoaResponseDTO> pessoas = usuarioService.listarUsuarios()
-                .stream()
-                .map(p -> modelMapper.map(p, PessoaResponseDTO.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(pessoas);
+    @GetMapping("/usuarios")
+    public List<UsuarioListagemDTO> listarUsuarios() {
+        return usuarioService.listarUsuariosCompleto();
     }
 
     // ============================================================
@@ -98,6 +109,9 @@ public class PessoaController {
         return ResponseEntity.noContent().build();
     }
 
+    // ============================================================
+    // 📝 ATUALIZAR DADOS
+    // ============================================================
     @PutMapping("/update/{identificador}")
     public ResponseEntity<PessoaResponseDTO> atualizar(
             @PathVariable String identificador,
@@ -107,5 +121,4 @@ public class PessoaController {
         PessoaResponseDTO resp = modelMapper.map(atualizado, PessoaResponseDTO.class);
         return ResponseEntity.ok(resp);
     }
-
 }

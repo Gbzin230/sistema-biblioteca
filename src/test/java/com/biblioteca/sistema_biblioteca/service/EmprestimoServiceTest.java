@@ -7,10 +7,12 @@ import com.biblioteca.sistema_biblioteca.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class EmprestimoServiceTest {
@@ -20,35 +22,38 @@ public class EmprestimoServiceTest {
     private LivroRepository livroRepository;
     private UsuarioRepository usuarioRepository;
     private ReservaRepository reservaRepository;
-    private PessoaRepository pessoaRepository;
     private StatusLivroRepository statusLivroRepository;
+    private StatusEmprestimoRepository statusEmprestimoRepository;
+    private StatusReservaRepository statusReservaRepository;
 
     private StatusLivro statusDisponivel;
     private StatusLivro statusEmprestado;
     private StatusLivro statusReservado;
 
-    @BeforeEach
-    void setup() {
+    private StatusEmprestimo statusAtivo;
+    private StatusEmprestimo statusFinalizado;
 
-        // mocks
+    @BeforeEach
+        void setup() {
+
         emprestimoRepository = mock(EmprestimoRepository.class);
         livroRepository = mock(LivroRepository.class);
         usuarioRepository = mock(UsuarioRepository.class);
         reservaRepository = mock(ReservaRepository.class);
-        pessoaRepository = mock(PessoaRepository.class);
         statusLivroRepository = mock(StatusLivroRepository.class);
+        statusEmprestimoRepository = mock(StatusEmprestimoRepository.class);
+        statusReservaRepository = mock(StatusReservaRepository.class);
 
-        // Criar service com TODOS os 6 parâmetros do construtor atual
         service = new EmprestimoService(
                 emprestimoRepository,
                 livroRepository,
                 usuarioRepository,
                 reservaRepository,
-                pessoaRepository,
-                statusLivroRepository
+                statusLivroRepository,
+                statusEmprestimoRepository,
+                statusReservaRepository
         );
 
-        // Criar status FAKE (não são enums!)
         statusDisponivel = new StatusLivro("DISPONIVEL");
         statusDisponivel.setId(1);
 
@@ -58,14 +63,28 @@ public class EmprestimoServiceTest {
         statusReservado = new StatusLivro("RESERVADO");
         statusReservado.setId(3);
 
-        // mockando retornos padrões do repository de status
         when(statusLivroRepository.findByNomeIgnoreCase("DISPONIVEL"))
                 .thenReturn(Optional.of(statusDisponivel));
         when(statusLivroRepository.findByNomeIgnoreCase("EMPRESTADO"))
                 .thenReturn(Optional.of(statusEmprestado));
         when(statusLivroRepository.findByNomeIgnoreCase("RESERVADO"))
                 .thenReturn(Optional.of(statusReservado));
-    }
+
+        StatusEmprestimo ativo = new StatusEmprestimo();
+        ativo.setId(1);
+        ativo.setNome("ATIVO");
+
+        when(statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO"))
+                .thenReturn(Optional.of(ativo));
+
+        StatusReserva ativa = new StatusReserva();
+        ativa.setId(1);
+        ativa.setNome("ATIVA");
+
+        when(statusReservaRepository.findByNomeIgnoreCase("ATIVA"))
+                .thenReturn(Optional.of(ativa));
+        }
+
 
     @Test
     void deveRealizarEmprestimoComSucesso() {
@@ -79,26 +98,20 @@ public class EmprestimoServiceTest {
         livro.setFlagAtivo(true);
         livro.setStatus(statusDisponivel);
 
-        when(usuarioRepository.findById("user123"))
-                .thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findById("user123")).thenReturn(Optional.of(usuario));
+        when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
 
-        when(livroRepository.findById(1L))
-                .thenReturn(Optional.of(livro));
-
-        when(reservaRepository.countByUsuarioAndStatus(usuario, Reserva.ReservaStatus.ATIVA))
-                .thenReturn(0);
-
-        when(emprestimoRepository.countByUsuarioAndStatus(usuario, Emprestimo.Status.ATIVO))
-                .thenReturn(0);
+        when(reservaRepository.countByUsuarioAndStatus(eq(usuario), any())).thenReturn(0);
+        when(emprestimoRepository.countByUsuarioAndStatus(usuario, statusAtivo)).thenReturn(0);
 
         when(emprestimoRepository.save(any(Emprestimo.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(inv -> inv.getArgument(0));
 
-        Emprestimo emprestimo = service.realizarEmprestimo("user123", 1L);
+        Emprestimo e = service.realizarEmprestimo("user123", 1L);
 
-        assertNotNull(emprestimo);
-        assertEquals(usuario, emprestimo.getUsuario());
-        assertEquals(livro, emprestimo.getLivro());
+        assertNotNull(e);
+        assertEquals(usuario, e.getUsuario());
+        assertEquals(livro, e.getLivro());
         assertEquals("EMPRESTADO", livro.getStatus().getNome());
     }
 
@@ -114,39 +127,29 @@ public class EmprestimoServiceTest {
         livro.setFlagAtivo(true);
         livro.setStatus(statusEmprestado);
 
-        when(usuarioRepository.findById("user123"))
-                .thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findById("user123")).thenReturn(Optional.of(usuario));
+        when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
 
-        when(livroRepository.findById(1L))
-                .thenReturn(Optional.of(livro));
-
-        assertThrows(
-                RegraNegocioException.class,
-                () -> service.realizarEmprestimo("user123", 1L)
-        );
+        assertThrows(RegraNegocioException.class,
+                () -> service.realizarEmprestimo("user123", 1L));
     }
 
     @Test
     void deveRenovarEmprestimo() {
 
-        Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setId(1L);
-        emprestimo.setDtPrevistaDevolucao(LocalDate.now().plusDays(7));
-        emprestimo.setNumRenovacoes(0);
-        emprestimo.setStatus(Emprestimo.Status.ATIVO);
+        Emprestimo e = new Emprestimo();
+        e.setId(1L);
+        e.setStatus(statusAtivo);
+        e.setNumRenovacoes(0);
+        e.setDtFim(LocalDateTime.now().plusDays(7));
 
-        when(emprestimoRepository.findById(1L))
-                .thenReturn(Optional.of(emprestimo));
-
+        when(emprestimoRepository.findById(1L)).thenReturn(Optional.of(e));
         when(emprestimoRepository.save(any(Emprestimo.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(inv -> inv.getArgument(0));
 
         Emprestimo renovado = service.renovarEmprestimo(1L);
 
         assertEquals(1, renovado.getNumRenovacoes());
-        assertTrue(
-                renovado.getDtPrevistaDevolucao()
-                        .isAfter(LocalDate.now().plusDays(7))
-        );
+        assertTrue(renovado.getDtFim().isAfter(e.getDtFim()));
     }
 }

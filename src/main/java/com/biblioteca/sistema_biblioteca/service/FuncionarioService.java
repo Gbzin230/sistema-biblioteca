@@ -3,59 +3,81 @@ package com.biblioteca.sistema_biblioteca.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.biblioteca.sistema_biblioteca.dto.UsuarioListagemDTO;
+import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.biblioteca.sistema_biblioteca.model.Funcionario;
 import com.biblioteca.sistema_biblioteca.model.Livro;
+import com.biblioteca.sistema_biblioteca.model.Role;
 import com.biblioteca.sistema_biblioteca.model.StatusLivro;
+import com.biblioteca.sistema_biblioteca.model.StatusUsuario;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 
-import com.biblioteca.sistema_biblioteca.repository.FuncionarioRepository;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
 import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
 import com.biblioteca.sistema_biblioteca.repository.StatusLivroRepository;
+import com.biblioteca.sistema_biblioteca.repository.StatusUsuarioRepository;
+import com.biblioteca.sistema_biblioteca.repository.RoleRepository;
 
-import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FuncionarioService {
 
-    private final FuncionarioRepository funcionarioRepository;
     private final LivroRepository livroRepository;
     private final UsuarioRepository usuarioRepository;
     private final StatusLivroRepository statusLivroRepository;
+    private final RoleRepository roleRepository;
+    private final StatusUsuarioRepository statusUsuarioRepository;
+
 
     public FuncionarioService(
-            FuncionarioRepository funcionarioRepository,
             LivroRepository livroRepository,
             UsuarioRepository usuarioRepository,
-            StatusLivroRepository statusLivroRepository
+            StatusLivroRepository statusLivroRepository,
+            RoleRepository roleRepository,
+            StatusUsuarioRepository statusUsuarioRepository
     ) {
-        this.funcionarioRepository = funcionarioRepository;
         this.livroRepository = livroRepository;
         this.usuarioRepository = usuarioRepository;
         this.statusLivroRepository = statusLivroRepository;
+        this.roleRepository = roleRepository;
+        this.statusUsuarioRepository = statusUsuarioRepository;
     }
 
     // ============================================================
-    // CRUD Funcionario
+    // FUNCIONÁRIOS (sem tabela dedicada)
     // ============================================================
-    public Funcionario salvarFuncionario(Funcionario funcionario) {
-        return funcionarioRepository.save(funcionario);
+
+    public Usuario salvarFuncionario(Usuario funcionario) {
+
+        Role roleFuncionario = roleRepository.findByNomeIgnoreCase("FUNCIONARIO")
+                .orElseThrow(() -> new RegraNegocioException("Role FUNCIONARIO não encontrada."));
+
+        funcionario.setRole(roleFuncionario);
+        funcionario.setFlagAtivo(true);
+
+        return usuarioRepository.save(funcionario);
     }
 
-    public List<Funcionario> listarFuncionarios() {
-        return funcionarioRepository.findAll();
+    public List<Usuario> listarFuncionarios() {
+        return usuarioRepository.findAll().stream()
+                .filter(u -> u.getRole() != null &&
+                             "FUNCIONARIO".equalsIgnoreCase(u.getRole().getNome()))
+                .toList();
     }
 
-    public Optional<Funcionario> buscarFuncionarioPorId(Long id) {
-        return funcionarioRepository.findById(id);
+    public Optional<Usuario> buscarFuncionarioPorId(String username) {
+        return usuarioRepository.findById(username)
+                .filter(u -> u.getRole() != null &&
+                             "FUNCIONARIO".equalsIgnoreCase(u.getRole().getNome()));
     }
 
-    public void deletarFuncionario(Long id) {
-        funcionarioRepository.deleteById(id);
+    public void deletarFuncionario(String username) {
+        usuarioRepository.findById(username)
+                .filter(u -> u.getRole() != null &&
+                             "FUNCIONARIO".equalsIgnoreCase(u.getRole().getNome()))
+                .ifPresent(u -> usuarioRepository.deleteById(username));
     }
 
     // ============================================================
@@ -109,21 +131,48 @@ public class FuncionarioService {
     // USUÁRIOS
     // ============================================================
 
-    public List<Usuario> consultarUsuarios() {
-        return usuarioRepository.findAll();
-    }
+    public List<UsuarioListagemDTO> consultarFuncionarios() {
+
+    List<Integer> rolesPermitidos = List.of(1, 2); // ADMIN e FUNCIONARIO
+
+    return usuarioRepository.findByRoleIdIn(rolesPermitidos)
+            .stream()
+            .map(u -> new UsuarioListagemDTO(
+                    u.getUsername(),
+                    statusUsuarioRepository.findById(u.getCodStatus())
+                            .map(StatusUsuario::getNomeStatus)
+                            .orElse("DESCONHECIDO"),
+                    u.getUrlDocumento(),
+                    u.getDtNascimento(),
+                    u.getEndereco(),
+                    u.getCep(),
+                    u.getCpf(),
+                    u.getTelefone(),
+                    u.getEmail(),
+                    u.getNome(),
+                    u.getDtCadastro(),
+                    u.getSexo(),
+                    u.getDtDesativacao(),
+                    u.getDtBanimento(),
+                    u.getLimiteSlots(),
+                    u.getUrlCapa(),
+                    u.getFlagAtivo(),
+                    u.getRole() != null ? u.getRole().getNome() : null
+            ))
+            .toList();
+}
+
 
     public List<Livro> consultarHistoricoUsuario(Usuario usuario) {
-        return usuario.consultaHistorico().stream()
+        return usuario.consultaHistorico()
+                .stream()
                 .map(Emprestimo::getLivro)
                 .toList();
     }
 
     public boolean aprovarUsuario(Usuario usuario) {
-
         usuario.setFlagAtivo(true);
         usuarioRepository.save(usuario);
         return true;
     }
-
 }

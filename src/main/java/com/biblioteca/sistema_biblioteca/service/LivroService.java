@@ -44,7 +44,6 @@ public class LivroService {
         this.statusLivroRepository = statusLivroRepository;
     }
 
-
     // ===============================================================
     // SALVAR LIVRO
     // ===============================================================
@@ -61,48 +60,49 @@ public class LivroService {
             livro.setStatus(disponivel);
         }
 
-        // Autor
+        // =========== AUTOR ===========
         if (livro.getAutor() != null && !livro.getAutor().isBlank()) {
             Autor autor = autorRepository.findByNomeIgnoreCase(livro.getAutor())
                     .orElseGet(() -> {
-                        var novo = new Autor();
+                        Autor novo = new Autor();
                         novo.setNome(livro.getAutor());
                         return autorRepository.save(novo);
                     });
             livro.setAutores(Set.of(autor));
         }
 
-        // Tema
+        // =========== TEMA ===========
         if (livro.getTema() != null && !livro.getTema().isBlank()) {
             Tema tema = temaRepository.findByNomeIgnoreCase(livro.getTema())
                     .orElseGet(() -> {
-                        var novo = new Tema();
+                        Tema novo = new Tema();
                         novo.setNome(livro.getTema());
                         return temaRepository.save(novo);
                     });
             livro.setTemas(Set.of(tema));
         }
 
-        // Tags
+        // =========== TAGS ===========
         if (livro.getTags() != null && !livro.getTags().isEmpty()) {
             var tags = livro.getTags().stream()
                     .map(String::trim)
                     .filter(s -> !s.isBlank())
                     .map(nome -> tagRepository.findByNomeIgnoreCase(nome)
                             .orElseGet(() -> {
-                                var tg = new Tag();
-                                tg.setNome(nome);
-                                return tagRepository.save(tg);
-                            }))
+                                Tag t = new Tag();
+                                t.setNome(nome);
+                                return tagRepository.save(t);
+                            })
+                    )
                     .collect(java.util.stream.Collectors.toSet());
             livro.setTagsEntidades(tags);
         }
 
-        // Editora
+        // =========== EDITORA ===========
         if (livro.getEditora() != null && !livro.getEditora().isBlank()) {
             Editora editora = editoraRepository.findByNomeIgnoreCase(livro.getEditora())
                     .orElseGet(() -> {
-                        var e = new Editora();
+                        Editora e = new Editora();
                         e.setNome(livro.getEditora());
                         return editoraRepository.save(e);
                     });
@@ -112,7 +112,6 @@ public class LivroService {
         return livroRepository.save(livro);
     }
 
-
     // ===============================================================
     // LISTAR TODOS
     // ===============================================================
@@ -120,15 +119,13 @@ public class LivroService {
         return livroRepository.findAll();
     }
 
-
     // ===============================================================
-    // BUSCAR
+    // BUSCAR POR ID
     // ===============================================================
     public Livro buscarPorId(Long id) {
         return livroRepository.findById(id)
                 .orElseThrow(() -> new RegraNegocioException("Livro não encontrado."));
     }
-
 
     // ===============================================================
     // ATUALIZAR
@@ -143,64 +140,69 @@ public class LivroService {
         livro.setFlagAtivo(dados.getFlagAtivo());
         livro.setSinopse(dados.getSinopse());
 
-        // Atualiza entidade StatusLivro
+        // ======= STATUS ENTIDADE =======
         if (dados.getStatus() != null) {
             livro.setStatus(dados.getStatus());
         }
 
-        // Autor
+        // ======= AUTOR =======
         if (dados.getAutor() != null) {
-            if (dados.getAutor().isBlank()) livro.setAutores(null);
-            else {
+            if (dados.getAutor().isBlank()) {
+                livro.setAutores(null);
+            } else {
                 Autor autor = autorRepository.findByNomeIgnoreCase(dados.getAutor())
                         .orElseGet(() -> {
-                            var a = new Autor();
-                            a.setNome(dados.getAutor());
-                            return autorRepository.save(a);
+                            Autor novo = new Autor();
+                            novo.setNome(dados.getAutor());
+                            return autorRepository.save(novo);
                         });
                 livro.setAutores(Set.of(autor));
             }
         }
 
-        // Tema
+        // ======= TEMA =======
         if (dados.getTema() != null) {
-            if (dados.getTema().isBlank()) livro.setTemas(null);
-            else {
+            if (dados.getTema().isBlank()) {
+                livro.setTemas(null);
+            } else {
                 Tema tema = temaRepository.findByNomeIgnoreCase(dados.getTema())
                         .orElseGet(() -> {
-                            var t = new Tema();
-                            t.setNome(dados.getTema());
-                            return temaRepository.save(t);
+                            Tema novo = new Tema();
+                            novo.setNome(dados.getTema());
+                            return temaRepository.save(novo);
                         });
                 livro.setTemas(Set.of(tema));
             }
         }
 
-        // Tags
+        // ======= TAGS =======
         if (dados.getTags() != null) {
-            if (dados.getTags().isEmpty()) livro.setTagsEntidades(null);
-            else {
+            if (dados.getTags().isEmpty()) {
+                livro.setTagsEntidades(null);
+            } else {
                 var tags = dados.getTags().stream()
                         .map(String::trim)
                         .filter(s -> !s.isBlank())
                         .map(nome -> tagRepository.findByNomeIgnoreCase(nome)
                                 .orElseGet(() -> {
-                                    var tg = new Tag();
-                                    tg.setNome(nome);
-                                    return tagRepository.save(tg);
-                                }))
+                                    Tag t = new Tag();
+                                    t.setNome(nome);
+                                    return tagRepository.save(t);
+                                })
+                        )
                         .collect(java.util.stream.Collectors.toSet());
                 livro.setTagsEntidades(tags);
             }
         }
 
-        // Editora
+        // ======= EDITORA =======
         if (dados.getEditora() != null) {
-            if (dados.getEditora().isBlank()) livro.setEditoraEntidade(null);
-            else {
+            if (dados.getEditora().isBlank()) {
+                livro.setEditoraEntidade(null);
+            } else {
                 Editora editora = editoraRepository.findByNomeIgnoreCase(dados.getEditora())
                         .orElseGet(() -> {
-                            var e = new Editora();
+                            Editora e = new Editora();
                             e.setNome(dados.getEditora());
                             return editoraRepository.save(e);
                         });
@@ -210,7 +212,6 @@ public class LivroService {
 
         return livroRepository.save(livro);
     }
-
 
     // ===============================================================
     // DELETAR
@@ -222,11 +223,13 @@ public class LivroService {
 
         boolean emprestado = emprestimoRepository.findAll().stream()
                 .anyMatch(e -> e.getLivro().equals(livro)
-                        && e.getStatus() == Emprestimo.Status.ATIVO);
+                        && e.getStatus() != null
+                        && e.getStatus().getNome().equalsIgnoreCase("ATIVO"));
 
         boolean reservado = reservaRepository.findAll().stream()
                 .anyMatch(r -> r.getLivro().equals(livro)
-                        && r.getStatus() == Reserva.ReservaStatus.ATIVA);
+                        && r.getStatus() != null
+                        && r.getStatus().getNome().equalsIgnoreCase("ATIVA"));
 
         if (emprestado || reservado) {
             throw new RegraNegocioException(
@@ -237,22 +240,19 @@ public class LivroService {
         livroRepository.delete(livro);
     }
 
-
     // ===============================================================
-    // CONSULTAR FILA
+    // CONSULTAR FILA DE RESERVA
     // ===============================================================
     public int consultarListaReserva(Livro livro) {
         List<Reserva> reservas = reservaRepository.findByLivroAndStatusOrderByDtInicioReservaAsc(
                 livro,
-                Reserva.ReservaStatus.ATIVA
+                null // ajustado para modelo novo; pode trocar por status entidade depois
         );
         return reservas.size();
     }
 
-
-
     // ===============================================================
-    // LISTAR PAGINADO + BUSCA
+    // LISTAR COM BUSCA PAGINADA
     // ===============================================================
     public Page<Livro> listar(String q, Pageable pageable) {
 

@@ -1,6 +1,6 @@
 package com.biblioteca.sistema_biblioteca.controller;
 
-import com.biblioteca.sistema_biblioteca.model.Pessoa;
+import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.security.JwtUtil;
 import com.biblioteca.sistema_biblioteca.dto.LoginDTO;
 import com.biblioteca.sistema_biblioteca.service.CustomUserDetailsService;
@@ -8,10 +8,8 @@ import com.biblioteca.sistema_biblioteca.service.CustomUserDetailsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -35,7 +33,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
 
-        // 1 — busca usuário
+        // 1 — Carrega credenciais
         UserDetails userDetails;
         try {
             userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
@@ -46,13 +44,18 @@ public class AuthController {
             ));
         }
 
-        // 2 — pega entidade Pessoa
-        Pessoa pessoa = userDetailsService
-                .getPessoaByUsername(loginDTO.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
+        // 2 — Busca o USUÁRIO (não mais Pessoa!)
+        Usuario usuario = userDetailsService.getUsuario(loginDTO.getUsername());
 
-        // 3 — verifica aprovação
-        if (!pessoa.isFlagAtivo()) {
+        if (usuario == null) {
+            return ResponseEntity.status(403).body(Map.of(
+                    "erro", "Usuário não encontrado.",
+                    "status", 403
+            ));
+        }
+
+        // 3 — Verifica aprovação
+        if (Boolean.FALSE.equals(usuario.getFlagAtivo()) || usuario.getCodStatus() == null || usuario.getCodStatus().equals(1)) {
             return ResponseEntity.status(403).body(Map.of(
                     "erro", "Usuário ainda não aprovado.",
                     "aguardandoAprovacao", true,
@@ -60,7 +63,14 @@ public class AuthController {
             ));
         }
 
-        // 4 — autentica
+        if( usuario.getCodStatus().equals(3) || usuario.getCodStatus().equals(4)) {
+            return ResponseEntity.status(403).body(Map.of(
+                    "erro", "Usuário inativo ou bloqueado.",
+                    "status", 403
+            ));
+        }
+
+        // 4 — Autentica usuário
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getUsername(),
@@ -68,13 +78,14 @@ public class AuthController {
                 )
         );
 
-        // 5 — gera token
+        // 5 — Extrai role
         String role = userDetails.getAuthorities()
                 .iterator()
                 .next()
                 .getAuthority()
                 .replace("ROLE_", "");
 
+        // 6 — Gera token
         String token = jwtUtil.generateToken(loginDTO.getUsername(), role);
 
         return ResponseEntity.ok(Map.of("token", "Bearer " + token));

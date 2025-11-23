@@ -1,11 +1,10 @@
 package com.biblioteca.sistema_biblioteca.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
-import com.biblioteca.sistema_biblioteca.model.converter.EmprestimoStatusConverter;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "TB_EMPRESTIMO")
+@Table(name = "tb_emprestimo")
 public class Emprestimo {
 
     @Id
@@ -14,39 +13,38 @@ public class Emprestimo {
     private Long id;
 
     @Column(name = "dt_inicio")
-    private LocalDate dtInicio;
+    private LocalDateTime dtInicio;
 
-    @Column(name = "dt_prevista_devolucao")
-    private LocalDate dtPrevistaDevolucao;
+    @Column(name = "dt_fim")
+    private LocalDateTime dtFim;
 
     @Column(name = "num_renovacoes")
     private Integer numRenovacoes;
 
-    @Convert(converter = EmprestimoStatusConverter.class)
-    @Column(name = "cod_status")
-    private Status status;
+    @Column(name = "num_pagina_atual")
+    private Integer paginaAtual;
+
+    // STATUS NÃO PODE SER EDITADO VIA setNome
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cod_status", nullable = false)
+    private StatusEmprestimo status;
 
     @ManyToOne
-    @JoinColumn(name = "cod_usuario")
+    @JoinColumn(name = "cod_username", nullable = false)
     private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "cod_livro", nullable = false)
     private Livro livro;
 
-    public enum Status {
-        ATIVO,
-        FINALIZADO,
-        ATRASADO
-    }
-
-    // ======== Construtores ========
-
+    // =============================
+    // CONSTRUTORES
+    // =============================
     public Emprestimo() {
-        this.status = Status.ATIVO;
         this.numRenovacoes = 0;
-        this.dtInicio = LocalDate.now();
-        this.dtPrevistaDevolucao = dtInicio.plusDays(7); // prazo padrão 7 dias
+        this.paginaAtual = 0;
+        this.dtInicio = LocalDateTime.now();
+        this.dtFim = dtInicio.plusDays(7);
     }
 
     public Emprestimo(Usuario usuario, Livro livro) {
@@ -55,87 +53,59 @@ public class Emprestimo {
         this.livro = livro;
     }
 
-    // ======== Métodos de Negócio ========
+    // =============================
+    // REGRAS DE NEGÓCIO
+    // =============================
+    public boolean renovar(StatusEmprestimo statusAtivo) {
+        if (!this.status.getNome().equalsIgnoreCase("ATIVO"))
+            return false;
 
-    public boolean renovar() {
-        if (this.status == Status.ATIVO && this.numRenovacoes < 2) {
-            this.dtPrevistaDevolucao = this.dtPrevistaDevolucao.plusDays(14);
+        if (this.numRenovacoes < 2) {
+            this.dtFim = this.dtFim.plusDays(14);
             this.numRenovacoes++;
+            this.status = statusAtivo;
             return true;
         }
         return false;
     }
 
-    public void encerrar() {
-        this.status = Status.FINALIZADO;
+    public void encerrar(StatusEmprestimo statusFinalizado) {
+        this.status = statusFinalizado;
     }
 
-    public Status verificarStatus() {
-        if (this.status == Status.FINALIZADO) {
-            return Status.FINALIZADO;
+    public void atualizarStatusAtraso(StatusEmprestimo statusAtrasado) {
+        if (this.status.getNome().equalsIgnoreCase("FINALIZADO"))
+            return;
+
+        if (LocalDateTime.now().isAfter(this.dtFim)) {
+            this.status = statusAtrasado;
         }
-        if (LocalDate.now().isAfter(this.dtPrevistaDevolucao)) {
-            this.status = Status.ATRASADO;
-        }
-        return this.status;
     }
 
-    // ======== Getters e Setters ========
+    // =============================
+    // GETTERS E SETTERS
+    // =============================
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public LocalDateTime getDtInicio() { return dtInicio; }
+    public void setDtInicio(LocalDateTime dtInicio) { this.dtInicio = dtInicio; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public LocalDateTime getDtFim() { return dtFim; }
+    public void setDtFim(LocalDateTime dtFim) { this.dtFim = dtFim; }
 
-    public LocalDate getDtInicio() {
-        return dtInicio;
-    }
+    public Integer getNumRenovacoes() { return numRenovacoes; }
+    public void setNumRenovacoes(Integer numRenovacoes) { this.numRenovacoes = numRenovacoes; }
 
-    public void setDtInicio(LocalDate dtInicio) {
-        this.dtInicio = dtInicio;
-    }
+    public Integer getPaginaAtual() { return paginaAtual; }
+    public void setPaginaAtual(Integer paginaAtual) { this.paginaAtual = paginaAtual; }
 
-    public LocalDate getDtPrevistaDevolucao() {
-        return dtPrevistaDevolucao;
-    }
+    public StatusEmprestimo getStatus() { return status; }
+    public void setStatus(StatusEmprestimo status) { this.status = status; }
 
-    public void setDtPrevistaDevolucao(LocalDate dtPrevistaDevolucao) {
-        this.dtPrevistaDevolucao = dtPrevistaDevolucao;
-    }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public Integer getNumRenovacoes() {
-        return numRenovacoes;
-    }
-
-    public void setNumRenovacoes(Integer numRenovacoes) {
-        this.numRenovacoes = numRenovacoes;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Livro getLivro() {
-        return livro;
-    }
-
-    public void setLivro(Livro livro) {
-        this.livro = livro;
-    }
+    public Livro getLivro() { return livro; }
+    public void setLivro(Livro livro) { this.livro = livro; }
 }
-

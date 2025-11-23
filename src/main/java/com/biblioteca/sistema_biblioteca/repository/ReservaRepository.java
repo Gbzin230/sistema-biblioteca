@@ -2,6 +2,7 @@ package com.biblioteca.sistema_biblioteca.repository;
 
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
+import com.biblioteca.sistema_biblioteca.model.StatusReserva;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,31 +11,30 @@ import java.util.Optional;
 
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
-    // 🔹 Primeira reserva da fila (ordena por dtInicioReserva)
+    // 🔹 Primeira reserva da fila (ordena por data)
     Optional<Reserva> findFirstByLivroAndStatusOrderByDtInicioReservaAsc(
             Livro livro,
-            Reserva.ReservaStatus status
+            StatusReserva status
     );
 
-    // 🔹 Lista de reservas ordenadas
+    // 🔹 Lista de reservas por status
     List<Reserva> findByLivroAndStatusOrderByDtInicioReservaAsc(
             Livro livro,
-            Reserva.ReservaStatus status
+            StatusReserva status
     );
 
-    // 🔹 Contagem de reservas por usuário + status
+    // 🔹 Contagem por usuário e status
     int countByUsuarioAndStatus(
             Usuario usuario,
-            Reserva.ReservaStatus status
+            StatusReserva status
     );
 
-    // 🔹 Verifica se existe uma reserva ativa para o livro
+    // 🔹 Existe reserva ativa para o livro?
     boolean existsByLivroAndStatus(
             Livro livro,
-            Reserva.ReservaStatus status
+            StatusReserva status
     );
 
     // 🔹 Necessário para UsuarioService.deletar()
     boolean existsByUsuario(Usuario usuario);
 }
-    

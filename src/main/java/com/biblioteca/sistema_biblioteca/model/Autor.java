@@ -3,7 +3,7 @@ package com.biblioteca.sistema_biblioteca.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "TB_AUTOR")
+@Table(name = "tb_autor")
 public class Autor {
 
     @Id
@@ -11,7 +11,7 @@ public class Autor {
     @Column(name = "cod_autor")
     private Long id;
 
-    @Column(name = "nome_autor", unique = true, nullable = false)
+    @Column(name = "nome_autor", nullable = false, length = 100)
     private String nome;
 
     public Long getId() { return id; }

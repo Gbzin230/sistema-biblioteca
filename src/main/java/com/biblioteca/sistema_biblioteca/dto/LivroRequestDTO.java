@@ -1,9 +1,7 @@
 package com.biblioteca.sistema_biblioteca.dto;
 
-import com.biblioteca.sistema_biblioteca.model.Livro;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +14,17 @@ public class LivroRequestDTO {
     private String autor;
 
     private String editora;
+
     private String tema;
+
     private List<String> tags = new ArrayList<>();
 
     private Integer anoLancamento;
 
     private String sinopse;
 
-    // getters / setters
+    // ============= GETTERS E SETTERS =============
+
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
 
@@ -44,18 +45,4 @@ public class LivroRequestDTO {
 
     public String getSinopse() { return sinopse; }
     public void setSinopse(String sinopse) { this.sinopse = sinopse; }
-
-    // conversão para entidade
-    public Livro toEntity() {
-        Livro l = new Livro();
-        l.setTitulo(this.titulo);
-        l.setAutor(this.autor);
-        l.setEditora(this.editora);
-        l.setTema(this.tema);
-        l.setTags(this.tags);
-        l.setAnoLancamento(this.anoLancamento);
-        l.setSinopse(this.sinopse);
-        // flagAtivo e status serão ajustados no service salvarLivro
-        return l;
-    }
 }

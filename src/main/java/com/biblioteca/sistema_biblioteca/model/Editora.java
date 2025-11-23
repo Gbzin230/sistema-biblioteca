@@ -3,14 +3,15 @@ package com.biblioteca.sistema_biblioteca.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "TB_EDITORA")
+@Table(name = "tb_editora")
 public class Editora {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_editora")
     private Long id;
 
-    @Column(name = "nome_editora", unique = true, nullable = false)
+    @Column(name = "nome_editora", nullable = false, length = 100)
     private String nome;
 
     public Long getId() { return id; }

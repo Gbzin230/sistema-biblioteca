@@ -2,10 +2,12 @@ package com.biblioteca.sistema_biblioteca.controller;
 
 import com.biblioteca.sistema_biblioteca.dto.*;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
+import com.biblioteca.sistema_biblioteca.model.StatusReserva;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
 import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
+import com.biblioteca.sistema_biblioteca.repository.StatusReservaRepository;
 import com.biblioteca.sistema_biblioteca.service.ReservaService;
 
 import org.modelmapper.ModelMapper;
@@ -26,16 +28,20 @@ public class ReservaController {
     private final ReservaService reservaService;
     private final UsuarioRepository usuarioRepository;
     private final LivroRepository livroRepository;
+    private final StatusReservaRepository statusReservaRepository;
     private final ModelMapper modelMapper;
 
-    public ReservaController(ReservaService reservaService,
-                             UsuarioRepository usuarioRepository,
-                             LivroRepository livroRepository,
-                             ModelMapper modelMapper) {
-
+    public ReservaController(
+            ReservaService reservaService,
+            UsuarioRepository usuarioRepository,
+            LivroRepository livroRepository,
+            StatusReservaRepository statusReservaRepository,
+            ModelMapper modelMapper
+    ) {
         this.reservaService = reservaService;
         this.usuarioRepository = usuarioRepository;
         this.livroRepository = livroRepository;
+        this.statusReservaRepository = statusReservaRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -53,25 +59,30 @@ public class ReservaController {
         // valida se é o mesmo usuário
         reservaService.validarUsuarioReserva(dto.getUsername(), usernameLogado);
 
-        // agora buscamos por username (String)
         Usuario usuario = usuarioRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
         Livro livro = livroRepository.findById(dto.getLivroId())
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado."));
 
+        // 🔥 PEGAR STATUS 'ATIVA'
+        StatusReserva statusAtiva = statusReservaRepository.findByNomeIgnoreCase("ATIVA")
+                .orElseThrow(() -> new RuntimeException("Status 'ATIVA' não existe."));
+
         Reserva reserva = new Reserva();
         reserva.setUsuario(usuario);
         reserva.setLivro(livro);
-        reserva.setStatus(Reserva.ReservaStatus.ATIVA);
+        reserva.setStatus(statusAtiva);
 
         Reserva salva = reservaService.criarReserva(reserva);
 
         ReservaResponseDTO resp = modelMapper.map(salva, ReservaResponseDTO.class);
-        resp.setUsuarioId(usuario.getUsername());  // agora String
+        resp.setUsuarioId(usuario.getUsername());
         resp.setLivroId(livro.getId());
 
-        String mensagem = (salva.getStatus() == Reserva.ReservaStatus.CONFIRMADA)
+        String status = salva.getStatus().getNome().toUpperCase();
+
+        String mensagem = status.equals("CONFIRMADA")
                 ? "Livro disponível; empréstimo realizado."
                 : "Reserva criada com sucesso.";
 
@@ -105,6 +116,7 @@ public class ReservaController {
                         dto.setUsuarioId(r.getUsuario().getUsername());
                     if (r.getLivro() != null)
                         dto.setLivroId(r.getLivro().getId());
+                    dto.setStatus(r.getStatus().getNome());
                     return dto;
                 })
                 .collect(Collectors.toList());

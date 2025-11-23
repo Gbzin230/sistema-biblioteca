@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
+import com.biblioteca.sistema_biblioteca.model.StatusReserva;
+import com.biblioteca.sistema_biblioteca.model.StatusUsuario;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.dto.PessoaUpdateDTO;
+import com.biblioteca.sistema_biblioteca.dto.UsuarioListagemDTO;
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 
 import jakarta.transaction.Transactional;
@@ -24,17 +27,24 @@ public class UsuarioService {
     private final EmprestimoRepository emprestimoRepository;
     private final ReservaRepository reservaRepository;
     private final PasswordEncoder passwordEncoder;
+    private final StatusReservaRepository statusReservaRepository;
+    private final StatusUsuarioRepository statusUsuarioRepository;
+
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             EmprestimoRepository emprestimoRepository,
             ReservaRepository reservaRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            StatusReservaRepository statusReservaRepository,
+            StatusUsuarioRepository statusUsuarioRepository
     ) {
         this.usuarioRepository = usuarioRepository;
         this.emprestimoRepository = emprestimoRepository;
         this.reservaRepository = reservaRepository;
         this.passwordEncoder = passwordEncoder;
+        this.statusReservaRepository = statusReservaRepository;
+        this.statusUsuarioRepository = statusUsuarioRepository;
     }
 
     // ============================================================
@@ -72,7 +82,6 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    
 
     // ============================================================
     // LISTAR / BUSCAR
@@ -86,39 +95,74 @@ public class UsuarioService {
         return usuarioRepository.findById(username);
     }
 
+    public List<UsuarioListagemDTO> listarUsuariosCompleto() {
+        return usuarioRepository.findAll().stream().map(u ->
+            new UsuarioListagemDTO(
+                    u.getUsername(),
+                    statusUsuarioRepository.findById(u.getCodStatus())
+                            .map(StatusUsuario::getNomeStatus)
+                            .orElse("DESCONHECIDO"),
+                    u.getUrlDocumento(),
+                    u.getDtNascimento(),
+                    u.getEndereco(),
+                    u.getCep(),
+                    u.getCpf(),
+                    u.getTelefone(),
+                    u.getEmail(),
+                    u.getNome(),
+                    u.getDtCadastro(),
+                    u.getSexo(),
+                    u.getDtDesativacao(),
+                    u.getDtBanimento(),
+                    u.getLimiteSlots(),
+                    u.getUrlCapa(),
+                    u.getFlagAtivo(),
+                    u.getRole() != null ? u.getRole().getNome() : null
+            )
+        ).toList();
+    }
+
+
+
     // ============================================================
     // DOMÍNIO (EMPRÉSTIMO, RESERVA, ETC)
     // ============================================================
 
     public Emprestimo emprestarLivro(String username, Livro livro) {
         Usuario usuario = usuarioRepository.findById(username)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado"));
 
         Emprestimo emprestimo = usuario.emprestarLivro(livro);
-        usuarioRepository.save(usuario);
-        return emprestimo;
+        return usuarioRepository.save(usuario).getLivrosAtivos()
+                .stream().filter(e -> e.getLivro().equals(livro)).findFirst()
+                .orElse(emprestimo);
     }
 
     public void devolverLivro(String username, Emprestimo emprestimo) {
         Usuario usuario = usuarioRepository.findById(username)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado"));
 
         usuario.devolverLivro(emprestimo);
         usuarioRepository.save(usuario);
     }
 
     public Reserva reservarLivro(String username, Livro livro) {
-        Usuario usuario = usuarioRepository.findById(username)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
-        Reserva reserva = usuario.reservarLivro(livro);
+        Usuario usuario = usuarioRepository.findById(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado"));
+
+        StatusReserva ativa = statusReservaRepository.findByNomeIgnoreCase("ATIVA")
+                .orElseThrow(() -> new RegraNegocioException("Status 'ATIVA' não existe."));
+
+        Reserva reserva = usuario.reservarLivro(livro, ativa);
         usuarioRepository.save(usuario);
+
         return reserva;
     }
 
     public void cancelarReserva(String username, Livro livro) {
         Usuario usuario = usuarioRepository.findById(username)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado"));
 
         usuario.cancelarReserva(livro);
         usuarioRepository.save(usuario);
@@ -126,10 +170,11 @@ public class UsuarioService {
 
     public List<Emprestimo> consultaHistorico(String username) {
         Usuario usuario = usuarioRepository.findById(username)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado"));
 
         return usuario.consultaHistorico();
     }
+
 
     // ============================================================
     // GESTÃO ADMINISTRATIVA
@@ -139,7 +184,14 @@ public class UsuarioService {
     public Usuario aprovarUsuario(String username) {
         Usuario u = usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
-        u.setFlagAtivo(true);
+        if(u.getFlagAtivo() != null && !u.getFlagAtivo() && u.getCodStatus() != null && u.getCodStatus().equals(3)) {
+            throw new RegraNegocioException("Usuário Bloqueado não pode ser aprovado.");
+        }else{
+            u.setFlagAtivo(true);
+            u.setCodStatus(2); // 2 = ATIVO
+        }
+        
+        
         return usuarioRepository.save(u);
     }
 
@@ -148,6 +200,7 @@ public class UsuarioService {
         Usuario u = usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
         u.setFlagAtivo(false);
+        u.setCodStatus(3);
         return usuarioRepository.save(u);
     }
 
@@ -161,30 +214,35 @@ public class UsuarioService {
 
         if (temEmprestimo || temReserva) {
             throw new RegraNegocioException(
-                "Não é possível deletar o usuário. Ele possui histórico de empréstimos ou reservas."
+                    "Não é possível deletar o usuário. Ele possui histórico de empréstimos ou reservas."
             );
         }
 
-        usuarioRepository.flush();
         usuarioRepository.delete(usuario);
     }
+
+    // ============================================================
+    // ATUALIZAR
+    // ============================================================
 
     @Transactional
     public Usuario atualizarUsuario(PessoaUpdateDTO dto, String identificador) {
 
-        // procurar por username OU email OU cpf
         Usuario usuario = usuarioRepository
                 .findByUsernameOrEmailOrCpf(identificador, identificador, identificador)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
 
-        // Atualiza somente os campos enviados
         if (dto.getNome() != null) usuario.setNome(dto.getNome());
         if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
         if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
         if (dto.getCpf() != null) usuario.setCpf(dto.getCpf());
         if (dto.getEndereco() != null) usuario.setEndereco(dto.getEndereco());
         if (dto.getSexo() != null) usuario.setSexo(Character.toUpperCase(dto.getSexo()));
-        if (dto.getDtNascimento() != null) usuario.setDtNascimento(dto.getDtNascimento().toString());
+
+        if (dto.getDtNascimento() != null) {
+            usuario.setDtNascimento(dto.getDtNascimento().toString());
+        }
+
         if (dto.getSenha() != null) {
             usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
         }
@@ -192,7 +250,4 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-
 }
-
-

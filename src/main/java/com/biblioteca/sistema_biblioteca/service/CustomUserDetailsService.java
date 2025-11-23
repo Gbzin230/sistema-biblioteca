@@ -1,7 +1,7 @@
 package com.biblioteca.sistema_biblioteca.service;
 
-import com.biblioteca.sistema_biblioteca.model.Pessoa;
-import com.biblioteca.sistema_biblioteca.repository.PessoaRepository;
+import com.biblioteca.sistema_biblioteca.model.Usuario;
+import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,31 +10,29 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final PessoaRepository pessoaRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public CustomUserDetailsService(PessoaRepository pessoaRepository) {
-        this.pessoaRepository = pessoaRepository;
+    public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Pessoa pessoa = pessoaRepository.findByUsername(username)
+
+        Usuario usuario = usuarioRepository.findById(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
 
         return User.builder()
-                .username(pessoa.getUsername())
-                .password(pessoa.getSenha())
-                .roles(pessoa.getRoleString())
+                .username(usuario.getUsername())
+                .password(usuario.getSenha())
+                .roles(usuario.getRole().getNome())   // ← agora usando entidade ROLE
                 .build();
     }
 
-    // NOVO MÉTODO
-    public Optional<Pessoa> getPessoaByUsername(String username) {
-        return pessoaRepository.findByUsername(username);
+    public Usuario getUsuario(String username) {
+        return usuarioRepository.findById(username).orElse(null);
     }
 }
