@@ -42,9 +42,7 @@ public class Emprestimo {
     // =============================
     public Emprestimo() {
         this.numRenovacoes = 0;
-        this.paginaAtual = 0;
-        this.dtInicio = LocalDateTime.now();
-        this.dtFim = dtInicio.plusDays(7);
+        this.paginaAtual = 0;   
     }
 
     public Emprestimo(Usuario usuario, Livro livro) {

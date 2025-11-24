@@ -46,7 +46,8 @@ public class SecurityConfig {
                             "/webjars/**",
                             "/actuator/**",
                             "/auth/**",
-                            "/h2-console/**"
+                            "/h2-console/**",
+                            "/uploads/**"
                     ).permitAll()
 
                     // Cadastro público

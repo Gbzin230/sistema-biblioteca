@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class EmprestimoResponseDTO {
 
     private Long id;
-    private Long usuarioId;
+    private String usuarioId;
     private Long livroId;
     private LocalDate dtInicio;
     private LocalDate dtPrevistaDevolucao;
@@ -15,8 +15,8 @@ public class EmprestimoResponseDTO {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getUsuarioId() { return usuarioId; }
-    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
+    public String getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(String usuarioId) { this.usuarioId = usuarioId; }
 
     public Long getLivroId() { return livroId; }
     public void setLivroId(Long livroId) { this.livroId = livroId; }

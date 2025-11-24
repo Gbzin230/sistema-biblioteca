@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,9 @@ public class EmprestimoService {
 
     private static final int PRAZO_PADRAO_DIAS = 7;
     private static final int MAX_RENOVACOES = 2;
+
+    // 🔥 FUSO-HORÁRIO DO BRASIL GARANTIDO
+    private static final ZoneId ZONE = ZoneId.of("America/Sao_Paulo");
 
     public EmprestimoService(
             EmprestimoRepository emprestimoRepository,
@@ -84,9 +88,11 @@ public class EmprestimoService {
             throw new RegraNegocioException("Livro não está disponível.");
         }
 
+        LocalDateTime agora = LocalDateTime.now(ZONE);
+
         Emprestimo emprestimo = new Emprestimo(usuario, livro);
-        emprestimo.setDtInicio(LocalDateTime.now());
-        emprestimo.setDtFim(LocalDateTime.now().plusDays(PRAZO_PADRAO_DIAS));
+        emprestimo.setDtInicio(agora);
+        emprestimo.setDtFim(agora.plusDays(PRAZO_PADRAO_DIAS));
         emprestimo.setStatus(statusAtivo);
 
         livro.setStatus(emprestado);
@@ -136,6 +142,7 @@ public class EmprestimoService {
         StatusEmprestimo finalizado = statusEmprestimoRepository.findByNomeIgnoreCase("FINALIZADO")
                 .orElseThrow(() -> new RegraNegocioException("Status FINALIZADO não encontrado."));
 
+        // Finaliza este empréstimo
         emprestimo.setStatus(finalizado);
         emprestimoRepository.save(emprestimo);
 
@@ -148,49 +155,58 @@ public class EmprestimoService {
         StatusLivro emprestado = statusLivroRepository.findByNomeIgnoreCase("EMPRESTADO")
                 .orElseThrow(() -> new RegraNegocioException("Status EMPRESTADO não existe."));
 
-        StatusLivro reservado = statusLivroRepository.findByNomeIgnoreCase("RESERVADO")
-                .orElseThrow(() -> new RegraNegocioException("Status RESERVADO não existe."));
-
         StatusReserva ativa = statusReservaRepository.findByNomeIgnoreCase("ATIVA")
                 .orElseThrow(() -> new RegraNegocioException("Status ATIVA não existe."));
 
-        StatusReserva confirmada = statusReservaRepository.findByNomeIgnoreCase("CONFIRMADA")
-                .orElseThrow(() -> new RegraNegocioException("Status CONFIRMADA não existe."));
+        StatusReserva finalizadaReserva = statusReservaRepository.findByNomeIgnoreCase("FINALIZADA")
+                .orElseThrow(() -> new RegraNegocioException("Status FINALIZADA não existe."));
 
         List<Reserva> fila = reservaRepository
                 .findByLivroAndStatusOrderByDtInicioReservaAsc(livro, ativa);
 
-        boolean emprestadoParaReserva = false;
+        // Sem reservas → livro disponível
+        if (fila.isEmpty()) {
+            livro.setStatus(disponivel);
+            livroRepository.save(livro);
+            return;
+        }
 
-        for (Reserva reserva : fila) {
+        // Primeira reserva da fila
+        Reserva reserva = fila.get(0);
+        Usuario user = reserva.getUsuario();
 
-            Usuario user = reserva.getUsuario();
+        int emprestimosAtivos = emprestimoRepository.countByUsuarioAndStatus(user, ativo);
+        int reservasAtivas = reservaRepository.countByUsuarioAndStatus(user, ativa);
 
-            int emprestimosAtivos = emprestimoRepository.countByUsuarioAndStatus(user, ativo);
-            int reservasAtivas = reservaRepository.countByUsuarioAndStatus(user, ativa);
+        // Se o usuário da reserva não pode → finaliza e tenta o próximo
+        if (!user.getFlagAtivo() || emprestimosAtivos + reservasAtivas >= 3) {
 
-            if (user.getFlagAtivo() && emprestimosAtivos + reservasAtivas < 3) {
+            reserva.setStatus(finalizadaReserva);
+            reservaRepository.save(reserva);
 
-                Emprestimo novoEmprestimo = new Emprestimo(user, livro);
-                novoEmprestimo.setDtInicio(LocalDateTime.now());
-                novoEmprestimo.setDtFim(LocalDateTime.now().plusDays(PRAZO_PADRAO_DIAS));
-                novoEmprestimo.setStatus(ativo);
-
-                livro.setStatus(emprestado);
-                emprestimoRepository.save(novoEmprestimo);
-
-                reserva.setStatus(confirmada);
-                reservaRepository.save(reserva);
-
-                emprestadoParaReserva = true;
-                break;
+            fila.remove(0);
+            if (!fila.isEmpty()) {
+                devolverLivro(emprestimoId);
+            } else {
+                livro.setStatus(disponivel);
+                livroRepository.save(livro);
             }
+            return;
         }
 
-        if (!emprestadoParaReserva) {
-            livro.setStatus(fila.isEmpty() ? disponivel : reservado);
-        }
+        // Usuário da reserva pode → cria novo empréstimo
+        LocalDateTime agora = LocalDateTime.now(ZONE);
 
+        Emprestimo novo = new Emprestimo(user, livro);
+        novo.setDtInicio(agora);
+        novo.setDtFim(agora.plusDays(PRAZO_PADRAO_DIAS));
+        novo.setStatus(ativo);
+        emprestimoRepository.save(novo);
+
+        reserva.setStatus(finalizadaReserva);
+        reservaRepository.save(reserva);
+
+        livro.setStatus(emprestado);
         livroRepository.save(livro);
     }
 
@@ -214,7 +230,7 @@ public class EmprestimoService {
         StatusEmprestimo ativo = statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO")
                 .orElseThrow(() -> new RegraNegocioException("Status ATIVO não encontrado."));
 
-        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime agora = LocalDateTime.now(ZONE);
 
         return emprestimoRepository.findAll().stream()
                 .filter(e -> e.getStatus().equals(ativo))

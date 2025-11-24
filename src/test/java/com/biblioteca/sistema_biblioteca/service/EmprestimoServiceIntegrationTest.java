@@ -1,13 +1,8 @@
 package com.biblioteca.sistema_biblioteca.service;
 
 import com.biblioteca.sistema_biblioteca.dto.EmprestimoRequestDTO;
-import com.biblioteca.sistema_biblioteca.model.Livro;
-import com.biblioteca.sistema_biblioteca.model.StatusLivro;
-import com.biblioteca.sistema_biblioteca.model.Usuario;
-
-import com.biblioteca.sistema_biblioteca.repository.LivroRepository;
-import com.biblioteca.sistema_biblioteca.repository.UsuarioRepository;
-import com.biblioteca.sistema_biblioteca.repository.StatusLivroRepository;
+import com.biblioteca.sistema_biblioteca.model.*;
+import com.biblioteca.sistema_biblioteca.repository.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,6 +19,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,6 +44,9 @@ class EmprestimoServiceIntegrationTest {
     private StatusLivroRepository statusLivroRepository;
 
     @Autowired
+    private AutorRepository autorRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -54,6 +54,7 @@ class EmprestimoServiceIntegrationTest {
         livroRepository.deleteAll();
         usuarioRepository.deleteAll();
         statusLivroRepository.deleteAll();
+        autorRepository.deleteAll();
     }
 
     @Test
@@ -61,7 +62,8 @@ class EmprestimoServiceIntegrationTest {
     void quandoCriarEmprestimo_entaoRetorna200() throws Exception {
 
         // 🔹 Cria status DISPONIVEL
-        StatusLivro statusDisponivel = new StatusLivro("DISPONIVEL");
+        StatusLivro statusDisponivel = new StatusLivro();
+        statusDisponivel.setNome("DISPONIVEL");
         statusLivroRepository.saveAndFlush(statusDisponivel);
 
         // 🔹 Cria o usuário
@@ -72,15 +74,19 @@ class EmprestimoServiceIntegrationTest {
         usuario.setUsername("joaosilva");
         usuario.setFlagAtivo(true);
         usuario.setLimiteSlots(3);
-
         usuarioRepository.saveAndFlush(usuario);
+
+        // 🔹 Cria autor (pois Livro agora usa relacionamento)
+        Autor autor = new Autor();
+        autor.setNome("J.R.R. Tolkien");
+        autor = autorRepository.saveAndFlush(autor);
 
         // 🔹 Cria livro disponível
         Livro livro = new Livro();
         livro.setTitulo("O Senhor dos Anéis");
-        livro.setAutor("J.R.R. Tolkien");
+        livro.setAutores(Set.of(autor)); // ✔ necessário agora
         livro.setFlagAtivo(true);
-        livro.setStatus(statusDisponivel); // ✔ agora é entidade
+        livro.setStatus(statusDisponivel); // ✔ entidade real persistida
 
         livroRepository.saveAndFlush(livro);
 

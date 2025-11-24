@@ -1,22 +1,36 @@
 package com.biblioteca.sistema_biblioteca.dto;
 
-import com.biblioteca.sistema_biblioteca.model.Livro;
 import java.util.List;
 
 public class LivroResponseDTO {
+
+    private Long id;
 
     private String titulo;
     private String autor;
     private String editora;
     private String tema;
+    private String obra;
+
+    private List<String> autores;
+    private List<String> temas;
     private List<String> tags;
+
     private String anoLancamento;
     private Integer quantidadeDisponivel;
     private String sinopse;
-    private String status; // <-- AGORA É STRING
+    private String status;
     private Boolean flagAtivo;
 
-    // Getters e Setters
+    private String dtValidade;
+
+    private String uriImgLivro;     // capa
+    private String urlLivro;        // pdf ou url pública
+
+    // ==== getters e setters ====
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
 
@@ -28,6 +42,15 @@ public class LivroResponseDTO {
 
     public String getTema() { return tema; }
     public void setTema(String tema) { this.tema = tema; }
+
+    public String getObra() { return obra; }
+    public void setObra(String obra) { this.obra = obra; }
+
+    public List<String> getAutores() { return autores; }
+    public void setAutores(List<String> autores) { this.autores = autores; }
+
+    public List<String> getTemas() { return temas; }
+    public void setTemas(List<String> temas) { this.temas = temas; }
 
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }
@@ -46,4 +69,14 @@ public class LivroResponseDTO {
 
     public Boolean getFlagAtivo() { return flagAtivo; }
     public void setFlagAtivo(Boolean flagAtivo) { this.flagAtivo = flagAtivo; }
-}
+
+    public String getDtValidade() { return dtValidade; }
+    public void setDtValidade(String dtValidade) { this.dtValidade = dtValidade; }
+
+    public String getUriImgLivro() { return uriImgLivro; }
+    public void setUriImgLivro(String uriImgLivro) { this.uriImgLivro = uriImgLivro; }
+
+    public String getUrlLivro() { return urlLivro; }
+    public void setUrlLivro(String urlLivro) { this.urlLivro = urlLivro; }
+
+}   

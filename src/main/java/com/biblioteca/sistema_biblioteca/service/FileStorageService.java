@@ -34,15 +34,21 @@ public class FileStorageService {
         try {
             if (file == null || file.isEmpty()) return null;
 
-            String nomeArquivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            Path destino = basePath.resolve(subpasta).resolve(nomeArquivo);
+            // pasta absoluta (usando config ou propriedades)
+            String uploadsBase = "C:/Users/astronyx/Documents/sistema-biblioteca/uploads"; // ou injete via @Value("${biblioteca.upload.dir}")
+            Path pastaPath = Paths.get(uploadsBase, subpasta);
+            Files.createDirectories(pastaPath);
 
-            Files.copy(file.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
+            String nome = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path destino = pastaPath.resolve(nome);
+            file.transferTo(destino.toFile());
 
-            return destino.toString(); // caminho completo no disco
+            // Retorna caminho relativo usado pelo frontend (/uploads/...)
+            return "/uploads/" + subpasta + "/" + nome;
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao salvar arquivo: " + e.getMessage(), e);
         }
     }
+
 }

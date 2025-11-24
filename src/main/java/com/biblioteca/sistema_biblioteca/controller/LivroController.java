@@ -36,18 +36,76 @@ public class LivroController {
     // ✅ LISTAR LIVROS — público
     @GetMapping
     public ResponseEntity<ApiResponse<ApiPageResponse<LivroResponseDTO>>> listar(Pageable pageable) {
+
         Page<Livro> livrosPage = livroRepository.findAll(pageable);
-        var response = ApiPageResponse.of(livrosPage, livro -> modelMapper.map(livro, LivroResponseDTO.class));
+
+        // Mapeamento manual para evitar Autor@xxx / Tema@xxx
+        Page<LivroResponseDTO> dtoPage = livrosPage.map(livro -> {
+            LivroResponseDTO dto = new LivroResponseDTO();
+
+            dto.setId(livro.getId());
+            dto.setTitulo(livro.getTitulo());
+            dto.setAutor(livro.getAutor());
+            dto.setEditora(livro.getEditora());
+            dto.setTema(livro.getTema());
+            dto.setObra(livro.getObra());
+
+            dto.setAutores(livro.getAutoresLista());
+            dto.setTemas(livro.getTemasLista());
+            dto.setTags(livro.getTags());
+
+            dto.setAnoLancamento(livro.getAnoLancamento());
+            dto.setQuantidadeDisponivel(livro.getQuantidadeDisponivel());
+            dto.setSinopse(livro.getSinopse());
+            dto.setStatus(livro.getStatusNome());
+            dto.setFlagAtivo(livro.getFlagAtivo());
+            dto.setDtValidade(livro.getDtValidade());
+
+            dto.setUriImgLivro(livro.getUriImgLivro());
+            dto.setUrlLivro(livro.getUriArquivoLivro());
+
+            return dto;
+        });
+
+        ApiPageResponse<LivroResponseDTO> response =
+                ApiPageResponse.of(dtoPage, dto -> dto);
+
         return ResponseEntity.ok(new ApiResponse<>(response, "Livros listados com sucesso"));
     }
+
 
     // ✅ BUSCAR POR ID — público
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<LivroResponseDTO>> buscarPorId(@PathVariable Long id) {
         Livro livro = livroService.buscarPorId(id);
-        LivroResponseDTO responseDTO = modelMapper.map(livro, LivroResponseDTO.class);
-        return ResponseEntity.ok(new ApiResponse<>(responseDTO, "Livro encontrado com sucesso"));
+
+        // Mapeamento manual APENAS para este endpoint
+        LivroResponseDTO dto = new LivroResponseDTO();
+
+        dto.setId(livro.getId());
+        dto.setTitulo(livro.getTitulo());
+        dto.setAutor(livro.getAutor());
+        dto.setEditora(livro.getEditora());
+        dto.setTema(livro.getTema());
+        dto.setObra(livro.getObra());
+
+        dto.setAutores(livro.getAutoresLista());
+        dto.setTemas(livro.getTemasLista());
+        dto.setTags(livro.getTags());
+
+        dto.setAnoLancamento(livro.getAnoLancamento());
+        dto.setQuantidadeDisponivel(livro.getQuantidadeDisponivel());
+        dto.setSinopse(livro.getSinopse());
+        dto.setStatus(livro.getStatusNome());
+        dto.setFlagAtivo(livro.getFlagAtivo());
+        dto.setDtValidade(livro.getDtValidade());
+
+        dto.setUriImgLivro(livro.getUriImgLivro());
+        dto.setUrlLivro(livro.getUriArquivoLivro());
+
+        return ResponseEntity.ok(new ApiResponse<>(dto, "Livro encontrado com sucesso"));
     }
+
 
     // 🚫 Criar livro — SOMENTE FUNCIONÁRIO OU ADMIN
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
