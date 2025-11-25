@@ -11,7 +11,10 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
 
     List<Emprestimo> findByUsuarioAndStatus(Usuario usuario, StatusEmprestimo status);
 
+    List<Emprestimo> findByUsuario(Usuario usuario);
+
     int countByUsuarioAndStatus(Usuario usuario, StatusEmprestimo status);
 
     boolean existsByUsuario(Usuario usuario);
+
 }

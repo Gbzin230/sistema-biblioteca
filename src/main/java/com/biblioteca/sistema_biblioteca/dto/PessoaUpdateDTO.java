@@ -8,6 +8,7 @@ public class PessoaUpdateDTO {
     private String endereco;
     private Character sexo;
     private String senha;
+    private String cep;
     private String cpf;
     private String dtNascimento;
 
@@ -30,6 +31,10 @@ public class PessoaUpdateDTO {
 
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+
+    public String getCep() { return cep; }
+    public void setCep(String cep) { this.cep = cep; }
+
 
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }

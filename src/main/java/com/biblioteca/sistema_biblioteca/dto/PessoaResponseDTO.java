@@ -9,9 +9,10 @@ public class PessoaResponseDTO {
     private String email;
     private String telefone;
     private String cpf;
+    private String cep;
     private String endereco;
     private String sexo;
-    private LocalDate dtNascimento;
+    private String dtNascimento;
     private Integer limiteSlots = 3;
 
     // Getters e Setters
@@ -30,14 +31,17 @@ public class PessoaResponseDTO {
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
 
+    public String getCep() { return cep; }
+    public void setCep(String cep) { this.cep = cep; }
+
     public String getEndereco() { return endereco; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
 
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
 
-    public LocalDate getDtNascimento() { return dtNascimento; }
-    public void setDtNascimento(LocalDate dtNascimento) { this.dtNascimento = dtNascimento; }
+    public String getDtNascimento() { return dtNascimento; }
+    public void setDtNascimento(String dtNascimento) { this.dtNascimento = dtNascimento; }
 
     public Integer getLimiteSlots() {
         return limiteSlots;

@@ -92,6 +92,31 @@ public class PessoaController {
     }
 
     // ============================================================
+    // 📋 LISTAGEM — USUARIO A SI MESMO APENAS
+    // ============================================================
+    @GetMapping("/{username}")
+    public ResponseEntity<PessoaResponseDTO> buscarPorUsername(@PathVariable String username) {
+
+        Usuario usuarioLogado = usuarioService.getUsuarioLogado();
+
+        boolean isAdminOuFuncionario =
+                usuarioLogado.getRole().getNome().equalsIgnoreCase("ADMIN") ||
+                usuarioLogado.getRole().getNome().equalsIgnoreCase("FUNCIONARIO");
+
+        // Usuário comum só pode ver ele mesmo
+        if (!isAdminOuFuncionario && !usuarioLogado.getUsername().equals(username)) {
+            throw new RegraNegocioException("Você não tem permissão para visualizar outros usuários.");
+        }
+
+        Usuario usuario = usuarioService.buscaPorId(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        PessoaResponseDTO resp = modelMapper.map(usuario, PessoaResponseDTO.class);
+        return ResponseEntity.ok(resp);
+    }
+
+
+    // ============================================================
     // ⛔ BLOQUEAR — ADMIN
     // ============================================================
     @PreAuthorize("hasRole('ADMIN')")
@@ -168,14 +193,22 @@ public class PessoaController {
 
 
     // ============================================================
-    // ❌ DELETAR — ADMIN
+    // ❌ DELETAR — ADMIN (agora retorna 200 + JSON)
     // ============================================================
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @DeleteMapping("/{username}")
     public ResponseEntity<?> deletar(@PathVariable String username) {
+
         usuarioService.deletar(username);
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Usuário deletado da base de dados",
+                "username", username
+            )
+        );
     }
+
 
     // ============================================================
     // 📝 ATUALIZAR DADOS

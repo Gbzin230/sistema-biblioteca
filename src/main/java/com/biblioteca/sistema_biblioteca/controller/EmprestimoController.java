@@ -2,12 +2,12 @@ package com.biblioteca.sistema_biblioteca.controller;
 
 import com.biblioteca.sistema_biblioteca.dto.EmprestimoRequestDTO;
 import com.biblioteca.sistema_biblioteca.dto.EmprestimoResponseDTO;
-import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.service.EmprestimoService;
-
 import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +36,6 @@ public class EmprestimoController {
 
         String authUsername = auth.getName();
 
-        // Usuário só pode emprestar em nome dele mesmo
         emprestimoService.validarUsuarioEmprestimo(request.getUsername(), authUsername);
 
         Emprestimo emprestimo = emprestimoService.realizarEmprestimo(
@@ -57,7 +56,6 @@ public class EmprestimoController {
 
         String username = auth.getName();
 
-        // Garante que o cara só renova o próprio empréstimo
         emprestimoService.validarDonoDoEmprestimo(id, username);
 
         Emprestimo renovado = emprestimoService.renovarEmprestimo(id);
@@ -75,7 +73,6 @@ public class EmprestimoController {
 
         String username = auth.getName();
 
-        // Librarian/Admin pode devolver tudo. Usuário só o próprio
         emprestimoService.devolverAutorizado(id, username);
 
         return ResponseEntity.ok().build();
@@ -99,8 +96,9 @@ public class EmprestimoController {
     }
 
     // ============================================================
-    // 5. LISTAR TODOS (somente ADMIN/BIBLIOTECARIO)
+    // 5. LISTAR TODOS (ADMIN / FUNCIONARIO)
     // ============================================================
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @GetMapping
     public ResponseEntity<List<EmprestimoResponseDTO>> listarTodos() {
 
@@ -113,12 +111,39 @@ public class EmprestimoController {
     }
 
     // ============================================================
-    // 6. LISTAR ATRASADOS (somente STAFF)
+    // 7. NOVO: LISTAR EMPRÉSTIMOS POR USUÁRIO
     // ============================================================
-    @GetMapping("/atrasados")
-    public ResponseEntity<List<EmprestimoResponseDTO>> listarAtrasados() {
+    @GetMapping("/usuario/{username}")
+    public ResponseEntity<List<EmprestimoResponseDTO>> listarPorUsuario(
+            @PathVariable String username,
+            Authentication auth) {
 
-        List<EmprestimoResponseDTO> lista = emprestimoService.buscarEmprestimosAtrasados()
+        String authUser = auth.getName();
+        boolean isAdminOrFuncionario = auth.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") ||
+                               r.getAuthority().equals("ROLE_FUNCIONARIO"));
+
+        List<EmprestimoResponseDTO> lista =
+                emprestimoService.consultarEmprestimosUsuario(
+                        username,
+                        authUser,
+                        isAdminOrFuncionario
+                ).stream().map(this::toDTO).collect(Collectors.toList());
+
+        return ResponseEntity.ok(lista);
+    }
+
+    // ============================================================
+    // 7. HISTÓRICO DE EMPRÉSTIMOS POR USERNAME
+    // ============================================================
+    @GetMapping("/historico/{username}")
+    public ResponseEntity<List<EmprestimoResponseDTO>> historico(
+            @PathVariable String username,
+            Authentication auth) {
+
+        String authUsername = auth.getName();
+
+        List<EmprestimoResponseDTO> lista = emprestimoService.buscarHistorico(username, authUsername)
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
@@ -126,8 +151,9 @@ public class EmprestimoController {
         return ResponseEntity.ok(lista);
     }
 
+
     // ============================================================
-    // CONVERSOR PARA DTO — corrigido com timezone
+    // CONVERSOR PARA DTO
     // ============================================================
     private EmprestimoResponseDTO toDTO(Emprestimo e) {
         EmprestimoResponseDTO dto = new EmprestimoResponseDTO();
@@ -136,14 +162,11 @@ public class EmprestimoController {
         dto.setUsuarioId(e.getUsuario().getUsername());
         dto.setLivroId(e.getLivro().getId());
 
-        // 🔥 Conversão correta preservando data real do Brasil
-        dto.setDtInicio(
-                e.getDtInicio().atZone(ZONE).toLocalDate()
-        );
+        dto.setTituloLivro(e.getLivro().getTitulo());
+        dto.setUriImgLivro(e.getLivro().getUriImgLivro());
 
-        dto.setDtPrevistaDevolucao(
-                e.getDtFim().atZone(ZONE).toLocalDate()
-        );
+        dto.setDtInicio(e.getDtInicio().atZone(ZONE).toLocalDate());
+        dto.setDtPrevistaDevolucao(e.getDtFim().atZone(ZONE).toLocalDate());
 
         dto.setNumRenovacoes(e.getNumRenovacoes());
         dto.setStatus(e.getStatus().getNome());

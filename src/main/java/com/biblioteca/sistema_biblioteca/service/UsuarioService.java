@@ -6,7 +6,8 @@ import java.util.Optional;
 import com.biblioteca.sistema_biblioteca.repository.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
@@ -90,6 +91,20 @@ public class UsuarioService {
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
+
+    public Usuario getUsuarioLogado() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new RegraNegocioException("Usuário não autenticado.");
+        }
+
+        String username = auth.getName(); // vem do token via JwtFilter
+
+        return usuarioRepository.findById(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário logado não encontrado."));
+    }
+
 
     public Optional<Usuario> buscaPorId(String username) {
         return usuarioRepository.findById(username);
@@ -285,10 +300,34 @@ public class UsuarioService {
                 .findByUsernameOrEmailOrCpf(identificador, identificador, identificador)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
 
+        Usuario logado = getUsuarioLogado();
+
+        boolean isAdmin = logado.getRole().getNome().equalsIgnoreCase("ADMIN");
+        boolean isSelf = logado.getUsername().equals(usuario.getUsername());
+
+        // Usuário comum só pode alterar ele mesmo
+        if (!isAdmin && !isSelf) {
+            throw new RegraNegocioException("Você não pode alterar dados de outros usuários.");
+        }
+
+        // Usuário comum - só altera email, telefone, cep, endereco, senha
+        if (!isAdmin) {
+
+            if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
+            if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
+            if (dto.getCep() != null) usuario.setCep(dto.getCep());
+            if (dto.getEndereco() != null) usuario.setEndereco(dto.getEndereco());
+            if (dto.getSenha() != null) usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+
+            return usuarioRepository.save(usuario);
+        }
+
+        // ADMIN → pode alterar tudo, exceto username
         if (dto.getNome() != null) usuario.setNome(dto.getNome());
         if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
         if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
         if (dto.getCpf() != null) usuario.setCpf(dto.getCpf());
+        if (dto.getCep() != null) usuario.setCep(dto.getCep());
         if (dto.getEndereco() != null) usuario.setEndereco(dto.getEndereco());
         if (dto.getSexo() != null) usuario.setSexo(Character.toUpperCase(dto.getSexo()));
 
@@ -302,5 +341,6 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
+
 
 }

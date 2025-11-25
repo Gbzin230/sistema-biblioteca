@@ -26,7 +26,6 @@ public class EmprestimoService {
     private static final int PRAZO_PADRAO_DIAS = 7;
     private static final int MAX_RENOVACOES = 2;
 
-    // 🔥 FUSO-HORÁRIO DO BRASIL GARANTIDO
     private static final ZoneId ZONE = ZoneId.of("America/Sao_Paulo");
 
     public EmprestimoService(
@@ -142,7 +141,6 @@ public class EmprestimoService {
         StatusEmprestimo finalizado = statusEmprestimoRepository.findByNomeIgnoreCase("FINALIZADO")
                 .orElseThrow(() -> new RegraNegocioException("Status FINALIZADO não encontrado."));
 
-        // Finaliza este empréstimo
         emprestimo.setStatus(finalizado);
         emprestimoRepository.save(emprestimo);
 
@@ -164,21 +162,18 @@ public class EmprestimoService {
         List<Reserva> fila = reservaRepository
                 .findByLivroAndStatusOrderByDtInicioReservaAsc(livro, ativa);
 
-        // Sem reservas → livro disponível
         if (fila.isEmpty()) {
             livro.setStatus(disponivel);
             livroRepository.save(livro);
             return;
         }
 
-        // Primeira reserva da fila
         Reserva reserva = fila.get(0);
         Usuario user = reserva.getUsuario();
 
         int emprestimosAtivos = emprestimoRepository.countByUsuarioAndStatus(user, ativo);
         int reservasAtivas = reservaRepository.countByUsuarioAndStatus(user, ativa);
 
-        // Se o usuário da reserva não pode → finaliza e tenta o próximo
         if (!user.getFlagAtivo() || emprestimosAtivos + reservasAtivas >= 3) {
 
             reserva.setStatus(finalizadaReserva);
@@ -194,7 +189,6 @@ public class EmprestimoService {
             return;
         }
 
-        // Usuário da reserva pode → cria novo empréstimo
         LocalDateTime agora = LocalDateTime.now(ZONE);
 
         Emprestimo novo = new Emprestimo(user, livro);
@@ -224,20 +218,6 @@ public class EmprestimoService {
         return emprestimoRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public List<Emprestimo> buscarEmprestimosAtrasados() {
-
-        StatusEmprestimo ativo = statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO")
-                .orElseThrow(() -> new RegraNegocioException("Status ATIVO não encontrado."));
-
-        LocalDateTime agora = LocalDateTime.now(ZONE);
-
-        return emprestimoRepository.findAll().stream()
-                .filter(e -> e.getStatus().equals(ativo))
-                .filter(e -> e.getDtFim().isBefore(agora))
-                .collect(Collectors.toList());
-    }
-
     public int countEmprestimosAtivos(Usuario usuario) {
         StatusEmprestimo ativo = statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO")
                 .orElseThrow(() -> new RegraNegocioException("Status ATIVO não encontrado."));
@@ -245,7 +225,48 @@ public class EmprestimoService {
     }
 
     // ====================================================================
-    // SEGURANÇA
+    // ONSULTAR EMPRÉSTIMOS DE UM USUÁRIO COM SEGURANÇA
+    // ====================================================================
+    @Transactional(readOnly = true)
+    public List<Emprestimo> consultarEmprestimosUsuario(String username, String authUser, boolean isAdminOrFuncionario) {
+
+        if (!isAdminOrFuncionario && !username.equals(authUser)) {
+            throw new AccessDeniedException("Você só pode consultar seus próprios empréstimos.");
+        }
+
+        Usuario usuario = usuarioRepository.findById(username)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        return emprestimoRepository.findByUsuario(usuario);
+    }
+
+        // ====================================================================
+        // HISTÓRICO DE EMPRÉSTIMOS POR USERNAME (com regras de segurança)
+        // ====================================================================
+        @Transactional(readOnly = true)
+        public List<Emprestimo> buscarHistorico(String usernameConsulta, String usernameAuth) {
+
+        Usuario authUser = usuarioRepository.findById(usernameAuth)
+                .orElseThrow(() -> new RegraNegocioException("Usuário autenticado não encontrado."));
+
+        Usuario alvo = usuarioRepository.findById(usernameConsulta)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        String role = authUser.getRole().getNome();
+
+        // 🔒 Usuário comum só pode consultar os próprios
+        if (role.equalsIgnoreCase("USUARIO") &&
+                !authUser.getUsername().equals(alvo.getUsername())) {
+
+                throw new AccessDeniedException("Você não pode consultar o histórico de outro usuário.");
+        }
+
+        return emprestimoRepository.findByUsuario(alvo);
+        }
+
+
+    // ====================================================================
+    // SEGURANÇA REUTILIZADA
     // ====================================================================
     public void validarDonoDoEmprestimo(Long emprestimoId, String username) {
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)

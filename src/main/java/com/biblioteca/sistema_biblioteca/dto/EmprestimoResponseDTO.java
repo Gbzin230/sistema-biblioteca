@@ -11,6 +11,8 @@ public class EmprestimoResponseDTO {
     private LocalDate dtPrevistaDevolucao;
     private Integer numRenovacoes;
     private String status;
+    private String tituloLivro;
+    private String uriImgLivro;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -20,6 +22,12 @@ public class EmprestimoResponseDTO {
 
     public Long getLivroId() { return livroId; }
     public void setLivroId(Long livroId) { this.livroId = livroId; }
+
+    public String getTituloLivro() { return tituloLivro; }
+    public void setTituloLivro(String tituloLivro) { this.tituloLivro = tituloLivro; }
+
+    public String getUriImgLivro() { return uriImgLivro; }
+    public void setUriImgLivro(String uriImgLivro) { this.uriImgLivro = uriImgLivro; }
 
     public LocalDate getDtInicio() { return dtInicio; }
     public void setDtInicio(LocalDate dtInicio) { this.dtInicio = dtInicio; }
