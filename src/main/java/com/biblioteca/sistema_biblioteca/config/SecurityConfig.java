@@ -36,6 +36,14 @@ public class SecurityConfig {
                 return config;
             }))
             .csrf(csrf -> csrf.disable())
+
+            /* ========================================================
+                🔥 ADICIONADO: libera <iframe>, <embed>, PDF viewer
+               ======================================================== */
+            .headers(headers -> headers
+                    .frameOptions(frame -> frame.disable()) // ADICIONADO
+            )
+
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(
                             "/v3/api-docs/**",
@@ -47,7 +55,7 @@ public class SecurityConfig {
                             "/actuator/**",
                             "/auth/**",
                             "/h2-console/**",
-                            "/uploads/**"
+                            "/uploads/**"  // PDFs vêm daqui
                     ).permitAll()
 
                     // Cadastro público
@@ -67,5 +75,3 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 }
-
-

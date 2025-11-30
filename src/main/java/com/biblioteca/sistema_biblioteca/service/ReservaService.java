@@ -173,6 +173,30 @@ public class ReservaService {
         return reservaRepository.findAll();
     }
 
+        // ============================================================
+        // 📚 HISTÓRICO DE RESERVAS COM REGRAS DE SEGURANÇA
+        // ============================================================
+        @Transactional(readOnly = true)
+        public List<Reserva> buscarHistoricoReservas(String usernameConsulta, String usernameAuth) {
+
+        Usuario authUser = usuarioRepository.findById(usernameAuth)
+                .orElseThrow(() -> new RegraNegocioException("Usuário autenticado não encontrado."));
+
+        Usuario alvo = usuarioRepository.findById(usernameConsulta)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        String role = authUser.getRole().getNome();
+
+        // 🔒 Usuário comum só pode consultar o próprio histórico
+        if (role.equalsIgnoreCase("USUARIO") &&
+                !authUser.getUsername().equals(alvo.getUsername())) {
+                throw new AccessDeniedException("Você não pode consultar o histórico de reservas de outro usuário.");
+        }
+
+        return reservaRepository.findByUsuarioOrderByDtInicioReservaDesc(alvo);
+        }
+
+
     // ==========================================================
     // VALIDAÇÃO DE SEGURANÇA
     // ==========================================================

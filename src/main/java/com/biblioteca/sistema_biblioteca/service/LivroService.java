@@ -238,6 +238,11 @@ public class LivroService {
                 .orElseThrow(() -> new RegraNegocioException("Livro não encontrado."));
     }
 
+    public List<Livro> buscarPorTema(String tema) {
+        return livroRepository.findByTemasNomeIgnoreCase(tema);
+    }
+
+
     // ===============================================================
     // ATUALIZAR
     // ===============================================================

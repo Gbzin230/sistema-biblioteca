@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.util.List;
 
 public interface LivroRepository extends JpaRepository<Livro, Long> {
     Page<Livro> findByTituloContainingIgnoreCase(String titulo, Pageable pageable);
@@ -23,6 +24,9 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
 
     @Query("select distinct l from Livro l left join l.autores a left join l.temas t left join l.tagsEntidades tg where lower(l.titulo) like lower(concat('%', :q, '%')) or lower(a.nome) like lower(concat('%', :q, '%')) or lower(t.nome) like lower(concat('%', :q, '%')) or lower(tg.nome) like lower(concat('%', :q, '%'))")
     Page<Livro> searchByTituloAutorTemaTag(@Param("q") String q, Pageable pageable);
+
+    List<Livro> findByTemasNomeIgnoreCase(String nome);
+
 
     @Query(value = """
     SELECT 

@@ -23,6 +23,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
             StatusReserva status
     );
 
+    List<Reserva> findByUsuarioOrderByDtInicioReservaDesc(Usuario usuario);
+
     // 🔹 Contagem por usuário e status
     int countByUsuarioAndStatus(
             Usuario usuario,

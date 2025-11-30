@@ -8,6 +8,7 @@ import com.biblioteca.sistema_biblioteca.service.LivroService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -105,6 +106,45 @@ public class LivroController {
 
         return ResponseEntity.ok(new ApiResponse<>(dto, "Livro encontrado com sucesso"));
     }
+
+    // ✅ LISTAR LIVROS POR TEMA — público
+    @GetMapping("/tema/{tema}")
+    public ResponseEntity<ApiResponse<List<LivroResponseDTO>>> listarPorTema(@PathVariable String tema) {
+
+        List<Livro> livros = livroService.buscarPorTema(tema);
+
+        List<LivroResponseDTO> dtos = livros.stream().map(livro -> {
+            LivroResponseDTO dto = new LivroResponseDTO();
+
+            dto.setId(livro.getId());
+            dto.setTitulo(livro.getTitulo());
+            dto.setAutor(livro.getAutor());
+            dto.setEditora(livro.getEditora());
+            dto.setTema(livro.getTema());
+            dto.setObra(livro.getObra());
+
+            dto.setAutores(livro.getAutoresLista());
+            dto.setTemas(livro.getTemasLista());
+            dto.setTags(livro.getTags());
+
+            dto.setAnoLancamento(livro.getAnoLancamento());
+            dto.setQuantidadeDisponivel(livro.getQuantidadeDisponivel());
+            dto.setSinopse(livro.getSinopse());
+            dto.setStatus(livro.getStatusNome());
+            dto.setFlagAtivo(livro.getFlagAtivo());
+            dto.setDtValidade(livro.getDtValidade());
+
+            dto.setUriImgLivro(livro.getUriImgLivro());
+            dto.setUrlLivro(livro.getUriArquivoLivro());
+
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(dtos, "Livros do tema '" + tema + "' listados com sucesso")
+        );
+    }
+
 
 
     // 🚫 Criar livro — SOMENTE FUNCIONÁRIO OU ADMIN

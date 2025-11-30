@@ -123,4 +123,30 @@ public class ReservaController {
 
         return ResponseEntity.ok(new ApiResponse<>(lista, "Lista de reservas"));
     }
+
+    // ============================================================
+    // 📚  HISTÓRICO DE RESERVAS POR USUÁRIO (USUÁRIO / ADMIN / FUNCIONÁRIO)
+    // ============================================================
+    @PreAuthorize("hasAnyRole('USUARIO','FUNCIONARIO','ADMIN')")
+    @GetMapping("/historico/{username}")
+    public ResponseEntity<ApiResponse<List<ReservaResponseDTO>>> historicoReservas(
+            @PathVariable String username,
+            Authentication auth) {
+
+        String authUsername = auth.getName();
+
+        List<ReservaResponseDTO> lista = reservaService.buscarHistoricoReservas(
+                username,
+                authUsername
+        ).stream().map(r -> {
+            ReservaResponseDTO dto = modelMapper.map(r, ReservaResponseDTO.class);
+            dto.setUsuarioId(r.getUsuario().getUsername());
+            dto.setLivroId(r.getLivro().getId());
+            dto.setStatus(r.getStatus().getNome());
+            return dto;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(new ApiResponse<>(lista, "Histórico de reservas"));
+    }
+
 }
