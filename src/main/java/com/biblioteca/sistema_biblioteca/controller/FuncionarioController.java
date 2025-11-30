@@ -19,7 +19,6 @@ public class FuncionarioController {
     private final UsuarioService usuarioService;
     private final FuncionarioService funcionarioService;
 
-    // ✅ CONSTRUTOR ÚNICO
     public FuncionarioController(
             UsuarioService usuarioService,
             FuncionarioService funcionarioService
@@ -28,7 +27,6 @@ public class FuncionarioController {
         this.funcionarioService = funcionarioService;
     }
 
-    // 🔥 APROVAR USUÁRIO PELO USERNAME
     @PutMapping("/aprovar-usuario/{username}")
     public ResponseEntity<Map<String, String>> aprovarUsuario(@PathVariable String username) {
         Usuario aprovado = usuarioService.aprovarUsuario(username);
@@ -37,11 +35,42 @@ public class FuncionarioController {
         );
     }
 
-
-    // 🔥 LISTAR FUNCIONARIOS (com DTO)
-    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @GetMapping
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     public List<UsuarioListagemDTO> listarUsuarios() {
         return funcionarioService.consultarFuncionarios();
     }
+
+    @PostMapping("/aprovar-multiplos")
+    @PreAuthorize("hasAnyRole('ADMIN','FUNCIONARIO')")
+    public ResponseEntity<?> aprovarMultiplos(@RequestBody Map<String, List<String>> body) {
+
+        List<String> usernames = body.get("usernames");
+
+        int total = funcionarioService.aprovarFuncionariosEmMassa(usernames);
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Usuários aprovados com sucesso",
+                "total", total
+            )
+        );
+    }
+
+    @PostMapping("/recusar-multiplos")
+    @PreAuthorize("hasAnyRole('ADMIN','FUNCIONARIO')")
+    public ResponseEntity<?> recusarMultiplos(@RequestBody Map<String, List<String>> body) {
+
+        List<String> usernames = body.get("usernames");
+
+        int total = funcionarioService.recusarFuncionariosEmMassa(usernames);
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Usuários recusados com sucesso",
+                "total", total
+            )
+        );
+    }
+
 }

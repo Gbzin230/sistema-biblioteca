@@ -65,6 +65,7 @@ public class AdminController {
         funcionario.setFlagAtivo(true);
         funcionario.setRole(funcRole);
         funcionario.setCodStatus(2); // Ativo por padrão
+        funcionario.setLimiteSlots(0);
 
         usuarioRepository.save(funcionario);
 

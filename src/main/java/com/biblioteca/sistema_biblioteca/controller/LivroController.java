@@ -57,6 +57,7 @@ public class LivroController {
 
             dto.setAnoLancamento(livro.getAnoLancamento());
             dto.setQuantidadeDisponivel(livro.getQuantidadeDisponivel());
+            dto.setQuantidadeDisponivelEmprestar(livro.getQuantidadeDisponivelEmprestar());
             dto.setSinopse(livro.getSinopse());
             dto.setStatus(livro.getStatusNome());
             dto.setFlagAtivo(livro.getFlagAtivo());
@@ -96,6 +97,7 @@ public class LivroController {
 
         dto.setAnoLancamento(livro.getAnoLancamento());
         dto.setQuantidadeDisponivel(livro.getQuantidadeDisponivel());
+        dto.setQuantidadeDisponivelEmprestar(livro.getQuantidadeDisponivelEmprestar());
         dto.setSinopse(livro.getSinopse());
         dto.setStatus(livro.getStatusNome());
         dto.setFlagAtivo(livro.getFlagAtivo());
@@ -129,6 +131,7 @@ public class LivroController {
 
             dto.setAnoLancamento(livro.getAnoLancamento());
             dto.setQuantidadeDisponivel(livro.getQuantidadeDisponivel());
+            dto.setQuantidadeDisponivelEmprestar(livro.getQuantidadeDisponivelEmprestar());
             dto.setSinopse(livro.getSinopse());
             dto.setStatus(livro.getStatusNome());
             dto.setFlagAtivo(livro.getFlagAtivo());
@@ -198,4 +201,20 @@ public class LivroController {
         livroService.deletar(id);
         return ResponseEntity.ok(new ApiResponse<>("OK", "Livro removido com sucesso"));
     }
+
+    // 🚫 DESATIVAR LIVROS EM MASSA — SOMENTE FUNCIONÁRIO OU ADMIN
+    @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
+    @PostMapping("/desativar-multiplos")
+    public ResponseEntity<ApiResponse<String>> desativarMultiplos(@RequestBody List<Long> ids) {
+
+        int total = livroService.desativarLivrosEmMassa(ids);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        "OK",
+                        total + " livro(s) desativado(s) com sucesso"
+                )
+        );
+    }
+
 }

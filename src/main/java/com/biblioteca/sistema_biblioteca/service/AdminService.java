@@ -57,7 +57,7 @@ public class AdminService {
         return usuarioRepository.findAll()
                 .stream()
                 .filter(u -> u.getRole() != null &&
-                             u.getRole().getId().equals(adminRole.getId()))
+                        u.getRole().getId().equals(adminRole.getId()))
                 .toList();
     }
 
@@ -120,7 +120,6 @@ public class AdminService {
 
             // 3) IMPORTANTE: NÃO chama usuario.devolverLivro(),
             // para evitar problemas com coleções LAZY.
-            // A devolução é tratada exclusivamente pelo livro.
         }
     }
 }

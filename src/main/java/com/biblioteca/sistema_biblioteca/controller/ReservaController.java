@@ -143,6 +143,7 @@ public class ReservaController {
             dto.setUsuarioId(r.getUsuario().getUsername());
             dto.setLivroId(r.getLivro().getId());
             dto.setStatus(r.getStatus().getNome());
+            dto.setUriImgLivro(r.getLivro().getUriImgLivro());
             return dto;
         }).collect(Collectors.toList());
 

@@ -30,7 +30,6 @@ public class FuncionarioService {
     private final RoleRepository roleRepository;
     private final StatusUsuarioRepository statusUsuarioRepository;
 
-
     public FuncionarioService(
             LivroRepository livroRepository,
             UsuarioRepository usuarioRepository,
@@ -133,35 +132,34 @@ public class FuncionarioService {
 
     public List<UsuarioListagemDTO> consultarFuncionarios() {
 
-    List<Integer> rolesPermitidos = List.of(1, 2); // ADMIN e FUNCIONARIO
+        List<Integer> rolesPermitidos = List.of(1, 2); // ADMIN e FUNCIONARIO
 
-    return usuarioRepository.findByRoleIdIn(rolesPermitidos)
-            .stream()
-            .map(u -> new UsuarioListagemDTO(
-                    u.getUsername(),
-                    statusUsuarioRepository.findById(u.getCodStatus())
-                            .map(StatusUsuario::getNomeStatus)
-                            .orElse("DESCONHECIDO"),
-                    u.getUrlDocumento(),
-                    u.getDtNascimento(),
-                    u.getEndereco(),
-                    u.getCep(),
-                    u.getCpf(),
-                    u.getTelefone(),
-                    u.getEmail(),
-                    u.getNome(),
-                    u.getDtCadastro(),
-                    u.getSexo(),
-                    u.getDtDesativacao(),
-                    u.getDtBanimento(),
-                    u.getLimiteSlots(),
-                    u.getUrlCapa(),
-                    u.getFlagAtivo(),
-                    u.getRole() != null ? u.getRole().getNome() : null
-            ))
-            .toList();
-}
-
+        return usuarioRepository.findByRoleIdIn(rolesPermitidos)
+                .stream()
+                .map(u -> new UsuarioListagemDTO(
+                        u.getUsername(),
+                        statusUsuarioRepository.findById(u.getCodStatus())
+                                .map(StatusUsuario::getNomeStatus)
+                                .orElse("DESCONHECIDO"),
+                        u.getUrlDocumento(),
+                        u.getDtNascimento(),
+                        u.getEndereco(),
+                        u.getCep(),
+                        u.getCpf(),
+                        u.getTelefone(),
+                        u.getEmail(),
+                        u.getNome(),
+                        u.getDtCadastro(),
+                        u.getSexo(),
+                        u.getDtDesativacao(),
+                        u.getDtBanimento(),
+                        u.getLimiteSlots(),
+                        u.getUrlCapa(),
+                        u.getFlagAtivo(),
+                        u.getRole() != null ? u.getRole().getNome() : null
+                ))
+                .toList();
+    }
 
     public List<Livro> consultarHistoricoUsuario(Usuario usuario) {
         return usuario.consultaHistorico()
@@ -175,4 +173,57 @@ public class FuncionarioService {
         usuarioRepository.save(usuario);
         return true;
     }
+
+    // ============================================================
+    // APROVAR / RECUSAR EM MASSA
+    // ============================================================
+
+    @Transactional
+    public int aprovarFuncionariosEmMassa(List<String> usernames) {
+
+        int count = 0;
+
+        for (String username : usernames) {
+            try {
+                Usuario u = usuarioRepository.findById(username)
+                        .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado: " + username));
+
+                if (u.getCodStatus() == null || u.getCodStatus() != 1) {
+                    continue;
+                }
+
+                u.setFlagAtivo(true);
+                u.setCodStatus(2); // APROVADO
+                usuarioRepository.save(u);
+                count++;
+
+            } catch (Exception ignored) {}
+        }
+
+        return count;
+    }
+
+    @Transactional
+    public int recusarFuncionariosEmMassa(List<String> usernames) {
+
+        int count = 0;
+
+        for (String username : usernames) {
+            try {
+                Usuario u = usuarioRepository.findById(username)
+                        .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado: " + username));
+
+                if (u.getCodStatus() == null || u.getCodStatus() != 1) {
+                    continue;
+                }
+
+                usuarioRepository.delete(u);
+                count++;
+
+            } catch (Exception ignored) {}
+        }
+
+        return count;
+    }
+
 }

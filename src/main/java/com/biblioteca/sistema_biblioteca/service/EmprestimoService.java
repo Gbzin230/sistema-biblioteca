@@ -10,7 +10,6 @@ import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EmprestimoService {
@@ -67,8 +66,13 @@ public class EmprestimoService {
         int emprestimosAtivos = emprestimoRepository.countByUsuarioAndStatus(usuario, statusAtivo);
         int reservasAtivas = reservaRepository.countByUsuarioAndStatus(usuario, ativa);
 
-        if (emprestimosAtivos + reservasAtivas >= 3) {
-            throw new RegraNegocioException("Usuário atingiu o limite máximo de 3 slots.");
+        // =====================================================
+        // 🔥 CORREÇÃO CRÍTICA → USA O LIMITE REAL DO USUÁRIO
+        // =====================================================
+        int limite = usuario.getLimiteSlots() != null ? usuario.getLimiteSlots() : 3;
+
+        if (emprestimosAtivos + reservasAtivas >= limite) {
+            throw new RegraNegocioException("Limite de slots atingido: " + limite);
         }
 
         if (!usuario.getFlagAtivo()) {
@@ -135,9 +139,6 @@ public class EmprestimoService {
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
                 .orElseThrow(() -> new RegraNegocioException("Empréstimo não encontrado."));
 
-        StatusEmprestimo ativo = statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO")
-                .orElseThrow(() -> new RegraNegocioException("Status ATIVO não encontrado."));
-
         StatusEmprestimo finalizado = statusEmprestimoRepository.findByNomeIgnoreCase("FINALIZADO")
                 .orElseThrow(() -> new RegraNegocioException("Status FINALIZADO não encontrado."));
 
@@ -150,8 +151,8 @@ public class EmprestimoService {
         StatusLivro disponivel = statusLivroRepository.findByNomeIgnoreCase("DISPONIVEL")
                 .orElseThrow(() -> new RegraNegocioException("Status DISPONIVEL não existe."));
 
-        StatusLivro emprestado = statusLivroRepository.findByNomeIgnoreCase("EMPRESTADO")
-                .orElseThrow(() -> new RegraNegocioException("Status EMPRESTADO não existe."));
+        StatusEmprestimo ativo = statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO")
+                .orElseThrow(() -> new RegraNegocioException("Status ATIVO não existe."));
 
         StatusReserva ativa = statusReservaRepository.findByNomeIgnoreCase("ATIVA")
                 .orElseThrow(() -> new RegraNegocioException("Status ATIVA não existe."));
@@ -174,7 +175,10 @@ public class EmprestimoService {
         int emprestimosAtivos = emprestimoRepository.countByUsuarioAndStatus(user, ativo);
         int reservasAtivas = reservaRepository.countByUsuarioAndStatus(user, ativa);
 
-        if (!user.getFlagAtivo() || emprestimosAtivos + reservasAtivas >= 3) {
+        // 🔥 NOVO → respeita o limite real do usuário
+        int limite = user.getLimiteSlots() != null ? user.getLimiteSlots() : 3;
+
+        if (!user.getFlagAtivo() || emprestimosAtivos + reservasAtivas >= limite) {
 
             reserva.setStatus(finalizadaReserva);
             reservaRepository.save(reserva);
@@ -200,7 +204,8 @@ public class EmprestimoService {
         reserva.setStatus(finalizadaReserva);
         reservaRepository.save(reserva);
 
-        livro.setStatus(emprestado);
+        livro.setStatus(statusLivroRepository.findByNomeIgnoreCase("EMPRESTADO")
+                .orElseThrow());
         livroRepository.save(livro);
     }
 
@@ -225,7 +230,7 @@ public class EmprestimoService {
     }
 
     // ====================================================================
-    // ONSULTAR EMPRÉSTIMOS DE UM USUÁRIO COM SEGURANÇA
+    // CONSULTAR EMPRÉSTIMOS DE UM USUÁRIO
     // ====================================================================
     @Transactional(readOnly = true)
     public List<Emprestimo> consultarEmprestimosUsuario(String username, String authUser, boolean isAdminOrFuncionario) {
@@ -240,11 +245,11 @@ public class EmprestimoService {
         return emprestimoRepository.findByUsuario(usuario);
     }
 
-        // ====================================================================
-        // HISTÓRICO DE EMPRÉSTIMOS POR USERNAME (com regras de segurança)
-        // ====================================================================
-        @Transactional(readOnly = true)
-        public List<Emprestimo> buscarHistorico(String usernameConsulta, String usernameAuth) {
+    // ====================================================================
+    // HISTÓRICO (com regras de segurança)
+    // ====================================================================
+    @Transactional(readOnly = true)
+    public List<Emprestimo> buscarHistorico(String usernameConsulta, String usernameAuth) {
 
         Usuario authUser = usuarioRepository.findById(usernameAuth)
                 .orElseThrow(() -> new RegraNegocioException("Usuário autenticado não encontrado."));
@@ -254,19 +259,17 @@ public class EmprestimoService {
 
         String role = authUser.getRole().getNome();
 
-        // 🔒 Usuário comum só pode consultar os próprios
         if (role.equalsIgnoreCase("USUARIO") &&
                 !authUser.getUsername().equals(alvo.getUsername())) {
 
-                throw new AccessDeniedException("Você não pode consultar o histórico de outro usuário.");
+            throw new AccessDeniedException("Você não pode consultar o histórico de outro usuário.");
         }
 
         return emprestimoRepository.findByUsuario(alvo);
-        }
-
+    }
 
     // ====================================================================
-    // SEGURANÇA REUTILIZADA
+    // SEGURANÇA
     // ====================================================================
     public void validarDonoDoEmprestimo(Long emprestimoId, String username) {
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)

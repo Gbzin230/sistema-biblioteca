@@ -6,6 +6,7 @@ public class ReservaResponseDTO {
     private String usuarioId; // agora é STRING (username)
     private Long livroId;
     private String status;
+    private String UriImgLivro;
 
     public Long getId() {
         return id;
@@ -26,6 +27,13 @@ public class ReservaResponseDTO {
     }
     public void setLivroId(Long livroId) {
         this.livroId = livroId;
+    }
+
+    public String getUriImgLivro() {
+        return UriImgLivro;
+    }
+    public void setUriImgLivro(String UriImgLivro) {
+        this.UriImgLivro = UriImgLivro;
     }
 
     public String getStatus() {

@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
+import com.biblioteca.sistema_biblioteca.model.Role;
 import com.biblioteca.sistema_biblioteca.model.StatusReserva;
 import com.biblioteca.sistema_biblioteca.model.StatusUsuario;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
@@ -99,12 +100,11 @@ public class UsuarioService {
             throw new RegraNegocioException("Usuário não autenticado.");
         }
 
-        String username = auth.getName(); // vem do token via JwtFilter
+        String username = auth.getName();
 
         return usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário logado não encontrado."));
     }
-
 
     public Optional<Usuario> buscaPorId(String username) {
         return usuarioRepository.findById(username);
@@ -136,7 +136,6 @@ public class UsuarioService {
             )
         ).toList();
     }
-
 
 
     // ============================================================
@@ -199,14 +198,15 @@ public class UsuarioService {
     public Usuario aprovarUsuario(String username) {
         Usuario u = usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
-        if(u.getFlagAtivo() != null && !u.getFlagAtivo() && u.getCodStatus() != null && u.getCodStatus().equals(3)) {
+
+        if (u.getFlagAtivo() != null && !u.getFlagAtivo() &&
+                u.getCodStatus() != null && u.getCodStatus().equals(3)) {
             throw new RegraNegocioException("Usuário Bloqueado não pode ser aprovado.");
-        }else{
+        } else {
             u.setFlagAtivo(true);
-            u.setCodStatus(2); // 2 = ATIVO
+            u.setCodStatus(2);
         }
-        
-        
+
         return usuarioRepository.save(u);
     }
 
@@ -225,8 +225,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
 
         u.setFlagAtivo(true);
-        u.setCodStatus(2); // 2 = ATIVO
-
+        u.setCodStatus(2);
         return usuarioRepository.save(u);
     }
 
@@ -244,9 +243,7 @@ public class UsuarioService {
                 usuarioRepository.save(u);
                 count++;
 
-            } catch (Exception e) {
-                
-            }
+            } catch (Exception e) {}
         }
 
         return count;
@@ -262,7 +259,7 @@ public class UsuarioService {
                         .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado: " + username));
 
                 u.setFlagAtivo(true);
-                u.setCodStatus(2); // 2 = ATIVO
+                u.setCodStatus(2);
                 usuarioRepository.save(u);
                 count++;
 
@@ -305,12 +302,10 @@ public class UsuarioService {
         boolean isAdmin = logado.getRole().getNome().equalsIgnoreCase("ADMIN");
         boolean isSelf = logado.getUsername().equals(usuario.getUsername());
 
-        // Usuário comum só pode alterar ele mesmo
         if (!isAdmin && !isSelf) {
             throw new RegraNegocioException("Você não pode alterar dados de outros usuários.");
         }
 
-        // Usuário comum - só altera email, telefone, cep, endereco, senha
         if (!isAdmin) {
 
             if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
@@ -322,7 +317,6 @@ public class UsuarioService {
             return usuarioRepository.save(usuario);
         }
 
-        // ADMIN → pode alterar tudo, exceto username
         if (dto.getNome() != null) usuario.setNome(dto.getNome());
         if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
         if (dto.getTelefone() != null) usuario.setTelefone(dto.getTelefone());
@@ -341,6 +335,4 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
-
-
 }

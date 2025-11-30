@@ -83,6 +83,10 @@ public class Livro {
     @Column(name = "num_total_licencas")
     private Integer quantidadeDisponivel;
 
+    // NOVO: quantidade derivada (não salva no banco)
+    @Transient
+    private Integer quantidadeDisponivelEmprestar;
+
     @Column(name = "uri_img_livro")
     private String uriImgLivro;
 
@@ -188,6 +192,17 @@ public class Livro {
 
     public Integer getQuantidadeDisponivel() { return quantidadeDisponivel; }
     public void setQuantidadeDisponivel(Integer quantidadeDisponivel) { this.quantidadeDisponivel = quantidadeDisponivel; }
+
+    // DERIVADO — SEMPRE CALCULADO, NUNCA SALVO
+    @Transient
+    public Integer getQuantidadeDisponivelEmprestar() {
+        return quantidadeDisponivelEmprestar;
+    }
+
+    public void setQuantidadeDisponivelEmprestar(Integer valor) {
+        this.quantidadeDisponivelEmprestar = valor;
+    }
+
 
     public String getUriImgLivro() { return uriImgLivro; }
     public void setUriImgLivro(String uriImgLivro) { this.uriImgLivro = uriImgLivro; }

@@ -18,6 +18,7 @@ public class LivroResponseDTO {
 
     private String anoLancamento;
     private Integer quantidadeDisponivel;
+    private Integer quantidadeDisponivelEmprestar;
     private String sinopse;
     private String status;
     private Boolean flagAtivo;
@@ -60,6 +61,9 @@ public class LivroResponseDTO {
 
     public Integer getQuantidadeDisponivel() { return quantidadeDisponivel; }
     public void setQuantidadeDisponivel(Integer quantidadeDisponivel) { this.quantidadeDisponivel = quantidadeDisponivel; }
+
+    public Integer getQuantidadeDisponivelEmprestar() { return quantidadeDisponivelEmprestar; }
+    public void setQuantidadeDisponivelEmprestar(Integer quantidadeDisponivelEmprestar) { this.quantidadeDisponivelEmprestar = quantidadeDisponivelEmprestar; }
 
     public String getSinopse() { return sinopse; }
     public void setSinopse(String sinopse) { this.sinopse = sinopse; }

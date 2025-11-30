@@ -1,6 +1,7 @@
 package com.biblioteca.sistema_biblioteca.repository;
 
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
+import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
 import com.biblioteca.sistema_biblioteca.model.StatusEmprestimo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,5 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
 
     boolean existsByUsuario(Usuario usuario);
 
+    long countByLivroAndStatusNomeIgnoreCase(Livro livro, String statusNome);
 }

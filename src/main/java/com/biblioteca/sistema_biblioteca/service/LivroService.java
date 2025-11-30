@@ -1,5 +1,6 @@
 package com.biblioteca.sistema_biblioteca.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ public class LivroService {
     private final TagRepository tagRepository;
     private final EditoraRepository editoraRepository;
     private final StatusLivroRepository statusLivroRepository;
+    private final StatusEmprestimoRepository statusEmprestimoRepository;
+    private final StatusReservaRepository statusReservaRepository;
     private final FileStorageService fileStorageService;
     private final ObraRepository obraRepository;
 
@@ -38,6 +41,8 @@ public class LivroService {
                         TagRepository tagRepository,
                         EditoraRepository editoraRepository,
                         StatusLivroRepository statusLivroRepository,
+                        StatusEmprestimoRepository statusEmprestimoRepository,
+                        StatusReservaRepository statusReservaRepository,
                         FileStorageService fileStorageService,
                         ObraRepository obraRepository) {
 
@@ -49,9 +54,35 @@ public class LivroService {
         this.tagRepository = tagRepository;
         this.editoraRepository = editoraRepository;
         this.statusLivroRepository = statusLivroRepository;
+        this.statusEmprestimoRepository = statusEmprestimoRepository;
+        this.statusReservaRepository = statusReservaRepository;
         this.fileStorageService = fileStorageService;
-        this.obraRepository = obraRepository; 
+        this.obraRepository = obraRepository;
     }
+
+    // ============================================================
+    // CÁLCULO DO CAMPO DERIVADO
+    // ============================================================
+    private void preencherDisponibilidade(Livro livro) {
+
+        StatusEmprestimo ativo =
+                statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO")
+                        .orElseThrow(() -> new RegraNegocioException("Status ATIVO não encontrado"));
+
+        long emprestados = emprestimoRepository.countByLivroAndStatusNomeIgnoreCase(livro, "ATIVO");
+
+        int total = livro.getQuantidadeDisponivel() != null ? livro.getQuantidadeDisponivel() : 0;
+
+        int disponiveis = Math.max(0, total - (int) emprestados);
+
+        livro.setQuantidadeDisponivelEmprestar(disponiveis);
+
+        // Se não há disponíveis, status muda para EMPRESTADO (apenas para exibição)
+        if (disponiveis == 0) {
+            livro.getStatus().setNome("EMPRESTADO");
+        }
+    }
+
 
     // ===============================================================
     // SALVAR LIVRO
@@ -251,83 +282,113 @@ public class LivroService {
 
         Livro livro = buscarPorId(id);
 
-        livro.setTitulo(dados.getTitulo());
-        livro.setAnoLancamento(dados.getAnoLancamento());
-        livro.setFlagAtivo(dados.getFlagAtivo());
-        livro.setSinopse(dados.getSinopse());
+        // ===== CAMPOS SIMPLES =====
+        if (dados.getTitulo() != null)
+            livro.setTitulo(dados.getTitulo());
 
-        // ======= STATUS ENTIDADE =======
-        if (dados.getStatus() != null) {
+        if (dados.getAnoLancamento() != null)
+            livro.setAnoLancamento(dados.getAnoLancamento());
+
+        if (dados.getFlagAtivo() != null)
+            livro.setFlagAtivo(dados.getFlagAtivo());
+
+        if (dados.getSinopse() != null)
+            livro.setSinopse(dados.getSinopse());
+
+        // ==========================================
+        // QUANTIDADE DISPONÍVEL (total de licenças)
+        // ==========================================
+        if (dados.getQuantidadeDisponivel() != null) {
+
+            int novoTotal = dados.getQuantidadeDisponivel();
+
+            // quanto está emprestado agora?
+            long emprestados = emprestimoRepository
+                    .countByLivroAndStatusNomeIgnoreCase(livro, "ATIVO");
+
+            // validação: novo total não pode ser menor do que emprestados
+            if (novoTotal < emprestados) {
+                throw new RegraNegocioException(
+                        "Não é possível definir o total de licenças para " + novoTotal +
+                        ". Existem " + emprestados + " empréstimos ativos."
+                );
+            }
+
+            // aplica o total absoluto
+            livro.setQuantidadeDisponivel(novoTotal);
+        }
+
+        // ===== DT VALIDADE =====
+        if (dados.getDtValidade() != null && !dados.getDtValidade().isBlank())
+            livro.setDtValidade(dados.getDtValidade());
+
+        // ===== STATUS =====
+        if (dados.getStatus() != null)
             livro.setStatus(dados.getStatus());
+
+        // ===== OBRA =====
+        if (dados.getObra() != null) {
+            if (dados.getObra().isBlank()) {
+                // NÃO APAGA SE VIER ""
+            } else {
+                Obra obra = obraRepository.findByNomeIgnoreCase(dados.getObra())
+                    .orElseGet(() -> {
+                        Obra nova = new Obra();
+                        nova.setNome(dados.getObra());
+                        return obraRepository.save(nova);
+                    });
+                livro.setObraEntidade(obra);
+            }
         }
 
-        // ======= AUTOR =======
-        if (dados.getAutor() != null) {
-            if (dados.getAutor().isBlank()) {
-                livro.setAutores(null);
-            } else {
-                Autor autor = autorRepository.findByNomeIgnoreCase(dados.getAutor())
+        // ===== AUTOR =====
+        if (dados.getAutor() != null && !dados.getAutor().isBlank()) {
+            Autor autor = autorRepository.findByNomeIgnoreCase(dados.getAutor())
+                    .orElseGet(() -> {
+                        Autor novo = new Autor();
+                        novo.setNome(dados.getAutor());
+                        return autorRepository.save(novo);
+                    });
+            livro.setAutores(Set.of(autor));
+        }
+
+        // ===== TEMA =====
+        if (dados.getTema() != null && !dados.getTema().isBlank()) {
+            Tema tema = temaRepository.findByNomeIgnoreCase(dados.getTema())
+                    .orElseGet(() -> {
+                        Tema novo = new Tema();
+                        novo.setNome(dados.getTema());
+                        return temaRepository.save(novo);
+                    });
+            livro.setTemas(Set.of(tema));
+        }
+
+        // ===== TAGS =====
+        if (dados.getTags() != null && !dados.getTags().isEmpty()) {
+            var tags = dados.getTags().stream()
+                    .map(String::trim)
+                    .filter(s -> !s.isBlank())
+                    .map(nome -> tagRepository.findByNomeIgnoreCase(nome)
                         .orElseGet(() -> {
-                            Autor novo = new Autor();
-                            novo.setNome(dados.getAutor());
-                            return autorRepository.save(novo);
-                        });
-                livro.setAutores(Set.of(autor));
-            }
+                            Tag t = new Tag();
+                            t.setNome(nome);
+                            return tagRepository.save(t);
+                        })
+                    ).collect(java.util.stream.Collectors.toSet());
+            livro.setTagsEntidades(tags);
         }
 
-        // ======= TEMA =======
-        if (dados.getTema() != null) {
-            if (dados.getTema().isBlank()) {
-                livro.setTemas(null);
-            } else {
-                Tema tema = temaRepository.findByNomeIgnoreCase(dados.getTema())
-                        .orElseGet(() -> {
-                            Tema novo = new Tema();
-                            novo.setNome(dados.getTema());
-                            return temaRepository.save(novo);
-                        });
-                livro.setTemas(Set.of(tema));
-            }
-        }
+        // 🚫 CAMPOS PROIBIDOS
+        // se vierem no DTO, IGNORE
+        // livro.setUriImgLivro(…)
+        // livro.setUriArquivoLivro(…)
 
-        // ======= TAGS =======
-        if (dados.getTags() != null) {
-            if (dados.getTags().isEmpty()) {
-                livro.setTagsEntidades(null);
-            } else {
-                var tags = dados.getTags().stream()
-                        .map(String::trim)
-                        .filter(s -> !s.isBlank())
-                        .map(nome -> tagRepository.findByNomeIgnoreCase(nome)
-                                .orElseGet(() -> {
-                                    Tag t = new Tag();
-                                    t.setNome(nome);
-                                    return tagRepository.save(t);
-                                })
-                        )
-                        .collect(java.util.stream.Collectors.toSet());
-                livro.setTagsEntidades(tags);
-            }
-        }
-
-        // ======= EDITORA =======
-        if (dados.getEditora() != null) {
-            if (dados.getEditora().isBlank()) {
-                livro.setEditoraEntidade(null);
-            } else {
-                Editora editora = editoraRepository.findByNomeIgnoreCase(dados.getEditora())
-                        .orElseGet(() -> {
-                            Editora e = new Editora();
-                            e.setNome(dados.getEditora());
-                            return editoraRepository.save(e);
-                        });
-                livro.setEditoraEntidade(editora);
-            }
-        }
+        preencherDisponibilidade(livro);
 
         return livroRepository.save(livro);
     }
+
+
 
     // ===============================================================
     // DELETAR
@@ -376,5 +437,83 @@ public class LivroService {
             return livroRepository.findAll(pageable);
 
         return livroRepository.searchByTituloAutorTemaTag(q, pageable);
+    }
+
+
+    // ===============================================================
+    // DESATIVAR LIVROS EM MASSA (FORÇA DEVOLUÇÃO E CANCELA RESERVAS)
+    // ===============================================================
+    @Transactional
+    public int desativarLivrosEmMassa(List<Long> ids) {
+
+        int count = 0;
+
+        StatusLivro inativo = statusLivroRepository.findByNomeIgnoreCase("INATIVO")
+                .orElseThrow(() -> new RegraNegocioException("Status 'INATIVO' não existe."));
+
+        StatusEmprestimo finalizado = statusEmprestimoRepository.findByNomeIgnoreCase("FINALIZADO")
+                .orElseThrow(() -> new RegraNegocioException("Status 'FINALIZADO' para empréstimo não existe."));
+
+        StatusReserva cancelado = statusReservaRepository.findByNomeIgnoreCase("CANCELADA")
+                .orElseThrow(() -> new RegraNegocioException("Status 'CANCELADA' para reserva não existe."));
+
+        LocalDateTime agora = LocalDateTime.now();
+
+        for (Long id : ids) {
+            try {
+                Livro livro = buscarPorId(id);
+
+                // Verifica se há empréstimos ATIVOS neste livro
+                List<Emprestimo> emprestimosAtivos = emprestimoRepository.findAll().stream()
+                        .filter(e -> e.getLivro().equals(livro)
+                                && e.getStatus() != null
+                                && e.getStatus().getNome().equalsIgnoreCase("ATIVO"))
+                        .toList();
+
+                // Força devolução: marcar FINALIZADO e setar dtFim = agora
+                for (Emprestimo e : emprestimosAtivos) {
+                    e.setDtFim(agora);
+                    e.encerrar(finalizado);
+                    emprestimoRepository.save(e);
+                }
+
+                // Verifica e cancela reservas ATIVAS deste livro
+                List<Reserva> reservasAtivas = reservaRepository.findAll().stream()
+                        .filter(r -> r.getLivro().equals(livro)
+                                && r.getStatus() != null
+                                && r.getStatus().getNome().equalsIgnoreCase("ATIVA"))
+                        .toList();
+
+                for (Reserva r : reservasAtivas) {
+                    r.setStatus(cancelado);
+                    r.setDtFimReserva(null); // conforme regra: deixar null
+                    reservaRepository.save(r);
+                }
+
+                // Se ainda tiver empréstimo ATIVO ou reserva ATIVA (checagem dupla), pule
+                boolean emprestado = emprestimoRepository.findAll().stream()
+                        .anyMatch(e -> e.getLivro().equals(livro)
+                                && e.getStatus() != null
+                                && e.getStatus().getNome().equalsIgnoreCase("ATIVO"));
+
+                boolean reservado = reservaRepository.findAll().stream()
+                        .anyMatch(r -> r.getLivro().equals(livro)
+                                && r.getStatus() != null
+                                && r.getStatus().getNome().equalsIgnoreCase("ATIVA"));
+
+                if (emprestado || reservado) {
+                    continue;
+                }
+
+                // Marca livro como inativo
+                livro.setFlagAtivo(false);
+                livro.setStatus(inativo);
+                livroRepository.save(livro);
+                count++;
+
+            } catch (Exception ignored) {}
+        }
+
+        return count;
     }
 }
