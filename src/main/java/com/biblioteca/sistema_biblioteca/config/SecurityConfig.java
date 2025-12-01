@@ -55,7 +55,9 @@ public class SecurityConfig {
                             "/actuator/**",
                             "/auth/**",
                             "/h2-console/**",
-                            "/uploads/**"  // PDFs vêm daqui
+                            "/uploads/**",  // PDFs vêm daqui,
+                            "/pessoas/recuperar-senha",
+                            "/pessoas/resetar-senha"
                     ).permitAll()
 
                     // Cadastro público

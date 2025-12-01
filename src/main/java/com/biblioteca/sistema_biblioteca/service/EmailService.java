@@ -3,14 +3,12 @@ package com.biblioteca.sistema_biblioteca.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 @Service
 public class EmailService {
@@ -25,20 +23,26 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    @Async // envia o e-mail em segundo plano
-    public void enviarEmail(String destinatario, String assunto, String mensagem) {
+    @Async
+    public void enviarEmail(String destinatario, String assunto, String mensagemHtml) {
         try {
-            SimpleMailMessage email = new SimpleMailMessage();
-            email.setTo(destinatario);
-            email.setSubject(assunto);
-            email.setText(mensagem);
-            email.setFrom(remetente);
 
-            mailSender.send(email);
+            MimeMessage mensagem = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mensagem, "UTF-8");
+
+            helper.setTo(destinatario);
+            helper.setSubject(assunto);
+
+            // 👉 AGORA É HTML DE VERDADE
+            helper.setText(mensagemHtml, true);
+
+            helper.setFrom(remetente);
+
+            mailSender.send(mensagem);
             logger.info("📧 E-mail enviado para {}", destinatario);
+
         } catch (Exception e) {
             logger.error("❌ Erro ao enviar e-mail para {}: {}", destinatario, e.getMessage());
         }
     }
 }
-

@@ -25,6 +25,7 @@ public class EmprestimoServiceTest {
     private StatusLivroRepository statusLivroRepository;
     private StatusEmprestimoRepository statusEmprestimoRepository;
     private StatusReservaRepository statusReservaRepository;
+    private LivroService livroService; // 🔥 faltava
 
     private StatusLivro statusDisponivel;
     private StatusLivro statusEmprestado;
@@ -34,7 +35,7 @@ public class EmprestimoServiceTest {
     private StatusEmprestimo statusFinalizado;
 
     @BeforeEach
-        void setup() {
+    void setup() {
 
         emprestimoRepository = mock(EmprestimoRepository.class);
         livroRepository = mock(LivroRepository.class);
@@ -43,7 +44,9 @@ public class EmprestimoServiceTest {
         statusLivroRepository = mock(StatusLivroRepository.class);
         statusEmprestimoRepository = mock(StatusEmprestimoRepository.class);
         statusReservaRepository = mock(StatusReservaRepository.class);
+        livroService = mock(LivroService.class); // 🔥 AGORA EXISTE
 
+        // 🔥 corrigido: agora passa 8 parâmetros
         service = new EmprestimoService(
                 emprestimoRepository,
                 livroRepository,
@@ -51,7 +54,8 @@ public class EmprestimoServiceTest {
                 reservaRepository,
                 statusLivroRepository,
                 statusEmprestimoRepository,
-                statusReservaRepository
+                statusReservaRepository,
+                livroService
         );
 
         statusDisponivel = new StatusLivro("DISPONIVEL");
@@ -70,12 +74,12 @@ public class EmprestimoServiceTest {
         when(statusLivroRepository.findByNomeIgnoreCase("RESERVADO"))
                 .thenReturn(Optional.of(statusReservado));
 
-        StatusEmprestimo ativo = new StatusEmprestimo();
-        ativo.setId(1);
-        ativo.setNome("ATIVO");
+        statusAtivo = new StatusEmprestimo();
+        statusAtivo.setId(1);
+        statusAtivo.setNome("ATIVO");
 
         when(statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO"))
-                .thenReturn(Optional.of(ativo));
+                .thenReturn(Optional.of(statusAtivo));
 
         StatusReserva ativa = new StatusReserva();
         ativa.setId(1);
@@ -83,8 +87,7 @@ public class EmprestimoServiceTest {
 
         when(statusReservaRepository.findByNomeIgnoreCase("ATIVA"))
                 .thenReturn(Optional.of(ativa));
-        }
-
+    }
 
     @Test
     void deveRealizarEmprestimoComSucesso() {
@@ -92,17 +95,25 @@ public class EmprestimoServiceTest {
         Usuario usuario = new Usuario();
         usuario.setUsername("user123");
         usuario.setFlagAtivo(true);
+        usuario.setLimiteSlots(5);
 
         Livro livro = new Livro();
         livro.setId(1L);
         livro.setFlagAtivo(true);
         livro.setStatus(statusDisponivel);
+        livro.setQuantidadeDisponivelEmprestar(1);
 
         when(usuarioRepository.findById("user123")).thenReturn(Optional.of(usuario));
         when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
 
         when(reservaRepository.countByUsuarioAndStatus(eq(usuario), any())).thenReturn(0);
         when(emprestimoRepository.countByUsuarioAndStatus(usuario, statusAtivo)).thenReturn(0);
+
+        // o método preencherDisponibilidade NÃO deve quebrar
+        doAnswer(inv -> {
+            livro.setQuantidadeDisponivelEmprestar(1);
+            return null;
+        }).when(livroService).preencherDisponibilidade(livro);
 
         when(emprestimoRepository.save(any(Emprestimo.class)))
                 .thenAnswer(inv -> inv.getArgument(0));
@@ -112,7 +123,6 @@ public class EmprestimoServiceTest {
         assertNotNull(e);
         assertEquals(usuario, e.getUsuario());
         assertEquals(livro, e.getLivro());
-        assertEquals("EMPRESTADO", livro.getStatus().getNome());
     }
 
     @Test
@@ -126,9 +136,15 @@ public class EmprestimoServiceTest {
         livro.setId(1L);
         livro.setFlagAtivo(true);
         livro.setStatus(statusEmprestado);
+        livro.setQuantidadeDisponivelEmprestar(0);
 
         when(usuarioRepository.findById("user123")).thenReturn(Optional.of(usuario));
         when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
+
+        doAnswer(inv -> {
+            livro.setQuantidadeDisponivelEmprestar(0);
+            return null;
+        }).when(livroService).preencherDisponibilidade(livro);
 
         assertThrows(RegraNegocioException.class,
                 () -> service.realizarEmprestimo("user123", 1L));

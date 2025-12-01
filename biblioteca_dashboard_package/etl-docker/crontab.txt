@@ -1,0 +1,5 @@
+# 02:00 AM - Roda a devolução automática e envio de emails (Operacional)
+0 2 * * * python3 /app/auto_return.py >> /var/log/etl.log 2>&1
+
+# 03:00 AM - Roda a carga de dados para o Dashboard (Analytics)
+0 3 * * * python3 /app/etl_analytics.py >> /var/log/etl.log 2>&1

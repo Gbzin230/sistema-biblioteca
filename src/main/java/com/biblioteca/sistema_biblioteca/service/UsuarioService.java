@@ -1,6 +1,7 @@
 package com.biblioteca.sistema_biblioteca.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.model.Livro;
+import com.biblioteca.sistema_biblioteca.model.PasswordReset;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
 import com.biblioteca.sistema_biblioteca.model.StatusEmprestimo;
 import com.biblioteca.sistema_biblioteca.model.StatusReserva;
@@ -35,6 +37,8 @@ public class UsuarioService {
     private final StatusReservaRepository statusReservaRepository;
     private final StatusUsuarioRepository statusUsuarioRepository;
     private final StatusEmprestimoRepository statusEmprestimoRepository;
+    private final PasswordResetRepository passwordResetRepository;
+    private final EmailService emailService;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
@@ -43,7 +47,9 @@ public class UsuarioService {
             PasswordEncoder passwordEncoder,
             StatusReservaRepository statusReservaRepository,
             StatusUsuarioRepository statusUsuarioRepository,
-            StatusEmprestimoRepository statusEmprestimoRepository
+            StatusEmprestimoRepository statusEmprestimoRepository,
+            PasswordResetRepository passwordResetRepository,
+            EmailService emailService
     ) {
         this.usuarioRepository = usuarioRepository;
         this.emprestimoRepository = emprestimoRepository;
@@ -52,6 +58,8 @@ public class UsuarioService {
         this.statusReservaRepository = statusReservaRepository;
         this.statusUsuarioRepository = statusUsuarioRepository;
         this.statusEmprestimoRepository = statusEmprestimoRepository;
+        this.passwordResetRepository = passwordResetRepository;
+        this.emailService = emailService;
     }
 
     // ============================================================
@@ -72,6 +80,59 @@ public class UsuarioService {
     public boolean existsByEmail(String email) {
         return usuarioRepository.findByEmail(email).isPresent();
     }
+
+    // ============================================================
+    // RECUPERAÇÃO DE SENHA — código numérico
+    // ============================================================
+    public void iniciarRecuperacaoSenha(String email) {
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isEmpty()) return;
+
+        // sempre remover tokens antigos
+        passwordResetRepository.deleteById(email);
+
+        String token = gerarCodigo6Digitos();
+        LocalDateTime expira = LocalDateTime.now().plusMinutes(15);
+
+        PasswordReset pr = new PasswordReset(email, token, expira);
+        passwordResetRepository.save(pr);
+
+        emailService.enviarEmail(
+                email,
+                "Recuperação de Senha",
+                "<p>Seu código para resetar a senha é:</p><h2>" + token + "</h2>" +
+                "<p>Ele expira em 15 minutos.</p>"
+        );
+    }
+
+    private String gerarCodigo6Digitos() {
+        return String.format("%06d", new java.util.Random().nextInt(1000000));
+    }
+
+
+    public void resetarSenha(String email, String codigo, String novaSenha) {
+
+        PasswordReset pr = passwordResetRepository.findById(email)
+                .orElseThrow(() -> new RegraNegocioException("Código inválido."));
+
+        if (!pr.getToken().equals(codigo)) {
+            throw new RegraNegocioException("Código inválido.");
+        }
+
+        if (pr.getExpiracao().isBefore(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")))) {
+            throw new RegraNegocioException("Código expirado.");
+        }
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
+        usuarioRepository.save(usuario);
+
+        passwordResetRepository.delete(pr);
+    }
+
 
     // ============================================================
     // SALVAR

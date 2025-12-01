@@ -222,5 +222,31 @@ public class PessoaController {
         PessoaResponseDTO resp = modelMapper.map(atualizado, PessoaResponseDTO.class);
         return ResponseEntity.ok(resp);
     }
+
+    @PostMapping("/recuperar-senha")
+    public ResponseEntity<?> recuperarSenha(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        usuarioService.iniciarRecuperacaoSenha(email);
+
+        return ResponseEntity.ok(
+            Map.of("message", "Se o email existir, enviaremos um link de recuperação.")
+        );
+    }
+
+    @PostMapping("/resetar-senha")
+    public ResponseEntity<?> resetarSenha(@RequestBody Map<String, String> body) {
+
+        String email = body.get("email");
+        String token = body.get("token");
+        String novaSenha = body.get("novaSenha");
+
+        usuarioService.resetarSenha(email, token, novaSenha);
+
+        return ResponseEntity.ok(
+            Map.of("message", "Senha redefinida com sucesso.")
+        );
+    }
+
+
 }
 

@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  etl:
+    build: .
+    container_name: biblioteca_etl
+    env_file:
+      - .env
+    volumes:
+      - ./etl_analytics.py:/app/etl_analytics.py
+      - ./auto_return.py:/app/auto_return.py  # <--- ADICIONE ESTA LINHA
+      - ./var-log:/var/log
+    restart: unless-stopped
+    # Adicione esta linha se precisar que o container acesse o host (para o banco local)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
