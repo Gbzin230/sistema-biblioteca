@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.biblioteca.sistema_biblioteca.service.LivroService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
@@ -158,6 +159,7 @@ public class Livro {
         } else {
             this.obra = null;
         }
+        
     }
 
     // ============================================================

@@ -21,6 +21,7 @@ public class EmprestimoService {
     private final StatusLivroRepository statusLivroRepository;
     private final StatusEmprestimoRepository statusEmprestimoRepository;
     private final StatusReservaRepository statusReservaRepository;
+    private final LivroService livroService;
 
     private static final int PRAZO_PADRAO_DIAS = 7;
     private static final int MAX_RENOVACOES = 2;
@@ -34,7 +35,9 @@ public class EmprestimoService {
             ReservaRepository reservaRepository,
             StatusLivroRepository statusLivroRepository,
             StatusEmprestimoRepository statusEmprestimoRepository,
-            StatusReservaRepository statusReservaRepository) {
+            StatusReservaRepository statusReservaRepository,
+            LivroService livroService
+    ) {
 
         this.emprestimoRepository = emprestimoRepository;
         this.livroRepository = livroRepository;
@@ -43,6 +46,7 @@ public class EmprestimoService {
         this.statusLivroRepository = statusLivroRepository;
         this.statusEmprestimoRepository = statusEmprestimoRepository;
         this.statusReservaRepository = statusReservaRepository;
+        this.livroService = livroService;
     }
 
     // ====================================================================
@@ -67,7 +71,7 @@ public class EmprestimoService {
         int reservasAtivas = reservaRepository.countByUsuarioAndStatus(usuario, ativa);
 
         // =====================================================
-        // 🔥 CORREÇÃO CRÍTICA → USA O LIMITE REAL DO USUÁRIO
+        // 🔥 RESPEITA O LIMITE REAL DO USUÁRIO
         // =====================================================
         int limite = usuario.getLimiteSlots() != null ? usuario.getLimiteSlots() : 3;
 
@@ -79,16 +83,17 @@ public class EmprestimoService {
             throw new RegraNegocioException("Usuário bloqueado não pode realizar empréstimos.");
         }
 
-        StatusLivro emprestado = statusLivroRepository.findByNomeIgnoreCase("EMPRESTADO")
-                .orElseThrow(() -> new RegraNegocioException("Status EMPRESTADO não existe."));
+        // =====================================================
+        // 🔥 VALIDAÇÃO CORRETA DE DISPONIBILIDADE
+        // =====================================================
+        livroService.preencherDisponibilidade(livro);
 
-        StatusLivro reservado = statusLivroRepository.findByNomeIgnoreCase("RESERVADO")
-                .orElseThrow(() -> new RegraNegocioException("Status RESERVADO não existe."));
+        int disponivel = livro.getQuantidadeDisponivelEmprestar() != null
+                ? livro.getQuantidadeDisponivelEmprestar()
+                : 0;
 
-        boolean livroReservado = livro.getStatus().getId().equals(reservado.getId());
-
-        if (!livro.isDisponivel() && !livroReservado) {
-            throw new RegraNegocioException("Livro não está disponível.");
+        if (disponivel <= 0) {
+            throw new RegraNegocioException("Nenhuma unidade disponível para empréstimo.");
         }
 
         LocalDateTime agora = LocalDateTime.now(ZONE);
@@ -98,9 +103,7 @@ public class EmprestimoService {
         emprestimo.setDtFim(agora.plusDays(PRAZO_PADRAO_DIAS));
         emprestimo.setStatus(statusAtivo);
 
-        livro.setStatus(emprestado);
-        livroRepository.save(livro);
-
+        // NÃO alteramos status do livro
         return emprestimoRepository.save(emprestimo);
     }
 
@@ -175,7 +178,6 @@ public class EmprestimoService {
         int emprestimosAtivos = emprestimoRepository.countByUsuarioAndStatus(user, ativo);
         int reservasAtivas = reservaRepository.countByUsuarioAndStatus(user, ativa);
 
-        // 🔥 NOVO → respeita o limite real do usuário
         int limite = user.getLimiteSlots() != null ? user.getLimiteSlots() : 3;
 
         if (!user.getFlagAtivo() || emprestimosAtivos + reservasAtivas >= limite) {
@@ -203,10 +205,6 @@ public class EmprestimoService {
 
         reserva.setStatus(finalizadaReserva);
         reservaRepository.save(reserva);
-
-        livro.setStatus(statusLivroRepository.findByNomeIgnoreCase("EMPRESTADO")
-                .orElseThrow());
-        livroRepository.save(livro);
     }
 
     // ====================================================================
@@ -246,7 +244,7 @@ public class EmprestimoService {
     }
 
     // ====================================================================
-    // HISTÓRICO (com regras de segurança)
+    // HISTÓRICO
     // ====================================================================
     @Transactional(readOnly = true)
     public List<Emprestimo> buscarHistorico(String usernameConsulta, String usernameAuth) {

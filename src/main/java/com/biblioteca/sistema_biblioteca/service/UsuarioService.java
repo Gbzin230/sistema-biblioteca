@@ -1,5 +1,6 @@
 package com.biblioteca.sistema_biblioteca.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,13 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.biblioteca.sistema_biblioteca.model.Emprestimo;
 import com.biblioteca.sistema_biblioteca.model.Livro;
 import com.biblioteca.sistema_biblioteca.model.Reserva;
-import com.biblioteca.sistema_biblioteca.model.Role;
+import com.biblioteca.sistema_biblioteca.model.StatusEmprestimo;
 import com.biblioteca.sistema_biblioteca.model.StatusReserva;
 import com.biblioteca.sistema_biblioteca.model.StatusUsuario;
 import com.biblioteca.sistema_biblioteca.model.Usuario;
+
 import com.biblioteca.sistema_biblioteca.dto.PessoaUpdateDTO;
 import com.biblioteca.sistema_biblioteca.dto.UsuarioListagemDTO;
 import com.biblioteca.sistema_biblioteca.exception.RegraNegocioException;
@@ -31,7 +34,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final StatusReservaRepository statusReservaRepository;
     private final StatusUsuarioRepository statusUsuarioRepository;
-
+    private final StatusEmprestimoRepository statusEmprestimoRepository;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
@@ -39,7 +42,8 @@ public class UsuarioService {
             ReservaRepository reservaRepository,
             PasswordEncoder passwordEncoder,
             StatusReservaRepository statusReservaRepository,
-            StatusUsuarioRepository statusUsuarioRepository
+            StatusUsuarioRepository statusUsuarioRepository,
+            StatusEmprestimoRepository statusEmprestimoRepository
     ) {
         this.usuarioRepository = usuarioRepository;
         this.emprestimoRepository = emprestimoRepository;
@@ -47,6 +51,7 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
         this.statusReservaRepository = statusReservaRepository;
         this.statusUsuarioRepository = statusUsuarioRepository;
+        this.statusEmprestimoRepository = statusEmprestimoRepository;
     }
 
     // ============================================================
@@ -69,7 +74,7 @@ public class UsuarioService {
     }
 
     // ============================================================
-    // 🟢 SALVAR USUÁRIO (com validações)
+    // SALVAR
     // ============================================================
     public Usuario salvar(Usuario usuario) {
 
@@ -83,7 +88,6 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
-
 
     // ============================================================
     // LISTAR / BUSCAR
@@ -137,9 +141,8 @@ public class UsuarioService {
         ).toList();
     }
 
-
     // ============================================================
-    // DOMÍNIO (EMPRÉSTIMO, RESERVA, ETC)
+    // DOMÍNIO
     // ============================================================
 
     public Emprestimo emprestarLivro(String username, Livro livro) {
@@ -189,7 +192,6 @@ public class UsuarioService {
         return usuario.consultaHistorico();
     }
 
-
     // ============================================================
     // GESTÃO ADMINISTRATIVA
     // ============================================================
@@ -210,15 +212,114 @@ public class UsuarioService {
         return usuarioRepository.save(u);
     }
 
+    // ============================================================
+    // 🔥 BLOQUEAR USUÁRIO (corrigido)
+    // ============================================================
     @Transactional
     public Usuario bloquearUsuario(String username) {
+
         Usuario u = usuarioRepository.findById(username)
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado."));
+
+        // -------- cancelamento das reservas ativas --------
+        StatusReserva ativa = statusReservaRepository.findByNomeIgnoreCase("ATIVA")
+                .orElseThrow(() -> new RegraNegocioException("Status ATIVA não existe."));
+
+        StatusReserva cancelada = statusReservaRepository.findByNomeIgnoreCase("CANCELADA")
+                .orElseThrow(() -> new RegraNegocioException("Status CANCELADA não existe."));
+
+        List<Reserva> reservasAtivas = reservaRepository.findByUsuarioOrderByDtInicioReservaDesc(u)
+                .stream()
+                .filter(r -> r.getStatus().getId().equals(ativa.getId()))
+                .toList();
+
+        for (Reserva r : reservasAtivas) {
+            r.setStatus(cancelada);
+            reservaRepository.save(r);
+        }
+
+        // -------- finalizar empréstimos ativos --------
+        StatusEmprestimo ativo = statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO")
+                .orElseThrow(() -> new RegraNegocioException("Status ATIVO não existe."));
+
+        StatusEmprestimo finalizado = statusEmprestimoRepository.findByNomeIgnoreCase("FINALIZADO")
+                .orElseThrow(() -> new RegraNegocioException("Status FINALIZADO não existe."));
+
+        List<Emprestimo> emprestimosAtivos = emprestimoRepository.findByUsuarioAndStatus(u, ativo);
+
+        for (Emprestimo e : emprestimosAtivos) {
+            e.setStatus(finalizado);
+            e.setDtFim(LocalDateTime.now());
+            emprestimoRepository.save(e);
+        }
+
+        // -------- bloquear usuário --------
         u.setFlagAtivo(false);
         u.setCodStatus(3);
+
         return usuarioRepository.save(u);
     }
 
+    // ============================================================
+    // 🔥 BLOQUEIO EM MASSA (corrigido)
+    // ============================================================
+    @Transactional
+    public int bloquearUsuariosEmMassa(List<String> usernames) {
+        int count = 0;
+
+        StatusReserva ativa = statusReservaRepository.findByNomeIgnoreCase("ATIVA")
+                .orElseThrow(() -> new RegraNegocioException("Status ATIVA não existe."));
+
+        StatusReserva cancelada = statusReservaRepository.findByNomeIgnoreCase("CANCELADA")
+                .orElseThrow(() -> new RegraNegocioException("Status CANCELADA não existe."));
+
+        StatusEmprestimo ativo = statusEmprestimoRepository.findByNomeIgnoreCase("ATIVO")
+                .orElseThrow(() -> new RegraNegocioException("Status ATIVO não existe."));
+
+        StatusEmprestimo finalizado = statusEmprestimoRepository.findByNomeIgnoreCase("FINALIZADO")
+                .orElseThrow(() -> new RegraNegocioException("Status FINALIZADO não existe."));
+
+        for (String username : usernames) {
+            try {
+                Usuario u = usuarioRepository.findById(username)
+                        .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado: " + username));
+
+                // cancelar reservas
+                List<Reserva> reservasAtivas = reservaRepository.findByUsuarioOrderByDtInicioReservaDesc(u)
+                        .stream()
+                        .filter(r -> r.getStatus().getId().equals(ativa.getId()))
+                        .toList();
+
+                for (Reserva r : reservasAtivas) {
+                    r.setStatus(cancelada);
+                    reservaRepository.save(r);
+                }
+
+                // finalizar empréstimos
+                List<Emprestimo> emprestimosAtivos = emprestimoRepository.findByUsuarioAndStatus(u, ativo);
+
+                for (Emprestimo e : emprestimosAtivos) {
+                    e.setStatus(finalizado);
+                    e.setDtFim(LocalDateTime.now());
+                    emprestimoRepository.save(e);
+                }
+
+                // bloquear usuário
+                u.setFlagAtivo(false);
+                u.setCodStatus(3);
+                usuarioRepository.save(u);
+
+                count++;
+
+            } catch (Exception ignored) {}
+        }
+
+        return count;
+    }
+
+    // ============================================================
+    // DESBLOQUEAR
+    // ============================================================
     @Transactional
     public Usuario desbloquearUsuario(String username) {
         Usuario u = usuarioRepository.findById(username)
@@ -226,29 +327,13 @@ public class UsuarioService {
 
         u.setFlagAtivo(true);
         u.setCodStatus(2);
+
         return usuarioRepository.save(u);
     }
 
-    @Transactional
-    public int bloquearUsuariosEmMassa(List<String> usernames) {
-        int count = 0;
-
-        for (String username : usernames) {
-            try {
-                Usuario u = usuarioRepository.findById(username)
-                        .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado: " + username));
-
-                u.setFlagAtivo(false);
-                u.setCodStatus(3);
-                usuarioRepository.save(u);
-                count++;
-
-            } catch (Exception e) {}
-        }
-
-        return count;
-    }
-
+    // ============================================================
+    // DESBLOQUEIO EM MASSA
+    // ============================================================
     @Transactional
     public int desbloquearUsuariosEmMassa(List<String> usernames) {
         int count = 0;
@@ -269,6 +354,9 @@ public class UsuarioService {
         return count;
     }
 
+    // ============================================================
+    // DELETAR
+    // ============================================================
     @Transactional
     public void deletar(String username) {
         Usuario usuario = usuarioRepository.findById(username)
@@ -289,7 +377,6 @@ public class UsuarioService {
     // ============================================================
     // ATUALIZAR
     // ============================================================
-
     @Transactional
     public Usuario atualizarUsuario(PessoaUpdateDTO dto, String identificador) {
 

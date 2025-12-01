@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface LivroRepository extends JpaRepository<Livro, Long> {
     Page<Livro> findByTituloContainingIgnoreCase(String titulo, Pageable pageable);
+
     @Query("select l from Livro l join l.autores a where lower(a.nome) like lower(concat('%', :autor, '%'))")
     Page<Livro> findByAutorContainingIgnoreCase(@Param("autor") String autor, Pageable pageable);
 
@@ -25,8 +26,35 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
     @Query("select distinct l from Livro l left join l.autores a left join l.temas t left join l.tagsEntidades tg where lower(l.titulo) like lower(concat('%', :q, '%')) or lower(a.nome) like lower(concat('%', :q, '%')) or lower(t.nome) like lower(concat('%', :q, '%')) or lower(tg.nome) like lower(concat('%', :q, '%'))")
     Page<Livro> searchByTituloAutorTemaTag(@Param("q") String q, Pageable pageable);
 
+    Page<Livro> findByFlagAtivoTrue(Pageable pageable);
+
     List<Livro> findByTemasNomeIgnoreCase(String nome);
 
+    /**
+     * Busca global (JPQL) — corrigi os joins e usei os atributos das entidades (editoraEntidade, obraEntidade, autores, temas, tagsEntidades).
+     * Observação: NÃO filtro por quantidadeDisponivel aqui (a disponibilidade é calculada dinamicamente no service).
+     */
+    @Query("""
+    SELECT DISTINCT l 
+    FROM Livro l
+    LEFT JOIN l.autores a
+    LEFT JOIN l.temas t
+    LEFT JOIN l.tagsEntidades tg
+    LEFT JOIN l.editoraEntidade e
+    LEFT JOIN l.obraEntidade o
+    WHERE l.flagAtivo = true
+      AND (
+           LOWER(l.titulo)        LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(l.anoLancamento) LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(l.sinopse)       LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(e.nome)          LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(o.nome)          LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(a.nome)          LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(t.nome)          LIKE LOWER(CONCAT('%', :q, '%'))
+        OR LOWER(tg.nome)         LIKE LOWER(CONCAT('%', :q, '%'))
+      )
+    """)
+    Page<Livro> searchGlobal(@Param("q") String q, Pageable pageable);
 
     @Query(value = """
     SELECT 

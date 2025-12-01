@@ -82,7 +82,7 @@ public class ReservaController {
 
         String status = salva.getStatus().getNome().toUpperCase();
 
-        String mensagem = status.equals("CONFIRMADA")
+        String mensagem = status.equals("ATIVA")
                 ? "Livro disponível; empréstimo realizado."
                 : "Reserva criada com sucesso.";
 

@@ -40,7 +40,6 @@ public class LivroController {
 
         Page<Livro> livrosPage = livroRepository.findAll(pageable);
 
-        // Mapeamento manual para evitar Autor@xxx / Tema@xxx
         Page<LivroResponseDTO> dtoPage = livrosPage.map(livro -> {
             LivroResponseDTO dto = new LivroResponseDTO();
 
@@ -69,19 +68,17 @@ public class LivroController {
             return dto;
         });
 
-        ApiPageResponse<LivroResponseDTO> response =
-                ApiPageResponse.of(dtoPage, dto -> dto);
+        ApiPageResponse<LivroResponseDTO> response = ApiPageResponse.of(dtoPage, dto -> dto);
 
         return ResponseEntity.ok(new ApiResponse<>(response, "Livros listados com sucesso"));
     }
-
 
     // ✅ BUSCAR POR ID — público
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<LivroResponseDTO>> buscarPorId(@PathVariable Long id) {
         Livro livro = livroService.buscarPorId(id);
+        livroService.preencherDisponibilidade(livro);
 
-        // Mapeamento manual APENAS para este endpoint
         LivroResponseDTO dto = new LivroResponseDTO();
 
         dto.setId(livro.getId());
@@ -109,11 +106,12 @@ public class LivroController {
         return ResponseEntity.ok(new ApiResponse<>(dto, "Livro encontrado com sucesso"));
     }
 
-    // ✅ LISTAR LIVROS POR TEMA — público
+    // ✅ LISTAR LIVROS POR TEMA — AGORA SOMENTE ATIVOS
     @GetMapping("/tema/{tema}")
     public ResponseEntity<ApiResponse<List<LivroResponseDTO>>> listarPorTema(@PathVariable String tema) {
 
-        List<Livro> livros = livroService.buscarPorTema(tema);
+        // 🔥 AGORA só retorna livros ativos
+        List<Livro> livros = livroService.buscarPorTemaApenasAtivos(tema);
 
         List<LivroResponseDTO> dtos = livros.stream().map(livro -> {
             LivroResponseDTO dto = new LivroResponseDTO();
@@ -144,10 +142,83 @@ public class LivroController {
         }).toList();
 
         return ResponseEntity.ok(
-                new ApiResponse<>(dtos, "Livros do tema '" + tema + "' listados com sucesso")
-        );
+                new ApiResponse<>(dtos, "Livros ativos do tema '" + tema + "' listados com sucesso"));
     }
 
+    // ✅ LISTAR APENAS LIVROS ATIVOS — público
+    @GetMapping("/ativos")
+    public ResponseEntity<ApiResponse<ApiPageResponse<LivroResponseDTO>>> listarAtivos(Pageable pageable) {
+
+        Page<Livro> livrosPage = livroService.listarAtivos(pageable);
+
+        Page<LivroResponseDTO> dtoPage = livrosPage.map(livro -> {
+            LivroResponseDTO dto = new LivroResponseDTO();
+
+            dto.setId(livro.getId());
+            dto.setTitulo(livro.getTitulo());
+            dto.setAutor(livro.getAutor());
+            dto.setEditora(livro.getEditora());
+            dto.setTema(livro.getTema());
+            dto.setObra(livro.getObra());
+
+            dto.setAutores(livro.getAutoresLista());
+            dto.setTemas(livro.getTemasLista());
+            dto.setTags(livro.getTags());
+
+            dto.setAnoLancamento(livro.getAnoLancamento());
+            dto.setQuantidadeDisponivel(livro.getQuantidadeDisponivel());
+            dto.setQuantidadeDisponivelEmprestar(livro.getQuantidadeDisponivelEmprestar());
+            dto.setSinopse(livro.getSinopse());
+            dto.setStatus(livro.getStatusNome());
+            dto.setFlagAtivo(livro.getFlagAtivo());
+            dto.setDtValidade(livro.getDtValidade());
+
+            dto.setUriImgLivro(livro.getUriImgLivro());
+            dto.setUrlLivro(livro.getUriArquivoLivro());
+
+            return dto;
+        });
+
+        ApiPageResponse<LivroResponseDTO> response = ApiPageResponse.of(dtoPage, dto -> dto);
+
+        return ResponseEntity.ok(new ApiResponse<>(response, "Livros ativos listados com sucesso"));
+    }
+
+    //listar com Busca
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<ApiPageResponse<LivroResponseDTO>>> buscarGlobal(
+            @RequestParam String q,
+            Pageable pageable
+    ) {
+        Page<Livro> livrosPage = livroService.buscarGlobal(q, pageable);
+
+        Page<LivroResponseDTO> dtoPage = livrosPage.map(livro -> {
+            LivroResponseDTO dto = new LivroResponseDTO();
+
+            dto.setId(livro.getId());
+            dto.setTitulo(livro.getTitulo());
+            dto.setAutor(livro.getAutor());
+            dto.setEditora(livro.getEditora());
+            dto.setTema(livro.getTema());
+            dto.setObra(livro.getObra());
+            dto.setAnoLancamento(livro.getAnoLancamento());
+            dto.setQuantidadeDisponivel(livro.getQuantidadeDisponivel());
+            dto.setQuantidadeDisponivelEmprestar(livro.getQuantidadeDisponivelEmprestar());
+            dto.setTemas(livro.getTemasLista());
+            dto.setAutores(livro.getAutoresLista());
+            dto.setTags(livro.getTags());
+            dto.setUriImgLivro(livro.getUriImgLivro());
+            dto.setUrlLivro(livro.getUriArquivoLivro());
+            dto.setStatus(livro.getStatusNome());
+            dto.setFlagAtivo(livro.getFlagAtivo());
+            dto.setDtValidade(livro.getDtValidade());
+
+            return dto;
+        });
+
+        ApiPageResponse<LivroResponseDTO> response = ApiPageResponse.of(dtoPage, dto -> dto);
+        return ResponseEntity.ok(new ApiResponse<>(response, "Resultado da busca global"));
+    }
 
 
     // 🚫 Criar livro — SOMENTE FUNCIONÁRIO OU ADMIN
@@ -160,23 +231,15 @@ public class LivroController {
         return ResponseEntity.ok(new ApiResponse<>(response, "Livro criado com sucesso"));
     }
 
-    // 🚫 UPLOAD DE ARQUIVO DO LIVRO — SOMENTE FUNCIONÁRIO OU ADMIN
+    // 🚫 UPLOAD COM ARQUIVOS
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
-    @PostMapping(
-            value = "/upload",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = LivroRequestDTO.class)
-            )
-    )
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = LivroRequestDTO.class)))
     public ResponseEntity<?> criarComUpload(
             @RequestPart(value = "dto") @Valid LivroRequestDTO dto,
             @RequestPart(value = "capa", required = false) MultipartFile capa,
-            @RequestPart(value = "pdf", required = false) MultipartFile pdf
-    ) {
+            @RequestPart(value = "pdf", required = false) MultipartFile pdf) {
 
         Livro salvo = livroService.criarComArquivos(dto, capa, pdf);
 
@@ -184,17 +247,17 @@ public class LivroController {
         return ResponseEntity.ok(new ApiResponse<>(response, "Livro criado com sucesso"));
     }
 
-    // 🚫 Atualizar livro — SOMENTE FUNCIONÁRIO OU ADMIN
+    // 🚫 Atualizar livro
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<LivroResponseDTO>> atualizar(@PathVariable Long id,
-                                                                   @Valid @RequestBody LivroRequestDTO dto) {
+            @Valid @RequestBody LivroRequestDTO dto) {
         Livro atualizado = livroService.atualizar(id, modelMapper.map(dto, Livro.class));
         LivroResponseDTO response = modelMapper.map(atualizado, LivroResponseDTO.class);
         return ResponseEntity.ok(new ApiResponse<>(response, "Livro atualizado com sucesso"));
     }
 
-    // 🚫 Deletar livro — SOMENTE ADMIN
+    // 🚫 Deletar livro
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deletar(@PathVariable Long id) {
@@ -202,7 +265,7 @@ public class LivroController {
         return ResponseEntity.ok(new ApiResponse<>("OK", "Livro removido com sucesso"));
     }
 
-    // 🚫 DESATIVAR LIVROS EM MASSA — SOMENTE FUNCIONÁRIO OU ADMIN
+    // 🚫 DESATIVAR EM MASSA
     @PreAuthorize("hasAnyRole('FUNCIONARIO','ADMIN')")
     @PostMapping("/desativar-multiplos")
     public ResponseEntity<ApiResponse<String>> desativarMultiplos(@RequestBody List<Long> ids) {
@@ -210,11 +273,7 @@ public class LivroController {
         int total = livroService.desativarLivrosEmMassa(ids);
 
         return ResponseEntity.ok(
-                new ApiResponse<>(
-                        "OK",
-                        total + " livro(s) desativado(s) com sucesso"
-                )
-        );
+                new ApiResponse<>("OK", total + " livro(s) desativado(s) com sucesso"));
     }
 
 }
